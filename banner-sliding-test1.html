@@ -107,18 +107,6 @@
             justify-content: flex-end;
         }
 
-        .movie-banner .badges {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .movie-banner.active .badges {
-            opacity: 1;
-            transform: translateY(0);
-            transition-delay: 0.1s;
-        }
-
         .movie-banner .movie-title {
             opacity: 0;
             transform: translateY(30px) scale(0.95);
@@ -128,6 +116,18 @@
         .movie-banner.active .movie-title {
             opacity: 1;
             transform: translateY(0) scale(1);
+            transition-delay: 0.1s;
+        }
+
+        .movie-banner .badges {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .movie-banner.active .badges {
+            opacity: 1;
+            transform: translateY(0);
             transition-delay: 0.2s;
         }
 
@@ -140,7 +140,7 @@
         .movie-banner.active .categories {
             opacity: 1;
             transform: translateX(0);
-            transition-delay: 0.35s;
+            transition-delay: 0.3s;
         }
 
         .movie-banner .description {
@@ -152,7 +152,7 @@
         .movie-banner.active .description {
             opacity: 1;
             transform: translateY(0);
-            transition-delay: 0.45s;
+            transition-delay: 0.4s;
         }
 
         .movie-banner .info-row {
@@ -164,7 +164,7 @@
         .movie-banner.active .info-row {
             opacity: 1;
             transform: translateY(0);
-            transition-delay: 0.55s;
+            transition-delay: 0.5s;
         }
 
         .movie-banner .action-btns {
@@ -176,7 +176,7 @@
         .movie-banner.active .action-btns {
             opacity: 1;
             transform: translateY(0);
-            transition-delay: 0.65s;
+            transition-delay: 0.6s;
         }
 
         .badges {
@@ -249,28 +249,82 @@
 
         .quality-badge {
             display: inline-flex;
-            background: rgba(255, 255, 255, 0.07);
+            align-items: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.65));
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 14px;
-            border-radius: 7px;
-            font-weight: 600;
-            font-size: 13px;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
             color: var(--text-white);
-            letter-spacing: 1.3px;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quality-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.15),
+                transparent
+            );
+            animation: badgeShimmer 3s infinite;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes badgeShimmer {
+            0% {
+                left: -100%;
+            }
+            50%, 100% {
+                left: 200%;
+            }
+        }
+
+        .quality-badge-4k {
+            background: linear-gradient(135deg, #1a1a1a, #000000);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .quality-text {
+            font-weight: 900;
+            font-size: 13px;
+            letter-spacing: 0.3px;
         }
 
         .year-badge {
             display: inline-flex;
-            background: rgba(255, 255, 255, 0);
+            background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-weight: 600;
-            font-size: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 10px;
             color: var(--text-white);
-            margin-top: 7px;
+            letter-spacing: 0.3px;
+        }
+
+        .maturity-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 800;
+            font-size: 10px;
+            color: var(--text-white);
+            letter-spacing: 0.5px;
         }
 
         .movie-title {
@@ -528,6 +582,28 @@
                 right: 15px;
             }
 
+            .badges {
+                gap: 6px;
+                margin-bottom: 14px;
+            }
+
+            .imdb-badge, .quality-badge, .year-badge, .maturity-badge {
+                padding: 3px 8px;
+                font-size: 9px;
+            }
+
+            .imdb-logo {
+                font-size: 11px;
+            }
+
+            .imdb-rating {
+                font-size: 12px;
+            }
+
+            .quality-text {
+                font-size: 11px;
+            }
+
             .carousel-indicators {
                 bottom: 20px;
                 gap: 5px;
@@ -575,6 +651,8 @@
                 <div class="movie-banner active" data-index="0">
                     <div class="banner-bg active" style="background-image: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1600&q=90');"></div>
                     <div class="banner-content">
+                        <h1 class="movie-title">QUANTUM NEXUS</h1>
+
                         <div class="badges">
                             <div class="imdb-badge">
                                 <span class="imdb-logo">IMDb</span>
@@ -583,11 +661,13 @@
                                     8.9
                                 </span>
                             </div>
-                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="quality-badge quality-badge-4k">
+                                <span class="quality-text">4K</span>
+                            </div>
+                            <div class="quality-badge">HDR</div>
+                            <div class="maturity-badge">13+</div>
                             <div class="year-badge">2026</div>
                         </div>
-
-                        <h1 class="movie-title">QUANTUM NEXUS</h1>
 
                         <div class="categories">
                             <span class="category">Sci-Fi</span>
@@ -641,6 +721,8 @@
                 <div class="movie-banner" data-index="1">
                     <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1600&q=90');"></div>
                     <div class="banner-content">
+                        <h1 class="movie-title">AVATAR</h1>
+
                         <div class="badges">
                             <div class="imdb-badge">
                                 <span class="imdb-logo">IMDb</span>
@@ -649,11 +731,14 @@
                                     7.9
                                 </span>
                             </div>
-                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="quality-badge quality-badge-4k">
+                                <span class="quality-text">4K</span>
+                            </div>
+                            <div class="quality-badge">HDR</div>
+                            <div class="quality-badge">DOLBY</div>
+                            <div class="maturity-badge">13+</div>
                             <div class="year-badge">2009</div>
                         </div>
-
-                        <h1 class="movie-title">AVATAR</h1>
 
                         <div class="categories">
                             <span class="category">Sci-Fi</span>
@@ -707,6 +792,8 @@
                 <div class="movie-banner" data-index="2">
                     <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=1600&q=90');"></div>
                     <div class="banner-content">
+                        <h1 class="movie-title">WEDNESDAY</h1>
+
                         <div class="badges">
                             <div class="imdb-badge">
                                 <span class="imdb-logo">IMDb</span>
@@ -715,11 +802,13 @@
                                     8.1
                                 </span>
                             </div>
-                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="quality-badge quality-badge-4k">
+                                <span class="quality-text">4K</span>
+                            </div>
+                            <div class="quality-badge">HDR</div>
+                            <div class="maturity-badge">14+</div>
                             <div class="year-badge">2022</div>
                         </div>
-
-                        <h1 class="movie-title">WEDNESDAY</h1>
 
                         <div class="categories">
                             <span class="category">Comedy</span>
@@ -773,6 +862,8 @@
                 <div class="movie-banner" data-index="3">
                     <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=1600&q=90');"></div>
                     <div class="banner-content">
+                        <h1 class="movie-title">ICE AGE</h1>
+
                         <div class="badges">
                             <div class="imdb-badge">
                                 <span class="imdb-logo">IMDb</span>
@@ -781,11 +872,13 @@
                                     7.5
                                 </span>
                             </div>
-                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="quality-badge quality-badge-4k">
+                                <span class="quality-text">4K</span>
+                            </div>
+                            <div class="quality-badge">HDR</div>
+                            <div class="maturity-badge">7+</div>
                             <div class="year-badge">2002</div>
                         </div>
-
-                        <h1 class="movie-title">ICE AGE</h1>
 
                         <div class="categories">
                             <span class="category">Animation</span>
@@ -839,6 +932,8 @@
                 <div class="movie-banner" data-index="4">
                     <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90');"></div>
                     <div class="banner-content">
+                        <h1 class="movie-title">LEO</h1>
+
                         <div class="badges">
                             <div class="imdb-badge">
                                 <span class="imdb-logo">IMDb</span>
@@ -847,11 +942,13 @@
                                     7.0
                                 </span>
                             </div>
-                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="quality-badge quality-badge-4k">
+                                <span class="quality-text">4K</span>
+                            </div>
+                            <div class="quality-badge">HDR</div>
+                            <div class="maturity-badge">7+</div>
                             <div class="year-badge">2023</div>
                         </div>
-
-                        <h1 class="movie-title">LEO</h1>
 
                         <div class="categories">
                             <span class="category">Animation</span>
