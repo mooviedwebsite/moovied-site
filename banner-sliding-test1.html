@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Movie Carousel - 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-gold: #FFD700;
+            --neon-cyan: #00FFFF;
+            --dark-bg: #000000;
+            --text-white: #FFFFFF;
+            --text-gray: #999999;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .carousel-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .carousel-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        .carousel-track.dragging {
+            transition: none;
+        }
+
+        .movie-banner {
+            min-width: 100%;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
+        }
+
+        .banner-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center right;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+
+        .banner-bg.active {
+            opacity: 1;
+        }
+
+        .banner-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.85) 40%, rgba(0, 0, 0, 0.3) 100%);
+        }
+
+        .banner-content {
+            position: relative;
+            padding: 60px;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .movie-banner.active .banner-content {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .imdb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: linear-gradient(to right, #FFFFFF 50%, #F5C518 0%);
+            padding: 4px 11px;
+            border-radius: 21px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #ffffff;
+        }
+
+        .imdb-logo {
+            font-weight: 900;
+            font-size: 14px;
+            color: #000000;
+            letter-spacing: 0.5px;
+        }
+
+        .imdb-rating {
+            font-weight: 800;
+            font-size: 16px;
+            color: #000000;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .star {
+            color: #000000;
+            font-size: 13px;
+        }
+
+        .quality-badge {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 7px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-white);
+            letter-spacing: 1.3px;
+        }
+
+        .year-badge {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 9px;
+            color: var(--text-white);
+            margin-top: 7px;
+        }
+
+        .movie-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(48px, 8vw, 110px);
+            line-height: 0.95;
+            color: var(--text-white);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 
+                0 0 30px rgba(255, 255, 255, 0.3),
+                2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .categories {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .category {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-gray);
+            max-width: 650px;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 6px;
+            color: var(--text-gray);
+        }
+
+        .info-label {
+            color: var(--text-gray);
+        }
+
+        .info-value {
+            color: var(--text-white);
+            font-weight: 600;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-stream {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000000;
+            box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-stream:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 215, 0, 0.6);
+        }
+
+        .btn-download {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--text-white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-download:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Navigation Controls */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .carousel-container:hover .carousel-nav {
+            opacity: 1;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-nav.prev {
+            left: 30px;
+        }
+
+        .carousel-nav.next {
+            right: 30px;
+        }
+
+        .carousel-nav svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        /* Indicators */
+        .carousel-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .indicator.active {
+            background: var(--neon-gold);
+            width: 32px;
+            border-radius: 5px;
+        }
+
+        .indicator:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: rgba(255, 215, 0, 0.3);
+            width: 100%;
+            z-index: 11;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .carousel-container {
+                padding: 20px 12px;
+            }
+
+            .banner-content {
+                padding: 30px 24px;
+                min-height: 500px;
+            }
+
+            .movie-title {
+                font-size: clamp(36px, 10vw, 56px);
+                letter-spacing: 2px;
+            }
+
+            .carousel-nav {
+                width: 44px;
+                height: 44px;
+                opacity: 0.7;
+            }
+
+            .carousel-nav.prev {
+                left: 15px;
+            }
+
+            .carousel-nav.next {
+                right: 15px;
+            }
+
+            .carousel-indicators {
+                bottom: 20px;
+            }
+
+            .action-btns {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .banner-content {
+                padding: 24px 18px;
+                min-height: 450px;
+            }
+
+            .movie-title {
+                font-size: clamp(32px, 11vw, 48px);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-container">
+        <div class="carousel-wrapper" id="carouselWrapper">
+            <div class="carousel-track" id="carouselTrack">
+                <!-- Movie 1: Quantum Nexus -->
+                <div class="movie-banner active" data-index="0">
+                    <div class="banner-bg active" style="background-image: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1600&q=90');"></div>
+                    <div class="banner-content">
+                        <div class="badges">
+                            <div class="imdb-badge">
+                                <span class="imdb-logo">IMDb</span>
+                                <span class="imdb-rating">
+                                    <span class="star">★</span>
+                                    8.9
+                                </span>
+                            </div>
+                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="year-badge">2026</div>
+                        </div>
+
+                        <h1 class="movie-title">QUANTUM NEXUS</h1>
+
+                        <div class="categories">
+                            <span class="category">Sci-Fi</span>
+                            <span class="category">Action</span>
+                            <span class="category">Thriller</span>
+                        </div>
+
+                        <p class="description">
+                            In a reality where time itself bends to human will, one scientist's breakthrough discovery threatens to unravel the fabric of existence. As parallel dimensions collide, humanity's last hope rests with an unlikely hero.
+                        </p>
+
+                        <div class="info-row">
+                            <div class="info-item">
+                                <span class="info-label">Runtime:</span>
+                                <span class="info-value">2h 28min</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Language:</span>
+                                <span class="info-value">English</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Director:</span>
+                                <span class="info-value">A. Mitchell</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rating:</span>
+                                <span class="info-value">PG-13</span>
+                            </div>
+                        </div>
+
+                        <div class="action-btns">
+                            <button class="btn btn-stream">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Stream Now
+                            </button>
+                            <button class="btn btn-download">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie 2: Avatar -->
+                <div class="movie-banner" data-index="1">
+                    <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1600&q=90');"></div>
+                    <div class="banner-content">
+                        <div class="badges">
+                            <div class="imdb-badge">
+                                <span class="imdb-logo">IMDb</span>
+                                <span class="imdb-rating">
+                                    <span class="star">★</span>
+                                    7.9
+                                </span>
+                            </div>
+                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="year-badge">2009</div>
+                        </div>
+
+                        <h1 class="movie-title">AVATAR</h1>
+
+                        <div class="categories">
+                            <span class="category">Sci-Fi</span>
+                            <span class="category">Adventure</span>
+                            <span class="category">Fantasy</span>
+                        </div>
+
+                        <p class="description">
+                            A paraplegic Marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.
+                        </p>
+
+                        <div class="info-row">
+                            <div class="info-item">
+                                <span class="info-label">Runtime:</span>
+                                <span class="info-value">2h 42min</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Language:</span>
+                                <span class="info-value">English</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Director:</span>
+                                <span class="info-value">James Cameron</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rating:</span>
+                                <span class="info-value">PG-13</span>
+                            </div>
+                        </div>
+
+                        <div class="action-btns">
+                            <button class="btn btn-stream">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Stream Now
+                            </button>
+                            <button class="btn btn-download">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie 3: Wednesday -->
+                <div class="movie-banner" data-index="2">
+                    <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=1600&q=90');"></div>
+                    <div class="banner-content">
+                        <div class="badges">
+                            <div class="imdb-badge">
+                                <span class="imdb-logo">IMDb</span>
+                                <span class="imdb-rating">
+                                    <span class="star">★</span>
+                                    8.1
+                                </span>
+                            </div>
+                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="year-badge">2022</div>
+                        </div>
+
+                        <h1 class="movie-title">WEDNESDAY</h1>
+
+                        <div class="categories">
+                            <span class="category">Comedy</span>
+                            <span class="category">Mystery</span>
+                            <span class="category">Horror</span>
+                        </div>
+
+                        <p class="description">
+                            Follows Wednesday Addams' years as a student at Nevermore Academy, where she attempts to master her emerging psychic ability, thwart a killing spree, and solve the mystery that embroiled her parents.
+                        </p>
+
+                        <div class="info-row">
+                            <div class="info-item">
+                                <span class="info-label">Runtime:</span>
+                                <span class="info-value">45min/ep</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Language:</span>
+                                <span class="info-value">English</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Director:</span>
+                                <span class="info-value">Tim Burton</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rating:</span>
+                                <span class="info-value">TV-14</span>
+                            </div>
+                        </div>
+
+                        <div class="action-btns">
+                            <button class="btn btn-stream">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Stream Now
+                            </button>
+                            <button class="btn btn-download">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie 4: Ice Age -->
+                <div class="movie-banner" data-index="3">
+                    <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=1600&q=90');"></div>
+                    <div class="banner-content">
+                        <div class="badges">
+                            <div class="imdb-badge">
+                                <span class="imdb-logo">IMDb</span>
+                                <span class="imdb-rating">
+                                    <span class="star">★</span>
+                                    7.5
+                                </span>
+                            </div>
+                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="year-badge">2002</div>
+                        </div>
+
+                        <h1 class="movie-title">ICE AGE</h1>
+
+                        <div class="categories">
+                            <span class="category">Animation</span>
+                            <span class="category">Adventure</span>
+                            <span class="category">Comedy</span>
+                        </div>
+
+                        <p class="description">
+                            The story revolves around sub-zero heroes: a woolly mammoth, a saber-toothed tiger, a sloth and a prehistoric combination of a squirrel and rat, known as Scrat.
+                        </p>
+
+                        <div class="info-row">
+                            <div class="info-item">
+                                <span class="info-label">Runtime:</span>
+                                <span class="info-value">1h 21min</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Language:</span>
+                                <span class="info-value">English</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Director:</span>
+                                <span class="info-value">Chris Wedge</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rating:</span>
+                                <span class="info-value">PG</span>
+                            </div>
+                        </div>
+
+                        <div class="action-btns">
+                            <button class="btn btn-stream">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Stream Now
+                            </button>
+                            <button class="btn btn-download">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie 5: Leo -->
+                <div class="movie-banner" data-index="4">
+                    <div class="banner-bg" style="background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=90');"></div>
+                    <div class="banner-content">
+                        <div class="badges">
+                            <div class="imdb-badge">
+                                <span class="imdb-logo">IMDb</span>
+                                <span class="imdb-rating">
+                                    <span class="star">★</span>
+                                    7.0
+                                </span>
+                            </div>
+                            <div class="quality-badge">4K ULTRA HD</div>
+                            <div class="year-badge">2023</div>
+                        </div>
+
+                        <h1 class="movie-title">LEO</h1>
+
+                        <div class="categories">
+                            <span class="category">Animation</span>
+                            <span class="category">Comedy</span>
+                            <span class="category">Family</span>
+                        </div>
+
+                        <p class="description">
+                            A 74-year-old lizard named Leo and his turtle friend decide to escape from the terrarium of a Florida school classroom where they have been living for decades.
+                        </p>
+
+                        <div class="info-row">
+                            <div class="info-item">
+                                <span class="info-label">Runtime:</span>
+                                <span class="info-value">1h 42min</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Language:</span>
+                                <span class="info-value">English</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Director:</span>
+                                <span class="info-value">Robert Marianetti</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rating:</span>
+                                <span class="info-value">PG</span>
+                            </div>
+                        </div>
+
+                        <div class="action-btns">
+                            <button class="btn btn-stream">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Stream Now
+                            </button>
+                            <button class="btn btn-download">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <div class="carousel-nav prev" id="prevBtn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </div>
+            <div class="carousel-nav next" id="nextBtn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </div>
+
+            <!-- Indicators -->
+            <div class="carousel-indicators" id="indicators"></div>
+
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class MovieCarousel {
+            constructor() {
+                this.track = document.getElementById('carouselTrack');
+                this.wrapper = document.getElementById('carouselWrapper');
+                this.banners = document.querySelectorAll('.movie-banner');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.indicatorsContainer = document.getElementById('indicators');
+                this.progressFill = document.getElementById('progressFill');
+                
+                this.currentIndex = 0;
+                this.totalSlides = this.banners.length;
+                this.isDragging = false;
+                this.startPos = 0;
+                this.currentTranslate = 0;
+                this.prevTranslate = 0;
+                this.animationID = 0;
+                this.autoPlayInterval = null;
+                this.autoPlayDuration = 5000; // 5 seconds per slide
+                this.progressInterval = null;
+                
+                this.init();
+            }
+
+            init() {
+                this.createIndicators();
+                this.addEventListeners();
+                this.startAutoPlay();
+                this.updateCarousel();
+            }
+
+            createIndicators() {
+                for (let i = 0; i < this.totalSlides; i++) {
+                    const indicator = document.createElement('div');
+                    indicator.classList.add('indicator');
+                    if (i === 0) indicator.classList.add('active');
+                    indicator.addEventListener('click', () => this.goToSlide(i));
+                    this.indicatorsContainer.appendChild(indicator);
+                }
+            }
+
+            addEventListeners() {
+                // Button clicks
+                this.prevBtn.addEventListener('click', () => this.prevSlide());
+                this.nextBtn.addEventListener('click', () => this.nextSlide());
+
+                // Touch events
+                this.wrapper.addEventListener('touchstart', this.touchStart.bind(this));
+                this.wrapper.addEventListener('touchend', this.touchEnd.bind(this));
+                this.wrapper.addEventListener('touchmove', this.touchMove.bind(this));
+
+                // Mouse events
+                this.wrapper.addEventListener('mousedown', this.touchStart.bind(this));
+                this.wrapper.addEventListener('mouseup', this.touchEnd.bind(this));
+                this.wrapper.addEventListener('mouseleave', this.touchEnd.bind(this));
+                this.wrapper.addEventListener('mousemove', this.touchMove.bind(this));
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') this.prevSlide();
+                    if (e.key === 'ArrowRight') this.nextSlide();
+                });
+
+                // Pause autoplay on hover
+                this.wrapper.addEventListener('mouseenter', () => this.pauseAutoPlay());
+                this.wrapper.addEventListener('mouseleave', () => this.startAutoPlay());
+            }
+
+            touchStart(event) {
+                this.isDragging = true;
+                this.startPos = this.getPositionX(event);
+                this.animationID = requestAnimationFrame(this.animation.bind(this));
+                this.track.classList.add('dragging');
+                this.pauseAutoPlay();
+            }
+
+            touchMove(event) {
+                if (this.isDragging) {
+                    const currentPosition = this.getPositionX(event);
+                    this.currentTranslate = this.prevTranslate + currentPosition - this.startPos;
+                }
+            }
+
+            touchEnd() {
+                this.isDragging = false;
+                cancelAnimationFrame(this.animationID);
+                this.track.classList.remove('dragging');
+
+                const movedBy = this.currentTranslate - this.prevTranslate;
+
+                // If moved enough negative then snap to next slide
+                if (movedBy < -100 && this.currentIndex < this.totalSlides - 1) {
+                    this.currentIndex += 1;
+                }
+
+                // If moved enough positive then snap to previous slide
+                if (movedBy > 100 && this.currentIndex > 0) {
+                    this.currentIndex -= 1;
+                }
+
+                this.updateCarousel();
+                this.startAutoPlay();
+            }
+
+            getPositionX(event) {
+                return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+            }
+
+            animation() {
+                this.setSliderPosition();
+                if (this.isDragging) requestAnimationFrame(this.animation.bind(this));
+            }
+
+            setSliderPosition() {
+                this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+            }
+
+            nextSlide() {
+                this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
+                this.updateCarousel();
+                this.resetAutoPlay();
+            }
+
+            prevSlide() {
+                this.currentIndex = this.currentIndex === 0 ? this.totalSlides - 1 : this.currentIndex - 1;
+                this.updateCarousel();
+                this.resetAutoPlay();
+            }
+
+            goToSlide(index) {
+                this.currentIndex = index;
+                this.updateCarousel();
+                this.resetAutoPlay();
+            }
+
+            updateCarousel() {
+                this.currentTranslate = this.currentIndex * -this.wrapper.offsetWidth;
+                this.prevTranslate = this.currentTranslate;
+                this.setSliderPosition();
+
+                // Update active states
+                this.banners.forEach((banner, index) => {
+                    const bg = banner.querySelector('.banner-bg');
+                    if (index === this.currentIndex) {
+                        banner.classList.add('active');
+                        setTimeout(() => bg.classList.add('active'), 100);
+                    } else {
+                        banner.classList.remove('active');
+                        bg.classList.remove('active');
+                    }
+                });
+
+                // Update indicators
+                document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+
+            startAutoPlay() {
+                this.stopAutoPlay();
+                this.startProgressBar();
+                this.autoPlayInterval = setInterval(() => {
+                    this.nextSlide();
+                }, this.autoPlayDuration);
+            }
+
+            pauseAutoPlay() {
+                this.stopAutoPlay();
+                this.stopProgressBar();
+            }
+
+            resetAutoPlay() {
+                this.stopAutoPlay();
+                this.startAutoPlay();
+            }
+
+            stopAutoPlay() {
+                if (this.autoPlayInterval) {
+                    clearInterval(this.autoPlayInterval);
+                    this.autoPlayInterval = null;
+                }
+            }
+
+            startProgressBar() {
+                this.stopProgressBar();
+                let progress = 0;
+                const increment = 100 / (this.autoPlayDuration / 50); // Update every 50ms
+
+                this.progressInterval = setInterval(() => {
+                    progress += increment;
+                    if (progress >= 100) {
+                        progress = 100;
+                        this.stopProgressBar();
+                    }
+                    this.progressFill.style.width = `${progress}%`;
+                }, 50);
+            }
+
+            stopProgressBar() {
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                    this.progressInterval = null;
+                }
+                this.progressFill.style.width = '0%';
+            }
+        }
+
+        // Initialize carousel when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new MovieCarousel();
+        });
+    </script>
+</body>
+</html>
