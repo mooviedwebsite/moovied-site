@@ -1,0 +1,81 @@
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Movie Banner UI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black text-white">
+
+<!-- MOVIE BANNER -->
+<section class="relative w-full min-h-screen flex items-end overflow-hidden">
+
+  <!-- BACKGROUND IMAGE -->
+  <img 
+    src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4"
+    class="absolute inset-0 w-full h-full object-cover scale-110"
+    alt="Movie Banner"
+  />
+
+  <!-- DARK GRADIENT OVERLAY -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/10"></div>
+
+  <!-- CONTENT -->
+  <div class="relative z-10 w-full px-6 md:px-16 pb-14 max-w-7xl">
+
+    <!-- TAGS -->
+    <div class="flex flex-wrap gap-3 mb-5">
+      <span class="px-3 py-1 text-sm rounded-full bg-white/10 backdrop-blur border border-white/20">2026</span>
+      <span class="px-3 py-1 text-sm rounded-full bg-white/10 backdrop-blur border border-white/20">Action</span>
+      <span class="px-3 py-1 text-sm rounded-full bg-white/10 backdrop-blur border border-white/20">Sci-Fi</span>
+      <span class="px-3 py-1 text-sm rounded-full bg-white/10 backdrop-blur border border-white/20">4K UHD</span>
+    </div>
+
+    <!-- TITLE -->
+    <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6">
+      Interstellar <br class="hidden md:block"> Reborn
+    </h1>
+
+    <!-- META INFO -->
+    <div class="flex flex-wrap items-center gap-6 mb-8 text-gray-300">
+      <div class="flex items-center gap-2">
+        ⭐ <span class="text-white font-semibold">8.9</span> IMDb
+      </div>
+      <div>2h 35min</div>
+      <div>English / Multi-Audio</div>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <p class="max-w-2xl text-gray-300 mb-10 leading-relaxed">
+      A next-generation cinematic journey beyond time and space. 
+      Humanity’s final mission begins where reality ends.
+    </p>
+
+    <!-- ACTION BUTTONS -->
+    <div class="flex flex-wrap gap-5">
+
+      <!-- WATCH -->
+      <button class="flex items-center gap-3 px-8 py-4 rounded-xl bg-white/15 backdrop-blur-lg border border-white/30 hover:bg-white/25 transition-all shadow-lg hover:shadow-white/10">
+        ▶ <span class="font-semibold">Watch Now</span>
+      </button>
+
+      <!-- DOWNLOAD -->
+      <button class="flex items-center gap-3 px-8 py-4 rounded-xl bg-black/40 backdrop-blur-lg border border-white/20 hover:bg-black/60 transition-all shadow-lg">
+        ⬇ <span class="font-semibold">Download</span>
+      </button>
+
+      <!-- MORE INFO -->
+      <button class="px-6 py-4 rounded-xl bg-white/10 backdrop-blur border border-white/20 hover:bg-white/20 transition">
+        More Details
+      </button>
+
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
