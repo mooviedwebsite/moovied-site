@@ -81,16 +81,16 @@
             margin-bottom: 18px;
             flex-wrap: wrap;
         }
-
-        .imdb-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(to right, #FFFFFF 0%, #F5C518 100%);
-            padding: 6px 14px;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
+.imdb-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(to right, #FFFFFF 50%, #F5C518 00%);
+    padding: 6px 14px;
+    border-radius: 26px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ffffff;
+}
 
         .imdb-logo {
             font-weight: 900;
@@ -114,29 +114,30 @@
         }
 
         .quality-badge {
-            display: inline-flex;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 12px;
-            color: var(--text-white);
-            letter-spacing: 1.5px;
-        }
+    display: inline-flex;
+    background: rgb(255 255 255 / 7%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-white);
+    letter-spacing: 1.3px;
+}
 
-        .year-badge {
-            display: inline-flex;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 12px;
-            color: var(--text-white);
-        }
+    .year-badge {
+    display: inline-flex;
+    background: rgb(255 255 255 / 0%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 9px;
+    color: var(--text-white);
+    margin-top: 7px;
+}
 
         .movie-title {
             font-family: 'Bebas Neue', sans-serif;
