@@ -52,11 +52,15 @@
 
         .carousel-track {
             display: flex;
-            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
             will-change: transform;
         }
 
         .carousel-track.dragging {
+            transition: none;
+        }
+        
+        .carousel-track.instant {
             transition: none;
         }
 
@@ -101,14 +105,78 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            opacity: 0;
-            transform: translateX(-30px);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        .movie-banner.active .banner-content {
+        .movie-banner .badges {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .movie-banner.active .badges {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.1s;
+        }
+
+        .movie-banner .movie-title {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .movie-banner.active .movie-title {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.2s;
+        }
+
+        .movie-banner .categories {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .movie-banner.active .categories {
             opacity: 1;
             transform: translateX(0);
+            transition-delay: 0.35s;
+        }
+
+        .movie-banner .description {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .movie-banner.active .description {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.45s;
+        }
+
+        .movie-banner .info-row {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .movie-banner.active .info-row {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.55s;
+        }
+
+        .movie-banner .action-btns {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .movie-banner.active .action-btns {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.65s;
         }
 
         .badges {
@@ -305,10 +373,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
             opacity: 0;
+            pointer-events: none;
         }
 
-        .carousel-container:hover .carousel-nav {
+        .carousel-wrapper:hover .carousel-nav {
             opacity: 1;
+            pointer-events: all;
         }
 
         .carousel-nav:hover {
@@ -778,7 +848,7 @@
             </div>
 
             <!-- Navigation Arrows -->
-            <div class="carousel-nav prev" id="prevBtn">
+            <div class="carousel-nav prev" id="prevBtn" style="display: none;">
                 <svg viewBox="0 0 24 24">
                     <path d="M15 18l-6-6 6-6"/>
                 </svg>
@@ -842,8 +912,7 @@
             }
 
             addEventListeners() {
-                // Button clicks
-                this.prevBtn.addEventListener('click', () => this.prevSlide());
+                // Button clicks - only next button works, prev is hidden
                 this.nextBtn.addEventListener('click', () => this.nextSlide());
 
                 // Touch events
@@ -857,9 +926,8 @@
                 this.wrapper.addEventListener('mouseleave', this.touchEnd.bind(this));
                 this.wrapper.addEventListener('mousemove', this.touchMove.bind(this));
 
-                // Keyboard navigation
+                // Keyboard navigation - only right arrow works
                 document.addEventListener('keydown', (e) => {
-                    if (e.key === 'ArrowLeft') this.prevSlide();
                     if (e.key === 'ArrowRight') this.nextSlide();
                 });
 
@@ -890,17 +958,14 @@
 
                 const movedBy = this.currentTranslate - this.prevTranslate;
 
-                // If moved enough negative then snap to next slide
-                if (movedBy < -100 && this.currentIndex < this.totalSlides - 1) {
-                    this.currentIndex += 1;
+                // Only allow swiping to next (left swipe shows next slide)
+                if (movedBy < -100) {
+                    this.nextSlide();
+                } else {
+                    // Snap back to current position
+                    this.updateCarousel();
                 }
 
-                // If moved enough positive then snap to previous slide
-                if (movedBy > 100 && this.currentIndex > 0) {
-                    this.currentIndex -= 1;
-                }
-
-                this.updateCarousel();
                 this.startAutoPlay();
             }
 
@@ -918,21 +983,28 @@
             }
 
             nextSlide() {
+                const previousIndex = this.currentIndex;
                 this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
-                this.updateCarousel();
-                this.resetAutoPlay();
-            }
-
-            prevSlide() {
-                this.currentIndex = this.currentIndex === 0 ? this.totalSlides - 1 : this.currentIndex - 1;
+                
+                // If we're looping back to start, do it instantly
+                if (this.currentIndex === 0 && previousIndex === this.totalSlides - 1) {
+                    this.track.classList.add('instant');
+                    setTimeout(() => {
+                        this.track.classList.remove('instant');
+                    }, 50);
+                }
+                
                 this.updateCarousel();
                 this.resetAutoPlay();
             }
 
             goToSlide(index) {
-                this.currentIndex = index;
-                this.updateCarousel();
-                this.resetAutoPlay();
+                // Only allow moving forward or to the same slide
+                if (index >= this.currentIndex || index === 0) {
+                    this.currentIndex = index;
+                    this.updateCarousel();
+                    this.resetAutoPlay();
+                }
             }
 
             updateCarousel() {
@@ -940,12 +1012,12 @@
                 this.prevTranslate = this.currentTranslate;
                 this.setSliderPosition();
 
-                // Update active states
+                // Update active states with staggered animations
                 this.banners.forEach((banner, index) => {
                     const bg = banner.querySelector('.banner-bg');
                     if (index === this.currentIndex) {
                         banner.classList.add('active');
-                        setTimeout(() => bg.classList.add('active'), 100);
+                        setTimeout(() => bg.classList.add('active'), 50);
                     } else {
                         banner.classList.remove('active');
                         bg.classList.remove('active');
