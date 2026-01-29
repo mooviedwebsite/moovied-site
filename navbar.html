@@ -356,20 +356,20 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #b0b0b0 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #0f0f0f;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
         }
 
         .profile-icon:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
         }
 
         /* Sidebar */
@@ -498,12 +498,20 @@
             gap: 24px;
             padding: 10px 24px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             color: #f1f1f1;
             text-decoration: none;
             position: relative;
             border-radius: 8px;
             margin: 2px 8px;
+        }
+
+        .sidebar-item svg {
+            width: 24px;
+            height: 24px;
+            fill: #f1f1f1;
+            flex-shrink: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-item::before {
@@ -513,9 +521,9 @@
             top: 0;
             width: 3px;
             height: 100%;
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 0 2px 2px 0;
         }
 
@@ -526,70 +534,443 @@
             inset: -2px;
             border-radius: 50%;
             padding: 2px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
+        }
+
+        /* Animated gradient pulse effect */
+        @keyframes gradientPulse {
+            0%, 100% {
+                background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+            }
+            50% {
+                background: linear-gradient(135deg, #a0a0a0 0%, #ffffff 100%);
+            }
+        }
+
+        /* Ripple effect */
+        @keyframes ripple {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        /* Icon bounce animation */
+        @keyframes iconBounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-3px) scale(1.05);
+            }
+        }
+
+        /* Rotate animation */
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 2026 Futuristic Animations */
+        /* Text reveal animation with blur */
+        @keyframes textReveal {
+            0% {
+                opacity: 0;
+                transform: translateX(-20px);
+                filter: blur(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+                filter: blur(0);
+            }
+        }
+
+        /* Icon expand pulse */
+        @keyframes iconExpandPulse {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+            30% {
+                transform: scale(1.3) rotate(10deg);
+            }
+            60% {
+                transform: scale(0.9) rotate(-5deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* Icon shrink pulse */
+        @keyframes iconShrinkPulse {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+            30% {
+                transform: scale(0.7) rotate(-10deg);
+            }
+            60% {
+                transform: scale(1.1) rotate(5deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* Border scale animation */
+        @keyframes borderScale {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+            }
+            100% {
+                transform: scale(1) rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        /* Left bar slide in */
+        @keyframes leftBarSlide {
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scaleY(1.1);
+            }
+            100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
         }
 
         .sidebar-item:hover {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            transform: translateX(2px);
+        }
+
+        .sidebar-item:hover svg {
+            transform: scale(1.1);
         }
 
         .sidebar-item.active {
-            background: rgba(102, 126, 234, 0.15);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
         }
 
         .sidebar-item.active::before {
             opacity: 1;
+            animation: gradientPulse 3s ease-in-out infinite;
         }
 
-        .sidebar-item svg {
-            width: 24px;
-            height: 24px;
-            fill: #f1f1f1;
-            flex-shrink: 0;
+        .sidebar-item.active svg {
+            fill: #fff;
         }
 
-        /* Show circular border only in icon-only mode */
+        /* Desktop and Tablet - Icon navbar styles */
         @media (min-width: 481px) {
+            /* ICON MODE - Circular style */
             .sidebar:not(.expanded) .sidebar-item {
                 width: 48px;
                 height: 48px;
+                min-width: 48px;
+                min-height: 48px;
                 padding: 0;
                 margin: 8px auto;
-                justify-content: center;
-                border-radius: 50%;
                 gap: 0;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: row;
+                overflow: visible;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                animation: morphToCircle 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             }
 
+            /* Morph animations */
+            @keyframes morphToCircle {
+                from {
+                    width: auto;
+                    height: auto;
+                    border-radius: 8px;
+                    padding: 10px 24px;
+                    margin: 2px 8px;
+                    gap: 24px;
+                }
+                to {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    padding: 0;
+                    margin: 8px auto;
+                    gap: 0;
+                }
+            }
+
+            @keyframes morphToRectangle {
+                from {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    padding: 0;
+                    margin: 8px auto;
+                    gap: 0;
+                }
+                to {
+                    width: auto;
+                    height: auto;
+                    border-radius: 8px;
+                    padding: 10px 24px;
+                    margin: 2px 8px;
+                    gap: 24px;
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(-10px);
+                }
+            }
+
+            @keyframes circularBorderFadeIn {
+                from {
+                    opacity: 0;
+                    transform: scale(0.8) rotate(0deg);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1) rotate(0deg);
+                }
+            }
+
+            @keyframes circularBorderFadeOut {
+                from {
+                    opacity: 1;
+                    transform: scale(1) rotate(0deg);
+                }
+                to {
+                    opacity: 0;
+                    transform: scale(0.8) rotate(0deg);
+                }
+            }
+
+            @keyframes leftBarFadeIn {
+                from {
+                    opacity: 0;
+                    width: 0;
+                }
+                to {
+                    opacity: 1;
+                    width: 3px;
+                }
+            }
+
+            @keyframes leftBarFadeOut {
+                from {
+                    opacity: 1;
+                    width: 3px;
+                }
+                to {
+                    opacity: 0;
+                    width: 0;
+                }
+            }
+
+            /* Hover effect in icon mode */
+            .sidebar:not(.expanded) .sidebar-item:hover {
+                transform: scale(1.1) translateY(-2px);
+                background: rgba(255, 255, 255, 0.12);
+                box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+            }
+
+            .sidebar:not(.expanded) .sidebar-item:hover svg {
+                animation: iconBounce 0.6s ease-in-out;
+            }
+
+            /* Active state in icon mode */
+            .sidebar:not(.expanded) .sidebar-item.active {
+                animation: ripple 2s infinite;
+                background: rgba(255, 255, 255, 0.2);
+                box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+            }
+
+            .sidebar:not(.expanded) .sidebar-item.active svg {
+                filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+                animation: iconBounce 2s ease-in-out infinite;
+            }
+
+            /* Circular gradient border animation in icon mode */
+            .sidebar:not(.expanded) .sidebar-item.active::after {
+                opacity: 1;
+                animation: rotate 8s linear infinite, gradientPulse 3s ease-in-out infinite, circularBorderFadeIn 0.5s ease-out forwards;
+            }
+
+            /* Text animations */
+            .sidebar:not(.expanded) .sidebar-text {
+                display: none;
+                opacity: 0;
+                animation: fadeOut 0.3s ease-out forwards;
+            }
+
+            .sidebar:not(.expanded) .sidebar-item svg {
+                margin: 0;
+                position: static;
+            }
+
+            /* Hide circular border initially in icon mode */
             .sidebar:not(.expanded) .sidebar-item::after {
                 opacity: 0;
             }
 
-            .sidebar:not(.expanded) .sidebar-item.active::after {
-                opacity: 1;
+            /* Hide left bar in icon mode */
+            .sidebar:not(.expanded) .sidebar-item::before {
+                opacity: 0;
+                animation: leftBarFadeOut 0.3s ease-out forwards;
             }
 
             .sidebar:not(.expanded) .sidebar-item.active::before {
                 opacity: 0;
             }
 
-            .sidebar:not(.expanded) .sidebar-item svg {
-                margin: 0;
+            /* EXPANDED MODE - Rectangle style with 2026 futuristic animations */
+            .sidebar.expanded .sidebar-item {
+                width: auto;
+                height: auto;
+                min-width: auto;
+                min-height: auto;
+                border-radius: 8px;
+                padding: 10px 24px;
+                margin: 2px 8px;
+                gap: 24px;
+                overflow: hidden;
+                transition: all 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            }
+
+            /* Icon pulse expand when sidebar opens */
+            .sidebar.expanded .sidebar-item svg {
+                animation: iconExpandPulse 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            }
+
+            /* Text reveals with blur and slide effect */
+            .sidebar.expanded .sidebar-text {
+                animation: textReveal 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+                animation-delay: 0.3s;
+                opacity: 0;
+            }
+
+            /* IMMEDIATELY hide circular border when expanding - no transition */
+            .sidebar.expanded .sidebar-item::after {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                transform: scale(0) !important;
+                animation: none !important;
+                transition: none !important;
+            }
+
+            .sidebar.expanded .sidebar-item.active::after {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                transform: scale(0) !important;
+                animation: none !important;
+                transition: none !important;
+            }
+
+            /* Left bar slides in elegantly */
+            .sidebar.expanded .sidebar-item.active::before {
+                opacity: 1;
+                transform: scaleY(1);
+                animation: leftBarSlide 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards, gradientPulse 3s ease-in-out infinite;
+                animation-delay: 0s, 0.7s;
+            }
+
+            /* Remove circular animations */
+            .sidebar.expanded .sidebar-item.active svg {
+                animation: iconExpandPulse 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards !important;
+                filter: none;
+            }
+
+            .sidebar.expanded .sidebar-item.active {
+                animation: none !important;
+            }
+
+            .sidebar.expanded .sidebar-item:hover {
+                transform: translateX(6px) scale(1.02);
+            }
+
+            .sidebar.expanded .sidebar-item:hover svg {
+                animation: none;
+                transform: scale(1.15) rotate(5deg);
+            }
+
+            /* Show text in expanded mode */
+            .sidebar.expanded .sidebar-text {
+                display: block;
+                opacity: 1;
             }
         }
 
-        .sidebar-item.active svg {
-            fill: #fff;
+        /* Collapsing animation - show circular border when closing */
+        @media (min-width: 481px) {
+            .sidebar:not(.expanded) .sidebar-item svg {
+                animation: iconShrinkPulse 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            }
+
+            /* Show circular border immediately when collapsing */
+            .sidebar:not(.expanded) .sidebar-item::after {
+                display: block;
+                visibility: visible;
+            }
+
+            .sidebar:not(.expanded) .sidebar-item.active::after {
+                display: block;
+                visibility: visible;
+                animation: borderScale 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards, rotate 8s linear infinite, gradientPulse 3s ease-in-out infinite;
+                animation-delay: 0s, 0.7s, 0.7s;
+            }
+        }
+            }
         }
 
         .sidebar-text {
@@ -629,6 +1010,13 @@
 
         .dropdown-arrow.rotated {
             transform: rotate(180deg);
+        }
+
+        /* Hide dropdown arrow in icon-only sidebar */
+        @media (min-width: 481px) {
+            .sidebar:not(.expanded) .dropdown-arrow {
+                display: none;
+            }
         }
 
         /* Language codes for icon sidebar */
@@ -725,12 +1113,13 @@
         }
 
         .category-pill.active {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(200, 200, 200, 0.9) 100%);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border-color: rgba(102, 126, 234, 0.5);
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #0f0f0f;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.4);
+            font-weight: 600;
         }
 
         /* Video Grid */
@@ -750,7 +1139,7 @@
         }
 
         .video-card:hover .video-thumbnail {
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.3);
         }
 
         .video-thumbnail {
