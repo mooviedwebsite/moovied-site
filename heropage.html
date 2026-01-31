@@ -3,642 +3,854 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>StreamVault — 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<title>Netflix</title>
+<link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
-  /* ─── RESET & ROOT ─── */
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+/* ═══════════════════════════════════════════
+   RESET + ROOT
+═══════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --red:#e50914;
+  --red2:#ff1a2a;
+  --red-dim:rgba(229,9,20,.35);
+  --bg:#0a0a0a;
+  --bg2:#141414;
+  --bg3:#1a1a1a;
+  --bg4:#222;
+  --txt:#fff;
+  --txt2:#b3b3b3;
+  --txt3:#7a7a7a;
+  --r:10px;
+  --r2:16px;
+  --font:'Netflix Sans',system-ui,-apple-system,sans-serif;
+}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+button{font-family:var(--font);border:none;cursor:pointer;outline:none;}
+img{display:block;max-width:100%;object-fit:cover;}
 
-  :root {
-    --red:#e50914;
-    --red-glow:rgba(229,9,20,0.45);
-    --bg:#0a0a0a;
-    --surface:#141414;
-    --surface2:#1e1e1e;
-    --text:#fff;
-    --text-muted:#b3b3b3;
-    --text-dim:#6e6e6e;
-    --glass:rgba(255,255,255,0.04);
-    --glass-border:rgba(255,255,255,0.08);
-    --font-head:'Bebas Neue',sans-serif;
-    --font-body:'Inter',sans-serif;
-    --radius:12px;
-    --radius-sm:8px;
-  }
+/* ═══════════════════════════════════════════
+   TOP NAV — exact Netflix 2025 top nav
+═══════════════════════════════════════════ */
+.nav{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  display:flex;align-items:center;gap:32px;
+  padding:16px 24px;
+  background:linear-gradient(180deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.6) 60%,transparent 100%);
+  transition:background .35s ease;
+}
+.nav.solid{background:rgba(10,10,10,.97);backdrop-filter:blur(2px);}
+.nav-logo{
+  font-size:30px;font-weight:700;
+  color:var(--red);letter-spacing:-1px;
+  flex-shrink:0;margin-right:8px;
+}
+/* tabs */
+.nav-tabs{display:flex;gap:4px;align-items:center;}
+.nav-tab{
+  font-size:14px;font-weight:500;color:var(--txt2);
+  padding:7px 14px;border-radius:6px;
+  transition:background .2s,color .2s;white-space:nowrap;
+}
+.nav-tab:hover{background:rgba(255,255,255,.08);color:var(--txt);}
+.nav-tab.active{color:var(--txt);font-weight:700;}
+/* right side */
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+/* search icon */
+.nav-icon{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--txt2);transition:color .2s,background .2s;
+}
+.nav-icon:hover{color:var(--txt);background:rgba(255,255,255,.1);}
+.nav-icon svg{width:18px;height:18px;}
+/* bell */
+.bell-wrap{position:relative;}
+.bell-badge{
+  position:absolute;top:4px;right:4px;
+  width:8px;height:8px;border-radius:50%;background:var(--red);
+  border:2px solid var(--bg);
+}
+/* avatar */
+.avatar{
+  width:34px;height:34px;border-radius:6px;
+  background:linear-gradient(135deg,#e50914,#c4070f);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:700;color:#fff;
+  cursor:pointer;
+}
 
-  html { scroll-behavior:smooth; }
-  body {
-    font-family:var(--font-body);
-    background:var(--bg);
-    color:var(--text);
-    overflow-x:hidden;
-    -webkit-font-smoothing:antialiased;
-  }
+/* ═══════════════════════════════════════════
+   HERO BILLBOARD
+═══════════════════════════════════════════ */
+.hero{
+  position:relative;width:100%;
+  height:100vh;max-height:750px;min-height:520px;
+  display:flex;align-items:flex-end;
+  overflow:hidden;
+}
+/* bg image layer */
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(135deg,#0d0208 0%,#1a0a1a 30%,#0f1a2a 60%,#0a0a0f 100%);
+}
+/* pseudo image tiles behind */
+.hero-tiles{position:absolute;inset:0;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(3,1fr);gap:3px;opacity:.18;}
+.ht{border-radius:6px;overflow:hidden;}
+.ht1{background:linear-gradient(135deg,#1a0520,#3d0c2e);}
+.ht2{background:linear-gradient(135deg,#0a1628,#1e3a5f);}
+.ht3{background:linear-gradient(135deg,#1f1a0a,#4a3810);}
+.ht4{background:linear-gradient(135deg,#0a1a0a,#1e4a2e);}
+.ht5{background:linear-gradient(135deg,#1a0a0a,#4a1a1a);}
+.ht6{background:linear-gradient(135deg,#0a0a1a,#2a2a5a);}
+.ht7{background:linear-gradient(135deg,#1a1a0a,#5a5a1a);}
+.ht8{background:linear-gradient(135deg,#0a1a1a,#1a4a4a);}
+.ht9{background:linear-gradient(135deg,#1a0a1a,#4a1a4a);}
+.ht10{background:linear-gradient(135deg,#0a0a0a,#2a1a1a);}
+.ht11{background:linear-gradient(135deg,#1a1a1a,#3a3a3a);}
+.ht12{background:linear-gradient(135deg,#0a1a0a,#2a3a1a);}
+.ht13{background:linear-gradient(135deg,#1a0a0a,#3a2a2a);}
+.ht14{background:linear-gradient(135deg,#0a0a1a,#1a1a3a);}
+.ht15{background:linear-gradient(135deg,#1a1a0a,#3a3a2a);}
 
-  /* ─── NAVBAR ─── */
-  nav {
-    position:fixed; top:0; left:0; width:100%; z-index:100;
-    display:flex; align-items:center; justify-content:space-between;
-    padding:18px 40px;
-    background:linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
-    transition:background .4s;
-  }
-  nav.scrolled { background:rgba(10,10,10,0.95); backdrop-filter:blur(12px); }
+/* gradient overlays */
+.hero-grad{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 40%, rgba(10,10,10,.75) 65%, var(--bg) 100%),
+    linear-gradient(90deg, rgba(10,10,10,.85) 0%, rgba(10,10,10,.4) 50%, transparent 75%);
+}
+/* left-side accent glow */
+.hero-glow{
+  position:absolute;left:-10%;top:20%;
+  width:60%;height:60%;
+  background:radial-gradient(ellipse at center, rgba(229,9,20,.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+/* content */
+.hero-content{
+  position:relative;z-index:2;
+  width:100%;max-width:580px;
+  padding:0 48px 72px;
+}
+/* staggered reveal */
+.hero-content > *{opacity:0;transform:translateY(24px);animation:hup .7s cubic-bezier(.22,1,.36,1) forwards;}
+.hero-content > *:nth-child(1){animation-delay:.05s;}
+.hero-content > *:nth-child(2){animation-delay:.18s;}
+.hero-content > *:nth-child(3){animation-delay:.30s;}
+.hero-content > *:nth-child(4){animation-delay:.42s;}
+.hero-content > *:nth-child(5){animation-delay:.54s;}
+@keyframes hup{to{opacity:1;transform:translateY(0);}}
 
-  .nav-logo {
-    font-family:var(--font-head);
-    font-size:28px;
-    letter-spacing:3px;
-    color:var(--red);
-    text-shadow:0 0 20px var(--red-glow);
-    text-decoration:none;
-  }
-  .nav-links { display:flex; gap:28px; list-style:none; }
-  .nav-links a {
-    color:var(--text-muted);
-    text-decoration:none;
-    font-size:14px;
-    font-weight:500;
-    letter-spacing:.5px;
-    transition:color .3s;
-  }
-  .nav-links a:hover, .nav-links a.active { color:var(--text); }
+/* badges row */
+.hero-badges{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.hbadge{
+  font-size:12px;font-weight:700;letter-spacing:.8px;
+  text-transform:uppercase;color:#fff;
+  background:rgba(255,255,255,.12);
+  padding:5px 11px;border-radius:5px;
+}
+.hbadge.new{background:var(--red);color:#fff;}
 
-  .nav-right { display:flex; align-items:center; gap:20px; }
-  .nav-search {
-    width:36px; height:36px;
-    border-radius:50%;
-    border:1px solid var(--glass-border);
-    background:var(--glass);
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer; transition:background .3s, width .4s;
-    overflow:hidden;
-  }
-  .nav-search:hover { background:rgba(255,255,255,0.1); }
-  .nav-search svg { width:16px; height:16px; stroke:var(--text-muted); fill:none; stroke-width:2; }
+/* hero title */
+.hero h1{
+  font-size:clamp(52px,6.5vw,78px);
+  font-weight:700;line-height:1.02;
+  letter-spacing:-.5px;
+  margin-bottom:14px;color:#fff;
+}
+/* hero description */
+.hero-desc{
+  font-size:15px;line-height:1.6;color:var(--txt2);
+  max-width:440px;margin-bottom:28px;
+}
+/* hero buttons */
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.hbtn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 28px;border-radius:6px;
+  font-size:15px;font-weight:700;
+  transition:filter .2s,transform .15s,background .2s;
+}
+.hbtn:active{transform:scale(.96);}
+.hbtn-play{background:var(--txt);color:#000;}
+.hbtn-play:hover{filter:brightness(.9);}
+.hbtn-list{background:rgba(51,51,51,.7);color:#fff;}
+.hbtn-list:hover{background:rgba(51,51,51,1);}
+.hbtn svg{width:19px;height:19px;flex-shrink:0;}
 
-  .nav-avatar {
-    width:34px; height:34px; border-radius:6px;
-    background:linear-gradient(135deg,#e50914,#b8000f);
-    display:flex; align-items:center; justify-content:center;
-    font-size:14px; font-weight:700; cursor:pointer;
-  }
+/* ═══════════════════════════════════════════
+   ROW SECTIONS — Netflix horizontal carousels
+═══════════════════════════════════════════ */
+.rows-wrap{padding-top:8px;}
+.row-section{
+  padding:0 48px;margin-bottom:36px;
+  position:relative;
+}
+.row-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+.row-title{font-size:18px;font-weight:700;color:var(--txt);}
+.row-more{
+  font-size:13px;font-weight:600;color:var(--txt2);
+  opacity:0;transform:translateX(-6px);
+  transition:opacity .3s,transform .3s,color .2s;
+}
+.row-section:hover .row-more{opacity:1;transform:translateX(0);}
+.row-more:hover{color:#fff;}
 
-  /* ─── HERO ─── */
-  .hero {
-    position:relative;
-    width:100%; height:100vh; min-height:600px;
-    display:flex; align-items:flex-end;
-    overflow:hidden;
-  }
-  .hero-bg {
-    position:absolute; inset:0;
-    background:
-      url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80') center/cover no-repeat,
-      linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 50%, #0a0a0a 100%);
-    filter:saturate(0.6) brightness(0.5);
-  }
-  .hero-overlay {
-    position:absolute; inset:0;
-    background:
-      linear-gradient(180deg, transparent 30%, rgba(10,10,10,0.7) 60%, var(--bg) 100%),
-      linear-gradient(90deg, rgba(10,10,10,0.6) 0%, transparent 60%);
-  }
-  /* subtle grain */
-  .hero-grain {
-    position:absolute; inset:0; opacity:.15; pointer-events:none;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  }
+/* carousel */
+.carousel{
+  display:flex;gap:10px;
+  overflow:hidden;
+  position:relative;
+}
+.carousel-inner{
+  display:flex;gap:10px;
+  transition:transform .45s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
+}
+/* nav arrows */
+.c-arrow{
+  position:absolute;top:0;bottom:0;
+  width:48px;z-index:3;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .25s;
+  pointer-events:none;
+}
+.row-section:hover .c-arrow{opacity:1;pointer-events:auto;}
+.c-arrow.left{left:0;background:linear-gradient(90deg,rgba(0,0,0,.7) 0%,transparent 100%);}
+.c-arrow.right{right:0;background:linear-gradient(270deg,rgba(0,0,0,.7) 0%,transparent 100%);}
+.c-arrow button{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;font-size:16px;
+}
+.c-arrow button:hover{background:rgba(40,40,40,.9);}
 
-  .hero-content {
-    position:relative; z-index:2;
-    max-width:640px; padding:0 40px 80px;
-    animation:heroIn .9s cubic-bezier(.22,1,.36,1) both;
-  }
-  @keyframes heroIn {
-    from { opacity:0; transform:translateY(40px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
+/* ═══════════════════════════════════════════
+   CARDS — Netflix 2025 bigger rounded style
+═══════════════════════════════════════════ */
+.card{
+  flex:0 0 calc((100% - 40px)/5);
+  /* fallback for smaller screens */
+  min-width:180px;
+  border-radius:var(--r2);
+  overflow:hidden;
+  position:relative;
+  cursor:pointer;
+  background:var(--bg3);
+  transition:transform .35s cubic-bezier(.22,1,.36,1), z-index 0s .2s;
+}
+.card:hover{transform:scale(1.08);z-index:10;transition:transform .35s cubic-bezier(.22,1,.36,1), z-index 0s;}
+.card-poster{
+  width:100%;aspect-ratio:2/3;position:relative;overflow:hidden;
+}
+/* poster gradient fills */
+.p1{background:linear-gradient(160deg,#0d0d1a 0%,#1a1a3a 40%,#2a1a2a 100%);}
+.p2{background:linear-gradient(160deg,#1a0808 0%,#3d1a1a 40%,#5a2020 100%);}
+.p3{background:linear-gradient(160deg,#080d1a 0%,#1a2a4a 40%,#2a4a6a 100%);}
+.p4{background:linear-gradient(160deg,#1a1a08 0%,#3a3a1a 40%,#5a5a20 100%);}
+.p5{background:linear-gradient(160deg,#081a08 0%,#1a4a1a 40%,#2a6a2a 100%);}
+.p6{background:linear-gradient(160deg,#1a080d 0%,#4a1a2a 40%,#6a2a3a 100%);}
+.p7{background:linear-gradient(160deg,#0a0a0a 0%,#2a2a2a 40%,#e50914 100%);}
+.p8{background:linear-gradient(160deg,#0a1a1a 0%,#1a3a3a 40%,#2a5a5a 100%);}
+.p9{background:linear-gradient(160deg,#1a0a1a 0%,#3a1a4a 40%,#5a2a6a 100%);}
+.p10{background:linear-gradient(160deg,#0a080d 0%,#1a1a2a 40%,#3a2a4a 100%);}
+.p11{background:linear-gradient(160deg,#1a1008 0%,#3a2a1a 40%,#5a4a2a 100%);}
+.p12{background:linear-gradient(160deg,#081a10 0%,#1a4a2a 40%,#2a6a3a 100%);}
 
-  .hero-badge {
-    display:inline-flex; align-items:center; gap:8px;
-    background:rgba(229,9,20,0.15);
-    border:1px solid rgba(229,9,20,0.3);
-    border-radius:30px; padding:6px 16px;
-    font-size:12px; font-weight:600; letter-spacing:1.5px;
-    color:var(--red); text-transform:uppercase;
-    margin-bottom:24px;
-    animation:heroIn 1s .15s cubic-bezier(.22,1,.36,1) both;
-  }
-  .hero-badge .dot {
-    width:7px; height:7px; border-radius:50%;
-    background:var(--red);
-    animation:pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity:1; box-shadow:0 0 0 0 var(--red-glow); }
-    50%     { opacity:.6; box-shadow:0 0 0 6px transparent; }
-  }
+/* letter on poster */
+.poster-letter{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(36px,5vw,60px);font-weight:700;
+  color:rgba(255,255,255,.08);
+  user-select:none;
+}
+/* poster text overlay at bottom */
+.poster-title{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:28px 14px 14px;
+  background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.7) 100%);
+  font-size:13px;font-weight:600;color:#fff;
+  line-height:1.3;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+.card:hover .poster-title{transform:translateY(0);}
 
-  .hero h1 {
-    font-family:var(--font-head);
-    font-size:clamp(56px,7vw,86px);
-    letter-spacing:2px;
-    line-height:1.05;
-    margin-bottom:18px;
-    animation:heroIn 1s .3s cubic-bezier(.22,1,.36,1) both;
-  }
-  .hero p {
-    font-size:16px; color:var(--text-muted); line-height:1.65;
-    max-width:480px; margin-bottom:34px;
-    animation:heroIn 1s .45s cubic-bezier(.22,1,.36,1) both;
-  }
-  .hero-actions {
-    display:flex; gap:14px; flex-wrap:wrap;
-    animation:heroIn 1s .6s cubic-bezier(.22,1,.36,1) both;
-  }
+/* play overlay on hover */
+.card-play-overlay{
+  position:absolute;inset:0;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.3);
+  opacity:0;transition:opacity .25s;
+}
+.card:hover .card-play-overlay{opacity:1;}
+.play-circle{
+  width:50px;height:50px;border-radius:50%;
+  background:rgba(255,255,255,.9);
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.play-circle svg{width:18px;height:18px;fill:#000;margin-left:2px;}
 
-  /* Buttons */
-  .btn {
-    display:inline-flex; align-items:center; gap:10px;
-    padding:13px 30px; border-radius:8px;
-    font-size:15px; font-weight:600; letter-spacing:.5px;
-    border:none; cursor:pointer;
-    text-decoration:none; transition:all .3s cubic-bezier(.22,1,.36,1);
-  }
-  .btn-primary {
-    background:var(--red);
-    color:#fff;
-    box-shadow:0 4px 24px var(--red-glow);
-  }
-  .btn-primary:hover {
-    background:#ff1a2a;
-    box-shadow:0 6px 32px rgba(229,9,20,0.55);
-    transform:translateY(-2px);
-  }
-  .btn-ghost {
-    background:rgba(255,255,255,0.1);
-    color:#fff;
-    border:1px solid rgba(255,255,255,0.15);
-    backdrop-filter:blur(8px);
-  }
-  .btn-ghost:hover {
-    background:rgba(255,255,255,0.18);
-    transform:translateY(-2px);
-  }
-  .btn svg { width:18px; height:18px; fill:currentColor; }
+/* ═══════════════════════════════════════════
+   TOP 10 ROW — big numbers Netflix style
+═══════════════════════════════════════════ */
+.top10-card{
+  flex:0 0 calc((100% - 40px)/5);
+  min-width:180px;
+  border-radius:var(--r2);
+  overflow:hidden;
+  position:relative;cursor:pointer;
+  display:flex;
+  background:var(--bg3);
+  transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.top10-card:hover{transform:scale(1.08);z-index:10;}
+.t10-num{
+  position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+  font-size:clamp(80px,10vw,120px);
+  font-weight:800;
+  color:transparent;
+  -webkit-text-stroke:2px rgba(255,255,255,.2);
+  z-index:1;pointer-events:none;
+  line-height:1;
+}
+.t10-poster{
+  width:100%;aspect-ratio:2/3;
+  border-radius:var(--r2);
+}
+.top10-card .card-play-overlay{border-radius:var(--r2);}
 
-  /* ─── META ROW ─── */
-  .meta-row {
-    display:flex; align-items:center; gap:16px;
-    margin-bottom:18px;
-    animation:heroIn 1s .5s cubic-bezier(.22,1,.36,1) both;
-  }
-  .meta-tag {
-    font-size:12px; font-weight:600; letter-spacing:1px;
-    color:#fff; text-transform:uppercase;
-    background:rgba(255,255,255,0.12);
-    padding:4px 10px; border-radius:4px;
-  }
-  .meta-year { font-size:14px; color:var(--text-muted); font-weight:500; }
-  .meta-rating {
-    font-size:12px; font-weight:700; color:#fff;
-    background:rgba(255,255,255,0.15);
-    border:1px solid rgba(255,255,255,0.2);
-    padding:3px 8px; border-radius:4px;
-  }
+/* ═══════════════════════════════════════════
+   CONTINUE WATCHING — landscape cards
+═══════════════════════════════════════════ */
+.cw-card{
+  flex:0 0 calc((100% - 30px)/4);
+  min-width:240px;
+  border-radius:var(--r2);
+  overflow:hidden;cursor:pointer;
+  background:var(--bg3);
+  position:relative;
+  transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.cw-card:hover{transform:scale(1.04);z-index:10;}
+.cw-img{width:100%;aspect-ratio:16/9;position:relative;}
+.cw-progress{
+  position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:rgba(255,255,255,.15);
+}
+.cw-progress-bar{height:100%;background:var(--red);border-radius:0 2px 2px 0;}
+.cw-info{padding:12px 14px;}
+.cw-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px;}
+.cw-sub{font-size:11px;color:var(--txt3);}
+/* resume button */
+.cw-resume{
+  position:absolute;bottom:48px;left:14px;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+  padding:7px 14px;border-radius:20px;
+  font-size:12px;font-weight:600;color:#fff;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .3s,transform .3s;
+}
+.cw-card:hover .cw-resume{opacity:1;transform:translateY(0);}
+.cw-resume svg{width:14px;height:14px;fill:#fff;}
 
-  /* ─── SECTION TITLES ─── */
-  .section-title {
-    font-family:var(--font-body);
-    font-size:22px; font-weight:600;
-    color:var(--text);
-    margin-bottom:20px;
-    letter-spacing:.3px;
-  }
-  .section-title span { color:var(--red); }
+/* ═══════════════════════════════════════════
+   MY NETFLIX PROMO BANNER
+═══════════════════════════════════════════ */
+.promo-banner{
+  margin:12px 48px 40px;
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+  height:280px;cursor:pointer;
+  background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  transition:filter .3s;
+}
+.promo-banner:hover{filter:brightness(1.08);}
+/* decorative shapes */
+.promo-deco{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.promo-circle{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.06);}
+.pc1{width:320px;height:320px;right:-80px;top:-80px;}
+.pc2{width:200px;height:200px;right:60px;top:20px;}
+.pc3{width:120px;height:120px;right:180px;top:100px;}
+/* blob */
+.promo-blob{
+  position:absolute;right:-5%;top:-30%;
+  width:55%;height:160%;
+  background:radial-gradient(ellipse at 60% 40%,rgba(229,9,20,.12) 0%,rgba(48,43,99,.3) 40%,transparent 70%);
+}
+/* content */
+.promo-content{
+  position:relative;z-index:2;
+  height:100%;display:flex;flex-direction:column;justify-content:center;
+  padding:0 48px;max-width:58%;
+}
+.promo-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--red);
+  margin-bottom:18px;
+}
+.promo-tag::before{content:'';width:20px;height:2px;background:var(--red);}
+.promo-banner h2{font-size:38px;font-weight:700;line-height:1.08;margin-bottom:12px;}
+.promo-banner p{font-size:14px;color:var(--txt2);line-height:1.55;margin-bottom:22px;}
+.promo-btns{display:flex;gap:10px;}
+.pbtn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 22px;border-radius:6px;
+  font-size:13px;font-weight:700;
+  transition:filter .2s,transform .15s;
+}
+.pbtn:active{transform:scale(.96);}
+.pbtn-play{background:#fff;color:#000;}
+.pbtn-play:hover{filter:brightness(.9);}
+.pbtn-info{background:rgba(51,51,51,.7);color:#fff;}
+.pbtn-info:hover{background:rgba(51,51,51,1);}
+.pbtn svg{width:16px;height:16px;}
 
-  /* ─── TRENDING / ROWS ─── */
-  .content-section { padding:0 40px 48px; }
+/* ═══════════════════════════════════════════
+   SEARCH BAR (ChatGPT-style AI search)
+═══════════════════════════════════════════ */
+.search-section{
+  padding:32px 48px 12px;
+}
+.search-wrap{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg3);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  padding:14px 20px;
+  max-width:620px;
+  transition:border-color .3s,box-shadow .3s;
+}
+.search-wrap:focus-within{
+  border-color:rgba(229,9,20,.4);
+  box-shadow:0 0 0 3px rgba(229,9,20,.1);
+}
+.search-wrap svg{width:20px;height:20px;color:var(--txt3);flex-shrink:0;}
+.search-wrap input{
+  flex:1;background:none;border:none;color:#fff;font-size:15px;
+  font-family:var(--font);outline:none;
+}
+.search-wrap input::placeholder{color:var(--txt3);}
+.search-tag{
+  font-size:11px;font-weight:600;color:var(--red);
+  background:rgba(229,9,20,.12);padding:4px 10px;border-radius:20px;
+  white-space:nowrap;flex-shrink:0;
+}
 
-  .row-scroll {
-    display:flex; gap:16px;
-    overflow-x:auto;
-    padding-bottom:12px;
-    scrollbar-width:none;
-  }
-  .row-scroll::-webkit-scrollbar { display:none; }
+/* ═══════════════════════════════════════════
+   QUICK CLIPS (TikTok-style scroll previews)
+═══════════════════════════════════════════ */
+.clips-section{padding:20px 48px 12px;}
+.clips-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;}
+.clips-row::-webkit-scrollbar{display:none;}
+.clip{
+  flex:0 0 180px;height:280px;
+  border-radius:14px;overflow:hidden;
+  position:relative;cursor:pointer;
+  transition:transform .3s;
+}
+.clip:hover{transform:scale(1.06);}
+.clip-bg{width:100%;height:100%;position:absolute;inset:0;}
+.clip-grad{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.8) 100%);
+}
+.clip-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:16px;
+}
+.clip-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.3;}
+.clip-meta{font-size:11px;color:var(--txt3);}
+/* play icon */
+.clip-play{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.15);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .25s;
+}
+.clip:hover .clip-play{opacity:1;}
+.clip-play svg{width:16px;height:16px;fill:#fff;margin-left:2px;}
 
-  /* Card */
-  .card {
-    flex:0 0 220px;
-    border-radius:var(--radius);
-    overflow:hidden;
-    position:relative;
-    cursor:pointer;
-    transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s;
-    background:var(--surface);
-  }
-  .card:hover {
-    transform:scale(1.06) translateY(-4px);
-    box-shadow:0 12px 40px rgba(0,0,0,0.5);
-    z-index:2;
-  }
-  .card-img {
-    width:100%; aspect-ratio:2/3;
-    object-fit:cover;
-    display:block;
-  }
-  /* Fake gradient images for cards */
-  .card-img-fake {
-    width:100%; aspect-ratio:2/3;
-    display:flex; align-items:flex-end; padding:16px;
-  }
-  .card-img-fake .card-title-overlay {
-    font-family:var(--font-head);
-    font-size:20px; letter-spacing:1px;
-    color:#fff;
-    text-shadow:0 2px 8px rgba(0,0,0,0.7);
-    z-index:1; position:relative;
-  }
-  .card-img-fake::after {
-    content:'';
-    position:absolute; inset:0;
-    background:linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.7) 100%);
-  }
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer{
+  padding:48px 48px 24px;
+  border-top:1px solid rgba(255,255,255,.06);
+  margin-top:32px;
+}
+.footer-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:28px;
+  margin-bottom:32px;
+}
+.fg h4{font-size:12px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:14px;}
+.fg a{display:block;font-size:13px;color:var(--txt3);margin-bottom:9px;transition:color .2s;}
+.fg a:hover{color:var(--txt);}
+.footer-bot{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:20px;border-top:1px solid rgba(255,255,255,.06);
+}
+.footer-bot p{font-size:12px;color:var(--txt3);}
+.footer-logo{font-size:20px;font-weight:700;color:var(--red);letter-spacing:-1px;}
 
-  .g1 { background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460); }
-  .g2 { background:linear-gradient(135deg,#2d132c,#801336,#c72c41); }
-  .g3 { background:linear-gradient(135deg,#0f2027,#203a43,#2c5364); }
-  .g4 { background:linear-gradient(135deg,#1b1464,#6a0572,#c41c53); }
-  .g5 { background:linear-gradient(135deg,#134e5e,#71b280); }
-  .g6 { background:linear-gradient(135deg,#2c3e50,#e74c3c); }
-  .g7 { background:linear-gradient(135deg,#0c0c0c,#3d3d3d,#e50914); }
-  .g8 { background:linear-gradient(135deg,#1d2a4a,#2a4a7f,#4a7fbf); }
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════ */
+.sr{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1);}
+.sr.vis{opacity:1;transform:translateY(0);}
 
-  .card-overlay {
-    position:absolute; inset:0;
-    background:linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.75) 100%);
-    opacity:0; transition:opacity .3s;
-  }
-  .card:hover .card-overlay { opacity:1; }
-
-  .card-info {
-    position:absolute; bottom:0; left:0; right:0;
-    padding:16px;
-    transform:translateY(20px);
-    transition:transform .4s cubic-bezier(.22,1,.36,1);
-  }
-  .card:hover .card-info { transform:translateY(0); }
-  .card-info .card-title-overlay { font-size:15px; font-weight:600; margin-bottom:6px; }
-  .card-info .card-meta { font-size:12px; color:var(--text-muted); }
-
-  /* ─── TOP 10 ROW ─── */
-  .top10-card {
-    flex:0 0 180px;
-    display:flex; gap:0;
-    border-radius:var(--radius);
-    overflow:hidden;
-    background:var(--surface);
-    cursor:pointer;
-    transition:transform .35s, box-shadow .35s;
-    position:relative;
-  }
-  .top10-card:hover {
-    transform:scale(1.04) translateY(-3px);
-    box-shadow:0 10px 36px rgba(0,0,0,0.5);
-    z-index:2;
-  }
-  .top10-num {
-    width:52px; display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-head);
-    font-size:48px; color:var(--surface2);
-    -webkit-text-stroke:1px rgba(255,255,255,0.18);
-    flex-shrink:0;
-    background:var(--bg);
-  }
-  .top10-img {
-    flex:1; aspect-ratio:2/3; min-height:140px;
-  }
-
-  /* ─── FEATURED BANNER ─── */
-  .featured-banner {
-    margin:0 40px 48px;
-    border-radius:18px;
-    overflow:hidden;
-    position:relative;
-    height:320px;
-    cursor:pointer;
-    transition:transform .4s;
-  }
-  .featured-banner:hover { transform:scale(1.015); }
-  .featured-banner-bg {
-    position:absolute; inset:0;
-    background:linear-gradient(135deg,#1a0533,#2d1b69,#1a0533);
-  }
-  .featured-banner-overlay {
-    position:absolute; inset:0;
-    background:linear-gradient(90deg, rgba(26,5,51,0.95) 0%, rgba(45,27,105,0.4) 50%, transparent 100%);
-  }
-  .featured-banner-content {
-    position:relative; z-index:2;
-    height:100%; display:flex; flex-direction:column;
-    justify-content:center; padding:40px 48px;
-    max-width:55%;
-  }
-  .featured-tag {
-    display:inline-flex; align-items:center; gap:8px;
-    font-size:11px; font-weight:700; letter-spacing:2px;
-    text-transform:uppercase; color:var(--red);
-    margin-bottom:16px;
-  }
-  .featured-tag::before {
-    content:''; width:24px; height:2px; background:var(--red);
-  }
-  .featured-banner h2 {
-    font-family:var(--font-head);
-    font-size:42px; letter-spacing:2px; line-height:1.1;
-    margin-bottom:12px;
-  }
-  .featured-banner p {
-    font-size:14px; color:var(--text-muted); line-height:1.6;
-    margin-bottom:24px;
-  }
-
-  /* ─── CATEGORIES PILLS ─── */
-  .categories {
-    display:flex; gap:10px; flex-wrap:wrap;
-    padding:0 40px; margin-bottom:36px;
-  }
-  .cat-pill {
-    padding:9px 22px; border-radius:30px;
-    font-size:13px; font-weight:500;
-    background:var(--surface2);
-    color:var(--text-muted);
-    border:1px solid var(--glass-border);
-    cursor:pointer;
-    transition:all .3s;
-    white-space:nowrap;
-  }
-  .cat-pill:hover, .cat-pill.active {
-    background:var(--red);
-    color:#fff; border-color:var(--red);
-    box-shadow:0 4px 16px var(--red-glow);
-  }
-
-  /* ─── STATS ROW ─── */
-  .stats-row {
-    display:flex; gap:24px; flex-wrap:wrap;
-    padding:40px;
-    background:var(--surface);
-    border-top:1px solid var(--glass-border);
-    border-bottom:1px solid var(--glass-border);
-    margin-bottom:48px;
-  }
-  .stat-item { flex:1; min-width:140px; }
-  .stat-num {
-    font-family:var(--font-head);
-    font-size:32px; letter-spacing:1px;
-    color:var(--red);
-  }
-  .stat-label { font-size:12px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-top:4px; }
-
-  /* ─── FOOTER ─── */
-  footer {
-    padding:60px 40px 30px;
-    border-top:1px solid var(--glass-border);
-  }
-  .footer-grid {
-    display:grid; grid-template-columns:repeat(4,1fr); gap:32px;
-    margin-bottom:40px;
-  }
-  .footer-col h4 {
-    font-size:13px; font-weight:600; color:var(--text-muted);
-    text-transform:uppercase; letter-spacing:1.5px;
-    margin-bottom:16px;
-  }
-  .footer-col a {
-    display:block; font-size:13px; color:var(--text-dim);
-    text-decoration:none; margin-bottom:10px;
-    transition:color .25s;
-  }
-  .footer-col a:hover { color:var(--text); }
-  .footer-bottom {
-    display:flex; justify-content:space-between; align-items:center;
-    padding-top:24px; border-top:1px solid var(--glass-border);
-  }
-  .footer-bottom p { font-size:12px; color:var(--text-dim); }
-  .footer-logo {
-    font-family:var(--font-head);
-    font-size:18px; letter-spacing:2px; color:var(--red);
-  }
-
-  /* ─── SCROLL REVEAL ─── */
-  .reveal {
-    opacity:0; transform:translateY(28px);
-    transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
-  }
-  .reveal.visible { opacity:1; transform:translateY(0); }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width:768px) {
-    nav { padding:14px 20px; }
-    .nav-links { display:none; }
-    .hero-content { padding:0 20px 60px; }
-    .content-section { padding:0 20px 40px; }
-    .categories { padding:0 20px; }
-    .stats-row { padding:24px 20px; }
-    .featured-banner { margin:0 20px 40px; height:auto; min-height:260px; }
-    .featured-banner-content { max-width:100%; padding:28px 24px; }
-    .footer-grid { grid-template-columns:repeat(2,1fr); }
-    footer { padding:40px 20px 24px; }
-    .card { flex:0 0 160px; }
-  }
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:900px){
+  .card,.top10-card{flex:0 0 calc((100% - 20px)/3);min-width:140px;}
+  .cw-card{flex:0 0 calc((100% - 20px)/2);min-width:200px;}
+  .row-section,.clips-section,.search-section,.promo-banner{padding-left:24px;padding-right:24px;margin-left:0;margin-right:0;}
+  .promo-banner{margin-left:24px;margin-right:24px;}
+  .hero-content{padding:0 24px 60px;}
+  footer{padding:40px 24px 20px;}
+  .footer-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:600px){
+  .nav-tabs{display:none;}
+  .card,.top10-card{flex:0 0 calc((100% - 10px)/2);min-width:130px;}
+  .hero h1{font-size:42px;}
+  .promo-banner{height:auto;min-height:220px;}
+  .promo-content{max-width:100%;padding:28px 24px;}
+}
 </style>
 </head>
 <body>
 
-<!-- ─── NAVBAR ─── -->
-<nav id="navbar">
-  <a href="#" class="nav-logo">STREAMVAULT</a>
-  <ul class="nav-links">
-    <li><a href="#" class="active">Home</a></li>
-    <li><a href="#">Movies</a></li>
-    <li><a href="#">TV Shows</a></li>
-    <li><a href="#">New & Hot</a></li>
-    <li><a href="#">My List</a></li>
-  </ul>
+<!-- ═══ NAV ═══ -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">netflix</div>
+  <div class="nav-tabs">
+    <div class="nav-tab active">Home</div>
+    <div class="nav-tab">Search</div>
+    <div class="nav-tab">My Netflix</div>
+    <div class="nav-tab">Movies</div>
+    <div class="nav-tab">TV Shows</div>
+    <div class="nav-tab">New & Hot</div>
+  </div>
   <div class="nav-right">
-    <div class="nav-search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
     </div>
-    <div class="nav-avatar">S</div>
+    <div class="nav-icon bell-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="bell-badge"></div>
+    </div>
+    <div class="avatar">U</div>
   </div>
 </nav>
 
-<!-- ─── HERO ─── -->
+<!-- ═══ HERO ═══ -->
 <section class="hero">
   <div class="hero-bg"></div>
-  <div class="hero-overlay"></div>
-  <div class="hero-grain"></div>
+  <div class="hero-tiles">
+    <div class="ht ht1"></div><div class="ht ht2"></div><div class="ht ht3"></div><div class="ht ht4"></div><div class="ht ht5"></div>
+    <div class="ht ht6"></div><div class="ht ht7"></div><div class="ht ht8"></div><div class="ht ht9"></div><div class="ht ht10"></div>
+    <div class="ht ht11"></div><div class="ht ht12"></div><div class="ht ht13"></div><div class="ht ht14"></div><div class="ht ht15"></div>
+  </div>
+  <div class="hero-grad"></div>
+  <div class="hero-glow"></div>
   <div class="hero-content">
-    <div class="hero-badge"><span class="dot"></span> New Season — Now Streaming</div>
-    <h1>DARK<br>HORIZON</h1>
-    <div class="meta-row">
-      <span class="meta-tag">Series</span>
-      <span class="meta-year">2026</span>
-      <span class="meta-rating">TV-MA</span>
-      <span class="meta-year">S4 · 10 Episodes</span>
+    <div class="hero-badges">
+      <span class="hbadge new">New Season</span>
+      <span class="hbadge">Series</span>
+      <span class="hbadge">2026</span>
+      <span class="hbadge">TV-MA</span>
     </div>
-    <p>In a world where the boundaries between realities blur, one former detective must confront the truth hidden in the shadows of her past — before it consumes everything.</p>
-    <div class="hero-actions">
-      <button class="btn btn-primary">
+    <h1>Dark<br>Horizon</h1>
+    <p class="hero-desc">In a world where the boundaries between realities blur, one former detective must uncover the truth hidden in the shadows of her past — before it consumes everything she loves.</p>
+    <div class="hero-btns">
+      <button class="hbtn hbtn-play">
         <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-        Play Now
+        Play
       </button>
-      <button class="btn btn-ghost">
-        <svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <button class="hbtn hbtn-list">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" stroke-width="2"/><line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="2"/></svg>
         My List
       </button>
     </div>
   </div>
 </section>
 
-<!-- ─── CATEGORIES ─── -->
-<div class="categories reveal">
-  <span class="cat-pill active">All</span>
-  <span class="cat-pill">Action</span>
-  <span class="cat-pill">Sci-Fi</span>
-  <span class="cat-pill">Thriller</span>
-  <span class="cat-pill">Drama</span>
-  <span class="cat-pill">Comedy</span>
-  <span class="cat-pill">Horror</span>
-  <span class="cat-pill">Documentary</span>
-  <span class="cat-pill">Romance</span>
+<!-- ═══ AI SEARCH ═══ -->
+<div class="search-section sr">
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+    <input type="text" placeholder="What do you want to watch? Ask me anything…" />
+    <span class="search-tag">AI Search</span>
+  </div>
 </div>
 
-<!-- ─── STATS ─── -->
-<div class="stats-row reveal">
-  <div class="stat-item"><div class="stat-num">94M</div><div class="stat-label">Active Users</div></div>
-  <div class="stat-item"><div class="stat-num">18K+</div><div class="stat-label">Titles</div></div>
-  <div class="stat-item"><div class="stat-num">4K</div><div class="stat-label">Ultra HD</div></div>
-  <div class="stat-item"><div class="stat-num">200+</div><div class="stat-label">Countries</div></div>
-</div>
-
-<!-- ─── TRENDING NOW ─── -->
-<section class="content-section reveal">
-  <div class="section-title">Trending <span>Now</span></div>
-  <div class="row-scroll">
-    <div class="card"><div class="card-img-fake g1"><span class="card-title-overlay">Void Protocol</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Void Protocol</div><div class="card-meta">Sci-Fi · 2026</div></div></div>
-    <div class="card"><div class="card-img-fake g2"><span class="card-title-overlay">Crimson Veil</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Crimson Veil</div><div class="card-meta">Thriller · 2025</div></div></div>
-    <div class="card"><div class="card-img-fake g3"><span class="card-title-overlay">Ocean's Depth</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Ocean's Depth</div><div class="card-meta">Drama · 2026</div></div></div>
-    <div class="card"><div class="card-img-fake g4"><span class="card-title-overlay">Neon Nights</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Neon Nights</div><div class="card-meta">Action · 2025</div></div></div>
-    <div class="card"><div class="card-img-fake g5"><span class="card-title-overlay">Evergreen</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Evergreen</div><div class="card-meta">Romance · 2026</div></div></div>
-    <div class="card"><div class="card-img-fake g6"><span class="card-title-overlay">Shattered Glass</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Shattered Glass</div><div class="card-meta">Thriller · 2025</div></div></div>
+<!-- ═══ CONTINUE WATCHING ═══ -->
+<section class="row-section sr">
+  <div class="row-head">
+    <div class="row-title">Continue Watching</div>
+  </div>
+  <div class="carousel">
+    <div class="carousel-inner" id="cwRow">
+      <!-- CW 1 -->
+      <div class="cw-card">
+        <div class="cw-img p3"><div class="poster-letter">V</div></div>
+        <div class="cw-progress"><div class="cw-progress-bar" style="width:64%"></div></div>
+        <div class="cw-info"><div class="cw-title">Void Protocol</div><div class="cw-sub">Season 2 · Episode 7</div></div>
+        <div class="cw-resume"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg> Resume</div>
+      </div>
+      <!-- CW 2 -->
+      <div class="cw-card">
+        <div class="cw-img p6"><div class="poster-letter">C</div></div>
+        <div class="cw-progress"><div class="cw-progress-bar" style="width:38%"></div></div>
+        <div class="cw-info"><div class="cw-title">Crimson Veil</div><div class="cw-sub">Episode 4</div></div>
+        <div class="cw-resume"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg> Resume</div>
+      </div>
+      <!-- CW 3 -->
+      <div class="cw-card">
+        <div class="cw-img p9"><div class="poster-letter">N</div></div>
+        <div class="cw-progress"><div class="cw-progress-bar" style="width:81%"></div></div>
+        <div class="cw-info"><div class="cw-title">Neon Nights</div><div class="cw-sub">Season 1 · Episode 9</div></div>
+        <div class="cw-resume"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg> Resume</div>
+      </div>
+      <!-- CW 4 -->
+      <div class="cw-card">
+        <div class="cw-img p2"><div class="poster-letter">S</div></div>
+        <div class="cw-progress"><div class="cw-progress-bar" style="width:22%"></div></div>
+        <div class="cw-info"><div class="cw-title">Shattered Glass</div><div class="cw-sub">Episode 2</div></div>
+        <div class="cw-resume"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg> Resume</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ─── TOP 10 ─── -->
-<section class="content-section reveal">
-  <div class="section-title">Top 10 <span>in Movies</span></div>
-  <div class="row-scroll">
-    <div class="top10-card"><div class="top10-num">1</div><div class="top10-img g7"></div></div>
-    <div class="top10-card"><div class="top10-num">2</div><div class="top10-img g2"></div></div>
-    <div class="top10-card"><div class="top10-num">3</div><div class="top10-num" style="font-size:40px">3</div><div class="top10-img g3"></div></div>
-    <div class="top10-card"><div class="top10-num">4</div><div class="top10-img g4"></div></div>
-    <div class="top10-card"><div class="top10-num">5</div><div class="top10-img g1"></div></div>
-    <div class="top10-card"><div class="top10-num">6</div><div class="top10-img g5"></div></div>
-    <div class="top10-card"><div class="top10-num">7</div><div class="top10-img g6"></div></div>
-    <div class="top10-card"><div class="top10-num">8</div><div class="top10-img g8"></div></div>
+<!-- ═══ TRENDING NOW ═══ -->
+<section class="row-section sr">
+  <div class="row-head">
+    <div class="row-title">Trending Now</div>
+    <div class="row-more">See all ›</div>
+  </div>
+  <div class="carousel">
+    <div class="c-arrow left"><button>‹</button></div>
+    <div class="carousel-inner" id="trendRow">
+      <div class="card"><div class="card-poster p1"><div class="poster-letter">V</div><div class="poster-title">Void Protocol</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p2"><div class="poster-letter">C</div><div class="poster-title">Crimson Veil</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p3"><div class="poster-letter">O</div><div class="poster-title">Ocean's Depth</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p4"><div class="poster-letter">N</div><div class="poster-title">Neon Nights</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p5"><div class="poster-letter">E</div><div class="poster-title">Evergreen</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p6"><div class="poster-letter">S</div><div class="poster-title">Shattered Glass</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p7"><div class="poster-letter">R</div><div class="poster-title">Red Line</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p8"><div class="poster-letter">S</div><div class="poster-title">Signal Lost</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+    </div>
+    <div class="c-arrow right"><button>›</button></div>
   </div>
 </section>
 
-<!-- ─── FEATURED BANNER ─── -->
-<div class="featured-banner reveal">
-  <div class="featured-banner-bg"></div>
-  <div class="featured-banner-overlay"></div>
-  <!-- decorative circles -->
-  <svg style="position:absolute;right:-60px;top:-60px;width:300px;height:300px;opacity:.08;" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" fill="none" stroke="#fff" stroke-width="1"/><circle cx="150" cy="150" r="100" fill="none" stroke="#fff" stroke-width="1"/><circle cx="150" cy="150" r="60" fill="none" stroke="#fff" stroke-width="1"/></svg>
-  <div class="featured-banner-content">
-    <div class="featured-tag">Exclusive Original</div>
-    <h2>THE LAST<br>ECHO</h2>
+<!-- ═══ TOP 10 IN MOVIES ═══ -->
+<section class="row-section sr">
+  <div class="row-head">
+    <div class="row-title">Top 10 in Movies Today</div>
+    <div class="row-more">See all ›</div>
+  </div>
+  <div class="carousel">
+    <div class="c-arrow left"><button>‹</button></div>
+    <div class="carousel-inner" id="top10Row">
+      <div class="top10-card"><div class="t10-num">1</div><div class="t10-poster p7"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">2</div><div class="t10-poster p2"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">3</div><div class="t10-poster p3"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">4</div><div class="t10-poster p4"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">5</div><div class="t10-poster p9"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">6</div><div class="t10-poster p6"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">7</div><div class="t10-poster p1"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">8</div><div class="t10-poster p5"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+    </div>
+    <div class="c-arrow right"><button>›</button></div>
+  </div>
+</section>
+
+<!-- ═══ PROMO BANNER — My Netflix original ═══ -->
+<div class="promo-banner sr">
+  <div class="promo-deco">
+    <div class="promo-circle pc1"></div>
+    <div class="promo-circle pc2"></div>
+    <div class="promo-circle pc3"></div>
+  </div>
+  <div class="promo-blob"></div>
+  <div class="promo-content">
+    <div class="promo-tag">Netflix Original</div>
+    <h2>The Last<br>Echo</h2>
     <p>A gripping new original series following a lone signal interceptor on the edge of the known universe. Season 2 drops Feb 14.</p>
-    <div style="display:flex;gap:12px;">
-      <button class="btn btn-primary" style="padding:11px 24px;font-size:14px;">
-        <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-        Watch Now
-      </button>
-      <button class="btn btn-ghost" style="padding:11px 24px;font-size:14px;">More Info</button>
+    <div class="promo-btns">
+      <button class="pbtn pbtn-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg> Play Now</button>
+      <button class="pbtn pbtn-info">More Info</button>
     </div>
   </div>
 </div>
 
-<!-- ─── NEW RELEASES ─── -->
-<section class="content-section reveal">
-  <div class="section-title">New <span>Releases</span></div>
-  <div class="row-scroll">
-    <div class="card"><div class="card-img-fake g8"><span class="card-title-overlay">Signal Lost</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Signal Lost</div><div class="card-meta">Sci-Fi · 2026</div></div></div>
-    <div class="card"><div class="card-img-fake g6"><span class="card-title-overlay">Red Line</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Red Line</div><div class="card-meta">Action · 2026</div></div></div>
-    <div class="card"><div class="card-img-fake g4"><span class="card-title-overlay">Midnight Sun</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Midnight Sun</div><div class="card-meta">Drama · 2026</div></div></div>
-    <div class="card"><div class="card-img-fake g1"><span class="card-title-overlay">Phantom Code</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Phantom Code</div><div class="card-meta">Thriller · 2026</div></div></div>
-    <div class="card"><div class="card-img-fake g3"><span class="card-title-overlay">Still Waters</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Still Waters</div><div class="card-meta">Mystery · 2026</div></div></div>
-    <div class="card"><div class="card-img-fake g5"><span class="card-title-overlay">Golden Hour</span></div><div class="card-overlay"></div><div class="card-info"><div class="card-title-overlay">Golden Hour</div><div class="card-meta">Romance · 2026</div></div></div>
+<!-- ═══ QUICK CLIPS (TikTok style) ═══ -->
+<section class="clips-section sr">
+  <div class="row-head" style="margin-bottom:14px;">
+    <div class="row-title">Quick Clips — Find Your Next Watch</div>
+  </div>
+  <div class="clips-row">
+    <div class="clip"><div class="clip-bg p1"></div><div class="clip-grad"></div><div class="clip-info"><div class="clip-title">Void Protocol — S2 Trailer</div><div class="clip-meta">Sci-Fi · 2 min</div></div><div class="clip-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+    <div class="clip"><div class="clip-bg p6"></div><div class="clip-grad"></div><div class="clip-info"><div class="clip-title">Crimson Veil — Best Moments</div><div class="clip-meta">Thriller · 3 min</div></div><div class="clip-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+    <div class="clip"><div class="clip-bg p3"></div><div class="clip-grad"></div><div class="clip-info"><div class="clip-title">Ocean's Depth — Ep 1 Preview</div><div class="clip-meta">Drama · 2 min</div></div><div class="clip-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+    <div class="clip"><div class="clip-bg p9"></div><div class="clip-grad"></div><div class="clip-info"><div class="clip-title">Neon Nights — Action Reel</div><div class="clip-meta">Action · 2 min</div></div><div class="clip-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+    <div class="clip"><div class="clip-bg p5"></div><div class="clip-grad"></div><div class="clip-info"><div class="clip-title">Evergreen — Romance Highlights</div><div class="clip-meta">Romance · 3 min</div></div><div class="clip-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+    <div class="clip"><div class="clip-bg p7"></div><div class="clip-grad"></div><div class="clip-info"><div class="clip-title">Red Line — Full Trailer</div><div class="clip-meta">Thriller · 2 min</div></div><div class="clip-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+    <div class="clip"><div class="clip-bg p2"></div><div class="clip-grad"></div><div class="clip-info"><div class="clip-title">Signal Lost — Teaser</div><div class="clip-meta">Sci-Fi · 1 min</div></div><div class="clip-play"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
   </div>
 </section>
 
-<!-- ─── FOOTER ─── -->
-<footer class="reveal">
-  <div class="footer-grid">
-    <div class="footer-col">
-      <h4>Browse</h4>
-      <a href="#">Movies</a><a href="#">TV Shows</a><a href="#">Documentaries</a><a href="#">Stand-Up</a><a href="#">Kids</a>
-    </div>
-    <div class="footer-col">
-      <h4>Help</h4>
-      <a href="#">Contact Us</a><a href="#">Help Center</a><a href="#">Terms of Use</a><a href="#">Privacy Policy</a><a href="#">Cookie Preferences</a>
-    </div>
-    <div class="footer-col">
-      <h4>Company</h4>
-      <a href="#">About Us</a><a href="#">Press</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Investor Relations</a>
-    </div>
-    <div class="footer-col">
-      <h4>Connect</h4>
-      <a href="#">Twitter</a><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">YouTube</a><a href="#">LinkedIn</a>
-    </div>
+<!-- ═══ NETFLIX ORIGINALS ═══ -->
+<section class="row-section sr">
+  <div class="row-head">
+    <div class="row-title">Netflix Originals</div>
+    <div class="row-more">See all ›</div>
   </div>
-  <div class="footer-bottom">
-    <p>© 2026 StreamVault. All rights reserved.</p>
-    <div class="footer-logo">STREAMVAULT</div>
+  <div class="carousel">
+    <div class="c-arrow left"><button>‹</button></div>
+    <div class="carousel-inner" id="origRow">
+      <div class="card"><div class="card-poster p9"><div class="poster-letter">M</div><div class="poster-title">Midnight Sun</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p1"><div class="poster-letter">P</div><div class="poster-title">Phantom Code</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p8"><div class="poster-letter">S</div><div class="poster-title">Still Waters</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p4"><div class="poster-letter">G</div><div class="poster-title">Golden Hour</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p11"><div class="poster-letter">D</div><div class="poster-title">Dark Matter</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p12"><div class="poster-letter">W</div><div class="poster-title">Wild Roots</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p10"><div class="poster-letter">E</div><div class="poster-title">Eclipse Point</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p2"><div class="poster-letter">B</div><div class="poster-title">Blood River</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+    </div>
+    <div class="c-arrow right"><button>›</button></div>
+  </div>
+</section>
+
+<!-- ═══ BECAUSE YOU WATCHED ═══ -->
+<section class="row-section sr">
+  <div class="row-head">
+    <div class="row-title">Because you watched <em style="color:var(--txt2);font-style:normal;">"Void Protocol"</em></div>
+    <div class="row-more">See all ›</div>
+  </div>
+  <div class="carousel">
+    <div class="c-arrow left"><button>‹</button></div>
+    <div class="carousel-inner" id="bywRow">
+      <div class="card"><div class="card-poster p10"><div class="poster-letter">Z</div><div class="poster-title">Zero Hour</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p3"><div class="poster-letter">A</div><div class="poster-title">Abyss Walker</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p7"><div class="poster-letter">L</div><div class="poster-title">Last Signal</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p11"><div class="poster-letter">F</div><div class="poster-title">Forgotten City</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p5"><div class="poster-letter">N</div><div class="poster-title">Nova Gate</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p4"><div class="poster-letter">D</div><div class="poster-title">Deep Core</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p12"><div class="poster-letter">T</div><div class="poster-title">Terraform</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="card"><div class="card-poster p6"><div class="poster-letter">H</div><div class="poster-title">Horizon Fall</div></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+    </div>
+    <div class="c-arrow right"><button>›</button></div>
+  </div>
+</section>
+
+<!-- ═══ TOP 10 TV ═══ -->
+<section class="row-section sr">
+  <div class="row-head">
+    <div class="row-title">Top 10 in TV Shows Today</div>
+    <div class="row-more">See all ›</div>
+  </div>
+  <div class="carousel">
+    <div class="c-arrow left"><button>‹</button></div>
+    <div class="carousel-inner" id="top10tv">
+      <div class="top10-card"><div class="t10-num">1</div><div class="t10-poster p9"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">2</div><div class="t10-poster p6"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">3</div><div class="t10-poster p1"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">4</div><div class="t10-poster p8"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">5</div><div class="t10-poster p3"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">6</div><div class="t10-poster p11"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">7</div><div class="t10-poster p4"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+      <div class="top10-card"><div class="t10-num">8</div><div class="t10-poster p12"></div><div class="card-play-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div></div>
+    </div>
+    <div class="c-arrow right"><button>›</button></div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="sr">
+  <div class="footer-grid">
+    <div class="fg"><h4>Browse</h4><a href="#">Movies</a><a href="#">TV Shows</a><a href="#">Documentaries</a><a href="#">Stand-Up</a><a href="#">Kids</a><a href="#">Games</a></div>
+    <div class="fg"><h4>Help</h4><a href="#">Contact Us</a><a href="#">Help Center</a><a href="#">Terms of Use</a><a href="#">Privacy Policy</a><a href="#">Cookie Preferences</a></div>
+    <div class="fg"><h4>Company</h4><a href="#">About Netflix</a><a href="#">Press</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Investor Relations</a></div>
+    <div class="fg"><h4>Connect</h4><a href="#">Twitter / X</a><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">YouTube</a><a href="#">LinkedIn</a></div>
+  </div>
+  <div class="footer-bot">
+    <p>© 2026 Netflix, Inc. All rights reserved.</p>
+    <div class="footer-logo">netflix</div>
   </div>
 </footer>
 
-<!-- ─── JS ─── -->
+<!-- ═══════════════════════════════════════════
+   JS — Nav scroll + Carousel arrows + Reveal
+═══════════════════════════════════════════ -->
 <script>
-  // Navbar scroll effect
-  const nav = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 60);
-  });
+// ── Nav solid on scroll ──
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 80));
 
-  // Category pills toggle
-  document.querySelectorAll('.cat-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-    });
+// ── Tab switching ──
+document.querySelectorAll('.nav-tab').forEach(t => {
+  t.addEventListener('click', function() {
+    document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
   });
+});
 
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  reveals.forEach(el => observer.observe(el));
+// ── Carousel logic ──
+function initCarousel(innerId) {
+  const inner = document.getElementById(innerId);
+  if (!inner) return;
+  const section = inner.closest('.row-section');
+  if (!section) return;
+  const leftBtn = section.querySelector('.c-arrow.left button');
+  const rightBtn = section.querySelector('.c-arrow.right button');
+  if (!leftBtn || !rightBtn) return;
+
+  let pos = 0;
+  const getMax = () => {
+    const parentW = inner.parentElement.offsetWidth;
+    const scrollW = inner.scrollWidth;
+    return Math.max(0, scrollW - parentW);
+  };
+  const step = () => inner.parentElement.offsetWidth * 0.7;
+
+  leftBtn.addEventListener('click', () => {
+    pos = Math.max(0, pos - step());
+    inner.style.transform = `translateX(-${pos}px)`;
+  });
+  rightBtn.addEventListener('click', () => {
+    const max = getMax();
+    pos = Math.min(max, pos + step());
+    inner.style.transform = `translateX(-${pos}px)`;
+  });
+}
+['trendRow','top10Row','origRow','bywRow','top10tv'].forEach(initCarousel);
+
+// ── Scroll reveal ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.sr').forEach(el => obs.observe(el));
 </script>
 </body>
 </html>
