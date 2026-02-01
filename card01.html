@@ -336,16 +336,14 @@
             opacity: 1;
         }
 
-        /* Desktop hover effects - Controlled Height Growth */
+        /* Desktop hover effects - No Height Change */
         @media (hover: hover) and (pointer: fine) {
             .movie-card {
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                            height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .movie-card:hover {
                 transform: scale(1.05) translateY(-8px);
-                height: calc(var(--card-height) + 60px);
                 box-shadow: 
                     0 40px 80px rgba(0, 0, 0, 0.8),
                     0 0 0 1px rgba(255, 255, 255, 0.1),
@@ -355,12 +353,6 @@
 
             .movie-card:hover::before {
                 opacity: 0.5;
-            }
-        }
-
-        @media (hover: hover) and (pointer: fine) and (min-width: 1440px) {
-            .movie-card:hover {
-                height: calc(var(--card-height) + 80px);
             }
         }
 
@@ -1676,4 +1668,3 @@
     </script>
 </body>
 </html>
-
