@@ -32,7 +32,7 @@
            ============================================ */
         :root {
             --card-width: 100%;
-            --card-height: 360px;
+            --card-height: 420px;
             --card-padding: 12px;
             --card-radius: 8px;
             --grid-gap: 12px;
@@ -52,7 +52,7 @@
         /* Mobile Medium (400px - 479px) */
         @media (min-width: 400px) {
             :root {
-                --card-height: 380px;
+                --card-height: 440px;
                 --card-padding: 14px;
                 --grid-gap: 14px;
                 --container-padding: 14px;
@@ -72,7 +72,7 @@
         /* Small Mobile (480px+) */
         @media (min-width: 480px) {
             :root {
-                --card-height: 400px;
+                --card-height: 460px;
                 --card-padding: 16px;
                 --grid-gap: 16px;
                 --container-padding: 16px;
@@ -618,23 +618,28 @@
             }
         }
 
+        /* ============================================
+           MOBILE: ALWAYS SHOW DESCRIPTION & ACTIONS
+           ============================================ */
         .movie-description {
             font-size: var(--desc-size);
-            line-height: 1.4;
+            line-height: 1.5;
             color: var(--text-secondary);
             font-weight: 400;
             margin-bottom: 10px;
-            max-height: 0;
-            opacity: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
+            opacity: 1;
+            max-height: none;
         }
 
         @media (min-width: 480px) {
             .movie-description {
                 line-height: 1.5;
                 margin-bottom: 12px;
+                -webkit-line-clamp: 3;
             }
         }
 
@@ -645,7 +650,15 @@
             }
         }
 
+        /* Desktop: Show full description on hover */
         @media (hover: hover) and (pointer: fine) {
+            .movie-description {
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
             .movie-card:hover .movie-description {
                 max-height: 100px;
                 opacity: 1;
@@ -653,25 +666,15 @@
             }
         }
 
-        /* Always show description on touch devices */
-        @media (hover: none) and (pointer: coarse) {
-            .movie-description {
-                max-height: none;
-                opacity: 1;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-        }
-
+        /* ============================================
+           MOBILE: ALWAYS SHOW ACTIONS
+           ============================================ */
         .card-actions {
             display: flex;
             align-items: center;
             gap: 6px;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0);
+            opacity: 1;
             flex-wrap: wrap;
         }
 
@@ -687,19 +690,18 @@
             }
         }
 
+        /* Desktop: Animate actions on hover */
         @media (hover: hover) and (pointer: fine) {
+            .card-actions {
+                transform: translateY(20px);
+                opacity: 0;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
             .movie-card:hover .card-actions {
                 transform: translateY(0);
                 opacity: 1;
                 transition-delay: 0.1s;
-            }
-        }
-
-        /* Always show actions on touch devices */
-        @media (hover: none) and (pointer: coarse) {
-            .card-actions {
-                transform: translateY(0);
-                opacity: 1;
             }
         }
 
@@ -999,6 +1001,9 @@
             letter-spacing: -0.3px;
         }
 
+        /* ============================================
+           MOBILE: ALWAYS SHOW DURATION
+           ============================================ */
         .duration-badge {
             position: absolute;
             bottom: 8px;
@@ -1012,9 +1017,8 @@
             color: var(--text-primary);
             z-index: 4;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @media (min-width: 480px) {
@@ -1034,19 +1038,18 @@
             }
         }
 
+        /* Desktop: Animate duration on hover */
         @media (hover: hover) and (pointer: fine) {
+            .duration-badge {
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.3s ease;
+            }
+
             .movie-card:hover .duration-badge {
                 opacity: 1;
                 transform: translateY(0);
                 transition-delay: 0.15s;
-            }
-        }
-
-        /* Always show on touch devices */
-        @media (hover: none) and (pointer: coarse) {
-            .duration-badge {
-                opacity: 1;
-                transform: translateY(0);
             }
         }
 
@@ -1160,14 +1163,16 @@
             }
         }
 
+        /* ============================================
+           MOBILE: ALWAYS SHOW GENRES
+           ============================================ */
         .genre-tags {
             display: flex;
             gap: 4px;
             margin-top: 8px;
             flex-wrap: wrap;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @media (min-width: 480px) {
@@ -1183,19 +1188,18 @@
             }
         }
 
+        /* Desktop: Animate genres on hover */
         @media (hover: hover) and (pointer: fine) {
+            .genre-tags {
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
             .movie-card:hover .genre-tags {
                 opacity: 1;
                 transform: translateY(0);
                 transition-delay: 0.2s;
-            }
-        }
-
-        /* Always show on touch devices */
-        @media (hover: none) and (pointer: coarse) {
-            .genre-tags {
-                opacity: 1;
-                transform: translateY(0);
             }
         }
 
@@ -1533,7 +1537,7 @@
                 </div>
 
                 <div class="genre-tags">
-                    <span class="genre-tag">Drama</span>
+                    <span class="genre-tag">Sci-Fi</span>
                     <span class="genre-tag">•</span>
                     <span class="genre-tag">Thriller</span>
                     <span class="genre-tag">•</span>
