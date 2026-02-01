@@ -525,6 +525,11 @@
                 background: rgba(255, 255, 255, 0.18);
                 border-color: rgba(255, 255, 255, 0.25);
             }
+            
+            .movie-card:hover .badge.featured {
+                background: var(--netflix-red);
+                border-color: var(--netflix-red);
+            }
         }
 
         .movie-title {
@@ -619,7 +624,7 @@
         }
 
         /* ============================================
-           MOBILE: ALWAYS SHOW DESCRIPTION & ACTIONS
+           DESCRIPTION - VISIBLE ON MOBILE, HIDDEN ON DESKTOP
            ============================================ */
         .movie-description {
             font-size: var(--desc-size);
@@ -639,7 +644,7 @@
             .movie-description {
                 line-height: 1.5;
                 margin-bottom: 12px;
-                -webkit-line-clamp: 3;
+                -webkit-line-clamp: 2;
             }
         }
 
@@ -650,24 +655,26 @@
             }
         }
 
-        /* Desktop: Show full description on hover */
+        /* Desktop: Hide description by default, show on hover */
         @media (hover: hover) and (pointer: fine) {
             .movie-description {
                 max-height: 0;
                 opacity: 0;
                 overflow: hidden;
+                margin-bottom: 0;
                 transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .movie-card:hover .movie-description {
                 max-height: 100px;
                 opacity: 1;
+                margin-bottom: 10px;
                 color: rgba(255, 255, 255, 0.95);
             }
         }
 
         /* ============================================
-           MOBILE: ALWAYS SHOW ACTIONS
+           ACTIONS - VISIBLE ON MOBILE, HIDDEN ON DESKTOP
            ============================================ */
         .card-actions {
             display: flex;
@@ -690,7 +697,7 @@
             }
         }
 
-        /* Desktop: Animate actions on hover */
+        /* Desktop: Hide actions by default, show on hover */
         @media (hover: hover) and (pointer: fine) {
             .card-actions {
                 transform: translateY(20px);
@@ -751,6 +758,10 @@
             transition: opacity 0.3s ease;
         }
 
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .btn-primary {
                 background: #ffffff;
@@ -778,6 +789,10 @@
             border: 1.5px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(10px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.95);
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -1002,7 +1017,7 @@
         }
 
         /* ============================================
-           MOBILE: ALWAYS SHOW DURATION
+           DURATION - VISIBLE ON MOBILE, HIDDEN ON DESKTOP
            ============================================ */
         .duration-badge {
             position: absolute;
@@ -1038,7 +1053,7 @@
             }
         }
 
-        /* Desktop: Animate duration on hover */
+        /* Desktop: Hide duration by default, show on hover */
         @media (hover: hover) and (pointer: fine) {
             .duration-badge {
                 opacity: 0;
@@ -1164,7 +1179,7 @@
         }
 
         /* ============================================
-           MOBILE: ALWAYS SHOW GENRES
+           GENRES - VISIBLE ON MOBILE, HIDDEN ON DESKTOP
            ============================================ */
         .genre-tags {
             display: flex;
@@ -1188,17 +1203,19 @@
             }
         }
 
-        /* Desktop: Animate genres on hover */
+        /* Desktop: Hide genres by default, show on hover */
         @media (hover: hover) and (pointer: fine) {
             .genre-tags {
                 opacity: 0;
                 transform: translateY(10px);
+                margin-top: 0;
                 transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .movie-card:hover .genre-tags {
                 opacity: 1;
                 transform: translateY(0);
+                margin-top: 8px;
                 transition-delay: 0.2s;
             }
         }
@@ -1537,7 +1554,7 @@
                 </div>
 
                 <div class="genre-tags">
-                    <span class="genre-tag">Sci-Fi</span>
+                    <span class="genre-tag">Drama</span>
                     <span class="genre-tag">•</span>
                     <span class="genre-tag">Thriller</span>
                     <span class="genre-tag">•</span>
