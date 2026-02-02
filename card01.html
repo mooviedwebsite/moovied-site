@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Movie Cards - Fixed Mobile</title>
+    <title>Smooth Movie Cards - Optimized</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -297,6 +297,7 @@
             }
         }
 
+        /* ===== PERFORMANCE OPTIMIZATIONS ===== */
         .movie-card {
             position: relative;
             width: 100%;
@@ -305,10 +306,19 @@
             border-radius: var(--card-radius);
             overflow: hidden;
             background: var(--surface);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             isolation: isolate;
             justify-self: center;
+            
+            /* GPU ACCELERATION - Critical for smooth animations */
+            will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+            
+            /* Smooth transition with optimized timing */
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .movie-card::before {
@@ -323,18 +333,14 @@
                 rgba(0, 0, 0, 0.9) 100%
             );
             z-index: 1;
-            transition: opacity 0.4s ease;
             opacity: 1;
+            transition: opacity 0.3s ease;
         }
 
-        /* Desktop hover effects - No Height Change */
+        /* Desktop hover effects - OPTIMIZED */
         @media (hover: hover) and (pointer: fine) {
-            .movie-card {
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-
             .movie-card:hover {
-                transform: scale(1.05) translateY(-8px);
+                transform: scale(1.05) translateY(-8px) translateZ(0);
                 box-shadow: 
                     0 40px 80px rgba(0, 0, 0, 0.8),
                     0 0 0 1px rgba(255, 255, 255, 0.1),
@@ -350,7 +356,7 @@
         /* Touch devices - tap feedback */
         @media (hover: none) and (pointer: coarse) {
             .movie-card:active {
-                transform: scale(0.98);
+                transform: scale(0.98) translateZ(0);
             }
         }
 
@@ -365,13 +371,19 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* GPU ACCELERATION */
             will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            
+            /* Optimized transition */
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .card-image {
-                transform: scale(1.1);
+                transform: scale(1.1) translateZ(0);
             }
         }
 
@@ -385,7 +397,7 @@
                 rgba(0, 0, 0, 0.95) 100%
             );
             z-index: 2;
-            transition: background 0.4s ease;
+            transition: background 0.3s ease;
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -406,11 +418,15 @@
             right: 0;
             padding: var(--card-padding);
             z-index: 3;
-            transform: translateY(0);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* GPU ACCELERATION */
+            will-change: transform;
+            transform: translateY(0) translateZ(0);
+            backface-visibility: hidden;
+            
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* Add dark highlight overlay on hover - DESKTOP ONLY */
         .card-content::before {
             content: '';
             position: absolute;
@@ -424,13 +440,13 @@
             border-radius: 12px 12px 0 0;
             opacity: 0;
             z-index: -1;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.3s ease;
             pointer-events: none;
         }
 
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .card-content {
-                transform: translateY(-8px);
+                transform: translateY(-8px) translateZ(0);
             }
 
             .movie-card:hover .card-content::before {
@@ -487,7 +503,12 @@
             text-transform: uppercase;
             color: var(--text-primary);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.3s ease;
+            
+            /* GPU ACCELERATION */
+            will-change: background-color, border-color;
+            transform: translateZ(0);
+            
+            transition: all 0.2s ease;
         }
 
         @media (min-width: 480px) {
@@ -527,7 +548,12 @@
             margin-bottom: 6px;
             letter-spacing: -0.3px;
             text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-            transition: all 0.3s ease;
+            
+            /* GPU ACCELERATION */
+            will-change: color, text-shadow;
+            transform: translateZ(0);
+            
+            transition: all 0.2s ease;
         }
 
         @media (min-width: 480px) {
@@ -599,7 +625,12 @@
             color: #46d369;
             font-weight: 700;
             font-size: calc(var(--meta-size) + 1px);
-            transition: all 0.3s ease;
+            
+            /* GPU ACCELERATION */
+            will-change: color, text-shadow;
+            transform: translateZ(0);
+            
+            transition: all 0.2s ease;
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -609,7 +640,7 @@
             }
         }
 
-        /* ===== Description - Hidden by default, show on hover/tap ===== */
+        /* ===== Description - OPTIMIZED ===== */
         .movie-description {
             font-size: var(--desc-size);
             line-height: 1.4;
@@ -619,8 +650,14 @@
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
+            
+            /* GPU ACCELERATION */
+            will-change: max-height, opacity;
+            transform: translateZ(0);
+            
+            transition: max-height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.3s ease,
+                        color 0.2s ease;
         }
 
         @media (min-width: 480px) {
@@ -637,7 +674,6 @@
             }
         }
 
-        /* Desktop: Show on hover */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .movie-description {
                 max-height: 100px;
@@ -646,22 +682,27 @@
             }
         }
 
-        /* Mobile: Show when card has 'active' class */
         .movie-card.active .movie-description {
             max-height: 100px;
             opacity: 1;
             color: rgba(255, 255, 255, 0.95);
         }
 
-        /* ===== Card actions - Hidden by default, show on hover/tap ===== */
+        /* ===== Card actions - OPTIMIZED ===== */
         .card-actions {
             display: flex;
             align-items: center;
             gap: 6px;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             flex-wrap: wrap;
+            
+            /* GPU ACCELERATION */
+            will-change: transform, opacity;
+            transform: translateY(20px) translateZ(0);
+            backface-visibility: hidden;
+            
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.3s ease;
         }
 
         @media (min-width: 480px) {
@@ -676,18 +717,16 @@
             }
         }
 
-        /* Desktop: Show on hover */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .card-actions {
-                transform: translateY(0);
+                transform: translateY(0) translateZ(0);
                 opacity: 1;
                 transition-delay: 0.1s;
             }
         }
 
-        /* Mobile: Show when card has 'active' class */
         .movie-card.active .card-actions {
-            transform: translateY(0);
+            transform: translateY(0) translateZ(0);
             opacity: 1;
             transition-delay: 0.1s;
         }
@@ -704,10 +743,16 @@
             font-size: var(--btn-size);
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             white-space: nowrap;
+            
+            /* GPU ACCELERATION */
+            will-change: transform, box-shadow;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @media (min-width: 480px) {
@@ -726,7 +771,6 @@
         .btn-primary {
             background: var(--text-primary);
             color: var(--bg-primary);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-primary::before {
@@ -735,7 +779,7 @@
             inset: 0;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -744,11 +788,11 @@
                 box-shadow: 
                     0 8px 24px rgba(255, 255, 255, 0.35),
                     0 0 30px rgba(255, 255, 255, 0.2);
-                transform: translateY(-3px) scale(1.05);
+                transform: translateY(-3px) scale(1.05) translateZ(0);
             }
 
             .btn-primary:hover {
-                transform: translateY(-4px) scale(1.08);
+                transform: translateY(-4px) scale(1.08) translateZ(0);
                 box-shadow: 
                     0 12px 32px rgba(255, 255, 255, 0.45),
                     0 0 40px rgba(255, 255, 255, 0.3);
@@ -764,7 +808,6 @@
             color: var(--text-primary);
             border: 1.5px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -776,7 +819,7 @@
             .btn-secondary:hover {
                 background: rgba(255, 255, 255, 0.3);
                 border-color: rgba(255, 255, 255, 0.6);
-                transform: translateY(-3px) scale(1.05);
+                transform: translateY(-3px) scale(1.05) translateZ(0);
                 box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
             }
         }
@@ -839,6 +882,7 @@
             }
         }
 
+        /* ===== Rating Badge - OPTIMIZED ===== */
         .rating-badge {
             position: absolute;
             top: 8px;
@@ -851,9 +895,15 @@
             align-items: center;
             padding: 0 14px;
             box-shadow: 0 4px 12px rgba(245, 197, 24, 0.3);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             width: 42px;
+            
+            /* GPU ACCELERATION */
+            will-change: width, padding, box-shadow;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @media (min-width: 480px) {
@@ -887,7 +937,6 @@
             }
         }
 
-        /* Expand on hover/active */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .rating-badge {
                 width: auto;
@@ -923,7 +972,7 @@
             align-items: center;
             gap: 0;
             white-space: nowrap;
-            transition: gap 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: gap 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -936,7 +985,6 @@
             gap: 6px;
         }
 
-        /* Rating number (always visible) */
         .rating-number-only {
             font-size: var(--rating-size);
             font-weight: 800;
@@ -944,9 +992,14 @@
             letter-spacing: -0.5px;
             line-height: 1;
             flex-shrink: 0;
+            
+            /* GPU ACCELERATION */
+            will-change: opacity, max-width;
+            transform: translateZ(0);
+            
+            transition: opacity 0.3s ease, max-width 0.3s ease;
         }
 
-        /* Full badge parts (hidden by default) */
         .rating-full {
             display: flex;
             align-items: center;
@@ -954,7 +1007,12 @@
             opacity: 0;
             max-width: 0;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* GPU ACCELERATION */
+            will-change: opacity, max-width;
+            transform: translateZ(0);
+            
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @media (min-width: 480px) {
@@ -969,7 +1027,6 @@
             }
         }
 
-        /* Show full parts on hover/active */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .rating-full {
                 opacity: 1;
@@ -982,7 +1039,6 @@
             max-width: 200px;
         }
 
-        /* Hide the solo number on hover/active */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .rating-number-only {
                 opacity: 0;
@@ -1083,7 +1139,7 @@
             letter-spacing: -0.3px;
         }
 
-        /* ===== Duration badge - Hidden by default, show on hover/tap ===== */
+        /* ===== Duration badge - OPTIMIZED ===== */
         .duration-badge {
             position: absolute;
             bottom: 8px;
@@ -1097,9 +1153,15 @@
             color: var(--text-primary);
             z-index: 4;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* GPU ACCELERATION */
+            will-change: opacity, transform;
+            transform: translateY(10px) translateZ(0);
+            backface-visibility: hidden;
+            
             opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
+            transition: opacity 0.2s ease,
+                        transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @media (min-width: 480px) {
@@ -1119,28 +1181,25 @@
             }
         }
 
-        /* Desktop: Show on hover */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .duration-badge {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) translateZ(0);
                 transition-delay: 0.15s;
             }
         }
 
-        /* Mobile: Show when card has 'active' class */
         .movie-card.active .duration-badge {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) translateZ(0);
             transition-delay: 0.15s;
         }
 
-        /* ===== Play overlay - show on desktop hover and mobile tap ===== */
+        /* ===== Play overlay - OPTIMIZED ===== */
         .hover-play-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
             width: 55px;
             height: 55px;
             background: rgba(255, 255, 255, 0.95);
@@ -1149,10 +1208,18 @@
             align-items: center;
             justify-content: center;
             z-index: 4;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             pointer-events: none;
+            
+            /* GPU ACCELERATION */
+            will-change: opacity, transform;
+            transform: translate(-50%, -50%) scale(0.8) translateZ(0);
+            backface-visibility: hidden;
+            
+            opacity: 0;
+            transition: opacity 0.3s ease,
+                        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.3s ease;
         }
 
         @media (min-width: 480px) {
@@ -1183,11 +1250,10 @@
             }
         }
 
-        /* Desktop: Show on hover */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .hover-play-overlay {
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
+                transform: translate(-50%, -50%) scale(1) translateZ(0);
                 box-shadow: 
                     0 12px 40px rgba(0, 0, 0, 0.5),
                     0 0 0 8px rgba(255, 255, 255, 0.1),
@@ -1196,10 +1262,9 @@
             }
         }
 
-        /* Mobile: Show when card has 'active' class */
         .movie-card.active .hover-play-overlay {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1) translateZ(0);
             box-shadow: 
                 0 12px 40px rgba(0, 0, 0, 0.5),
                 0 0 0 8px rgba(255, 255, 255, 0.1),
@@ -1259,15 +1324,21 @@
             }
         }
 
-        /* ===== Genre tags - Hidden by default, show on hover/tap ===== */
+        /* ===== Genre tags - OPTIMIZED ===== */
         .genre-tags {
             display: flex;
             gap: 4px;
             margin-top: 8px;
             flex-wrap: wrap;
+            
+            /* GPU ACCELERATION */
+            will-change: opacity, transform;
+            transform: translateY(10px) translateZ(0);
+            backface-visibility: hidden;
+            
             opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.3s ease,
+                        transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @media (min-width: 480px) {
@@ -1283,19 +1354,17 @@
             }
         }
 
-        /* Desktop: Show on hover */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .genre-tags {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) translateZ(0);
                 transition-delay: 0.2s;
             }
         }
 
-        /* Mobile: Show when card has 'active' class */
         .movie-card.active .genre-tags {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) translateZ(0);
             transition-delay: 0.2s;
         }
 
@@ -1353,15 +1422,6 @@
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
-            
-            .movie-card:hover .movie-description,
-            .movie-card:hover .card-actions,
-            .movie-card:hover .movie-title,
-            .movie-card:hover .match-score,
-            .movie-card:hover .btn-primary,
-            .movie-card:hover .card-content::before {
-                transition: opacity 0.3s ease, color 0.3s ease !important;
-            }
         }
 
         /* High contrast mode */
@@ -1392,16 +1452,14 @@
             <div class="card-media">
                 <img class="card-image" 
                      src="https://image.tmdb.org/t/p/original/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" 
-                     alt="Blade Runner 2049">
+                     alt="Blade Runner 2049"
+                     loading="lazy">
                 <div class="card-overlay"></div>
             </div>
             
             <div class="rating-badge">
                 <div class="rating-content">
-                    <!-- Just number (shown by default) -->
                     <span class="rating-number-only">8.0</span>
-                    
-                    <!-- Full badge details (hidden, expands on hover/tap) -->
                     <div class="rating-full">
                         <div class="imdb-logo">
                             <span>IMDb</span>
@@ -1483,16 +1541,14 @@
             <div class="card-media">
                 <img class="card-image" 
                      src="https://image.tmdb.org/t/p/original/qJ2tW6WMUDux911r6m7haRef0WH.jpg" 
-                     alt="Interstellar">
+                     alt="Interstellar"
+                     loading="lazy">
                 <div class="card-overlay"></div>
             </div>
             
             <div class="rating-badge">
                 <div class="rating-content">
-                    <!-- Just number (shown by default) -->
                     <span class="rating-number-only">8.7</span>
-                    
-                    <!-- Full badge details (hidden, expands on hover/tap) -->
                     <div class="rating-full">
                         <div class="imdb-logo">
                             <span>IMDb</span>
@@ -1574,16 +1630,14 @@
             <div class="card-media">
                 <img class="card-image" 
                      src="https://image.tmdb.org/t/p/original/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg" 
-                     alt="Fight Club">
+                     alt="Fight Club"
+                     loading="lazy">
                 <div class="card-overlay"></div>
             </div>
             
             <div class="rating-badge">
                 <div class="rating-content">
-                    <!-- Just number (shown by default) -->
                     <span class="rating-number-only">8.8</span>
-                    
-                    <!-- Full badge details (hidden, expands on hover/tap) -->
                     <div class="rating-full">
                         <div class="imdb-logo">
                             <span>IMDb</span>
@@ -1668,71 +1722,25 @@
         if (isTouchDevice) {
             const cards = document.querySelectorAll('.movie-card');
             
-            // Add tap listener to each card
             cards.forEach(card => {
                 card.addEventListener('click', function(e) {
-                    // If clicking a button, don't toggle card state
                     if (e.target.closest('.btn')) {
                         return;
                     }
                     
-                    // Toggle active state
                     const isActive = this.classList.contains('active');
-                    
-                    // Remove active from all cards
                     cards.forEach(c => c.classList.remove('active'));
                     
-                    // If this card wasn't active, activate it
                     if (!isActive) {
                         this.classList.add('active');
                     }
                 });
             });
             
-            // Click outside to deactivate all cards
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.movie-card')) {
                     cards.forEach(c => c.classList.remove('active'));
                 }
-            });
-        }
-
-        // Enhanced 3D parallax effect (desktop only)
-        if (!isTouchDevice) {
-            document.querySelectorAll('.movie-card').forEach(card => {
-                const cardImage = card.querySelector('.card-image');
-                
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    const rotateX = (y - centerY) / 30;
-                    const rotateY = (centerX - x) / 30;
-                    
-                    const moveX = (x - centerX) / 20;
-                    const moveY = (y - centerY) / 20;
-                    
-                    card.style.transform = `
-                        scale(1.05) 
-                        translateY(-8px)
-                        rotateX(${rotateX}deg) 
-                        rotateY(${rotateY}deg)
-                    `;
-                    
-                    cardImage.style.transform = `
-                        scale(1.1) 
-                        translate(${moveX}px, ${moveY}px)
-                    `;
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = '';
-                    cardImage.style.transform = '';
-                });
             });
         }
 
@@ -1747,15 +1755,18 @@
                 const x = e.clientX - rect.left - size / 2;
                 const y = e.clientY - rect.top - size / 2;
                 
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.style.position = 'absolute';
-                ripple.style.borderRadius = '50%';
-                ripple.style.background = 'rgba(255, 255, 255, 0.5)';
-                ripple.style.transform = 'scale(0)';
-                ripple.style.animation = 'ripple 0.6s ease-out';
-                ripple.style.pointerEvents = 'none';
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.5);
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
                 
                 this.appendChild(ripple);
                 setTimeout(() => ripple.remove(), 600);
@@ -1774,14 +1785,22 @@
         `;
         document.head.appendChild(style);
 
-        // Progressive image loading
+        // Progressive image loading with fade-in
         document.querySelectorAll('.card-image').forEach((img, index) => {
             img.style.opacity = '0';
             img.style.transition = 'opacity 0.6s ease-out';
             
-            setTimeout(() => {
-                img.style.opacity = '1';
-            }, index * 150);
+            if (img.complete) {
+                setTimeout(() => {
+                    img.style.opacity = '1';
+                }, index * 150);
+            } else {
+                img.addEventListener('load', () => {
+                    setTimeout(() => {
+                        img.style.opacity = '1';
+                    }, index * 150);
+                });
+            }
         });
 
         // Handle orientation change
@@ -1791,14 +1810,7 @@
             }, 100);
         });
 
-        // Performance optimization for mobile
-        if (window.matchMedia('(max-width: 768px)').matches) {
-            document.querySelectorAll('.movie-card').forEach(card => {
-                card.style.willChange = 'transform';
-            });
-        }
-
-        // Intersection Observer for lazy loading
+        // Intersection Observer for visibility
         if ('IntersectionObserver' in window) {
             const cardObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1813,6 +1825,17 @@
 
             document.querySelectorAll('.movie-card').forEach(card => {
                 cardObserver.observe(card);
+            });
+        }
+
+        // Performance monitoring (optional - can be removed in production)
+        if (window.performance && console) {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const perfData = window.performance.timing;
+                    const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+                    console.log(`Page load time: ${pageLoadTime}ms`);
+                }, 0);
             });
         }
     </script>
