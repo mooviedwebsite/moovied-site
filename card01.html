@@ -1195,28 +1195,59 @@
             transition-delay: 0.15s;
         }
 
-        /* ===== Play overlay - OPTIMIZED ===== */
+        /* ===== Dark Glow Effect - Full Card Darkening ===== */
+        .dark-glow-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at center,
+                rgba(0, 0, 0, 0.3) 0%,
+                rgba(0, 0, 0, 0.7) 40%,
+                rgba(0, 0, 0, 0.85) 100%
+            );
+            z-index: 3;
+            opacity: 0;
+            pointer-events: none;
+            
+            /* GPU ACCELERATION */
+            will-change: opacity;
+            transform: translateZ(0);
+            
+            transition: opacity 0.4s ease;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .movie-card:hover .dark-glow-overlay {
+                opacity: 1;
+            }
+        }
+
+        .movie-card.active .dark-glow-overlay {
+            opacity: 1;
+        }
+
+        /* ===== Play overlay - OPTIMIZED with Highlight Glow ===== */
         .hover-play-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
             width: 55px;
             height: 55px;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 4;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            z-index: 5;
             pointer-events: none;
             
             /* GPU ACCELERATION */
-            will-change: opacity, transform;
+            will-change: opacity, transform, box-shadow;
             transform: translate(-50%, -50%) scale(0.8) translateZ(0);
             backface-visibility: hidden;
             
             opacity: 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             transition: opacity 0.3s ease,
                         transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
                         box-shadow 0.3s ease;
@@ -1255,10 +1286,12 @@
                 opacity: 1;
                 transform: translate(-50%, -50%) scale(1) translateZ(0);
                 box-shadow: 
-                    0 12px 40px rgba(0, 0, 0, 0.5),
-                    0 0 0 8px rgba(255, 255, 255, 0.1),
-                    0 0 50px rgba(255, 255, 255, 0.3);
-                animation: playPulse 2s ease-in-out infinite;
+                    0 0 0 3px rgba(255, 255, 255, 0.3),
+                    0 0 0 6px rgba(255, 255, 255, 0.2),
+                    0 0 60px 20px rgba(255, 255, 255, 0.4),
+                    0 0 100px 40px rgba(255, 255, 255, 0.2),
+                    0 20px 60px rgba(0, 0, 0, 0.6);
+                animation: playGlowPulse 2.5s ease-in-out infinite;
             }
         }
 
@@ -1266,24 +1299,30 @@
             opacity: 1;
             transform: translate(-50%, -50%) scale(1) translateZ(0);
             box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.5),
-                0 0 0 8px rgba(255, 255, 255, 0.1),
-                0 0 50px rgba(255, 255, 255, 0.3);
-            animation: playPulse 2s ease-in-out infinite;
+                0 0 0 3px rgba(255, 255, 255, 0.3),
+                0 0 0 6px rgba(255, 255, 255, 0.2),
+                0 0 60px 20px rgba(255, 255, 255, 0.4),
+                0 0 100px 40px rgba(255, 255, 255, 0.2),
+                0 20px 60px rgba(0, 0, 0, 0.6);
+            animation: playGlowPulse 2.5s ease-in-out infinite;
         }
 
-        @keyframes playPulse {
+        @keyframes playGlowPulse {
             0%, 100% {
                 box-shadow: 
-                    0 12px 40px rgba(0, 0, 0, 0.5),
-                    0 0 0 8px rgba(255, 255, 255, 0.1),
-                    0 0 50px rgba(255, 255, 255, 0.3);
+                    0 0 0 3px rgba(255, 255, 255, 0.3),
+                    0 0 0 6px rgba(255, 255, 255, 0.2),
+                    0 0 60px 20px rgba(255, 255, 255, 0.4),
+                    0 0 100px 40px rgba(255, 255, 255, 0.2),
+                    0 20px 60px rgba(0, 0, 0, 0.6);
             }
             50% {
                 box-shadow: 
-                    0 12px 40px rgba(0, 0, 0, 0.5),
-                    0 0 0 12px rgba(255, 255, 255, 0.15),
-                    0 0 60px rgba(255, 255, 255, 0.4);
+                    0 0 0 4px rgba(255, 255, 255, 0.4),
+                    0 0 0 8px rgba(255, 255, 255, 0.25),
+                    0 0 80px 30px rgba(255, 255, 255, 0.5),
+                    0 0 120px 50px rgba(255, 255, 255, 0.3),
+                    0 25px 70px rgba(0, 0, 0, 0.7);
             }
         }
 
@@ -1457,6 +1496,8 @@
                 <div class="card-overlay"></div>
             </div>
             
+            <div class="dark-glow-overlay"></div>
+            
             <div class="rating-badge">
                 <div class="rating-content">
                     <span class="rating-number-only">8.0</span>
@@ -1546,6 +1587,8 @@
                 <div class="card-overlay"></div>
             </div>
             
+            <div class="dark-glow-overlay"></div>
+            
             <div class="rating-badge">
                 <div class="rating-content">
                     <span class="rating-number-only">8.7</span>
@@ -1634,6 +1677,8 @@
                      loading="lazy">
                 <div class="card-overlay"></div>
             </div>
+            
+            <div class="dark-glow-overlay"></div>
             
             <div class="rating-badge">
                 <div class="rating-content">
