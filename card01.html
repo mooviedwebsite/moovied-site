@@ -997,7 +997,8 @@
             will-change: opacity, max-width;
             transform: translateZ(0);
             
-            transition: opacity 0.3s ease, max-width 0.3s ease;
+            /* Fast fade out - 0.2s instead of 0.3s */
+            transition: opacity 0.2s ease, max-width 0.2s ease;
         }
 
         .rating-full {
@@ -1012,7 +1013,9 @@
             will-change: opacity, max-width;
             transform: translateZ(0);
             
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Smooth expansion with slight delay for stagger effect */
+            transition: opacity 0.25s ease 0.05s,
+                        max-width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.05s;
         }
 
         @media (min-width: 480px) {
@@ -1031,12 +1034,65 @@
             .movie-card:hover .rating-full {
                 opacity: 1;
                 max-width: 200px;
+                transition-delay: 0s;
             }
         }
 
         .movie-card.active .rating-full {
             opacity: 1;
             max-width: 200px;
+            transition-delay: 0s;
+        }
+
+        /* Individual rating parts for smooth staggered fade-in */
+        .rating-full .imdb-logo {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease 0.05s, transform 0.2s ease 0.05s;
+        }
+
+        .rating-full .rating-divider {
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: opacity 0.2s ease 0.1s, transform 0.2s ease 0.1s;
+        }
+
+        .rating-full .star-icon {
+            opacity: 0;
+            transform: translateX(-6px) scale(0.8);
+            transition: opacity 0.2s ease 0.12s, transform 0.2s ease 0.12s;
+        }
+
+        .rating-full .rating-value {
+            opacity: 0;
+            transform: translateX(-4px);
+            transition: opacity 0.2s ease 0.14s, transform 0.2s ease 0.14s;
+        }
+
+        .rating-full .rating-max {
+            opacity: 0;
+            transform: translateX(-2px);
+            transition: opacity 0.2s ease 0.16s, transform 0.2s ease 0.16s;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .movie-card:hover .rating-full .imdb-logo,
+            .movie-card:hover .rating-full .rating-divider,
+            .movie-card:hover .rating-full .star-icon,
+            .movie-card:hover .rating-full .rating-value,
+            .movie-card:hover .rating-full .rating-max {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .movie-card.active .rating-full .imdb-logo,
+        .movie-card.active .rating-full .rating-divider,
+        .movie-card.active .rating-full .star-icon,
+        .movie-card.active .rating-full .rating-value,
+        .movie-card.active .rating-full .rating-max {
+            opacity: 1;
+            transform: translateX(0) scale(1);
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -1226,14 +1282,25 @@
             opacity: 1;
         }
 
-        /* ===== Play overlay - OPTIMIZED with Highlight Glow ===== */
+        /* ===== Ultra-Modern Play Button - Professional Advanced Design ===== */
         .hover-play-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 55px;
-            height: 55px;
-            background: rgba(255, 255, 255, 0.98);
+            width: 70px;
+            height: 70px;
+            
+            /* Modern Glassmorphism Background */
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.02) 100%);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            
+            /* Multi-layer Border */
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1242,124 +1309,260 @@
             pointer-events: none;
             
             /* GPU ACCELERATION */
-            will-change: opacity, transform, box-shadow;
-            transform: translate(-50%, -50%) scale(0.8) translateZ(0);
+            will-change: opacity, transform, box-shadow, background, border-color;
+            transform: translate(-50%, -50%) scale(0.85) translateZ(0);
             backface-visibility: hidden;
+            perspective: 1000px;
             
             opacity: 0;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            transition: opacity 0.3s ease,
-                        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        box-shadow 0.3s ease;
+            transition: 
+                opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.35s ease,
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
+        }
+
+        /* Outer glow ring */
+        .hover-play-overlay::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(229, 9, 20, 0.15) 0%,
+                rgba(229, 9, 20, 0.08) 40%,
+                transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            z-index: -1;
+            animation: none;
+        }
+
+        /* Inner highlight shine */
+        .hover-play-overlay::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            height: 40%;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.15) 0%,
+                transparent 100%
+            );
+            border-radius: 50% 50% 0 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
         }
 
         @media (min-width: 480px) {
-            .hover-play-overlay {
-                width: 65px;
-                height: 65px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .hover-play-overlay {
-                width: 70px;
-                height: 70px;
-            }
-        }
-
-        @media (min-width: 1024px) {
             .hover-play-overlay {
                 width: 80px;
                 height: 80px;
             }
         }
 
-        @media (min-width: 1440px) {
+        @media (min-width: 768px) {
             .hover-play-overlay {
-                width: 90px;
-                height: 90px;
+                width: 85px;
+                height: 85px;
             }
         }
 
+        @media (min-width: 1024px) {
+            .hover-play-overlay {
+                width: 95px;
+                height: 95px;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            .hover-play-overlay {
+                width: 105px;
+                height: 105px;
+            }
+        }
+
+        /* Hover/Active State - Premium Animation */
         @media (hover: hover) and (pointer: fine) {
             .movie-card:hover .hover-play-overlay {
                 opacity: 1;
+                background: linear-gradient(135deg, 
+                    rgba(229, 9, 20, 0.95) 0%,
+                    rgba(184, 29, 36, 0.98) 100%);
+                border-color: rgba(255, 255, 255, 0.35);
                 transform: translate(-50%, -50%) scale(1) translateZ(0);
+                
+                /* Advanced Multi-layer Shadow System */
                 box-shadow: 
-                    0 0 0 3px rgba(255, 255, 255, 0.3),
-                    0 0 0 6px rgba(255, 255, 255, 0.2),
-                    0 0 60px 20px rgba(255, 255, 255, 0.4),
-                    0 0 100px 40px rgba(255, 255, 255, 0.2),
+                    /* Inner glow */
+                    inset 0 2px 4px rgba(255, 255, 255, 0.25),
+                    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+                    
+                    /* Close shadow for depth */
+                    0 4px 8px rgba(0, 0, 0, 0.3),
+                    0 8px 16px rgba(0, 0, 0, 0.25),
+                    
+                    /* Red glow layers */
+                    0 0 20px rgba(229, 9, 20, 0.4),
+                    0 0 40px rgba(229, 9, 20, 0.3),
+                    0 0 60px rgba(229, 9, 20, 0.2),
+                    0 0 100px rgba(229, 9, 20, 0.1),
+                    
+                    /* Outer ring */
+                    0 0 0 1px rgba(229, 9, 20, 0.5),
+                    0 0 0 2px rgba(255, 255, 255, 0.1),
+                    
+                    /* Deep shadow */
                     0 20px 60px rgba(0, 0, 0, 0.6);
-                animation: playGlowPulse 2.5s ease-in-out infinite;
+                
+                animation: modernPlayPulse 3s ease-in-out infinite;
+            }
+            
+            .movie-card:hover .hover-play-overlay::before {
+                opacity: 1;
+                transform: scale(1.1);
+                animation: ringPulse 3s ease-in-out infinite;
+            }
+            
+            .movie-card:hover .hover-play-overlay::after {
+                opacity: 1;
             }
         }
 
         .movie-card.active .hover-play-overlay {
             opacity: 1;
+            background: linear-gradient(135deg, 
+                rgba(229, 9, 20, 0.95) 0%,
+                rgba(184, 29, 36, 0.98) 100%);
+            border-color: rgba(255, 255, 255, 0.35);
             transform: translate(-50%, -50%) scale(1) translateZ(0);
+            
             box-shadow: 
-                0 0 0 3px rgba(255, 255, 255, 0.3),
-                0 0 0 6px rgba(255, 255, 255, 0.2),
-                0 0 60px 20px rgba(255, 255, 255, 0.4),
-                0 0 100px 40px rgba(255, 255, 255, 0.2),
+                inset 0 2px 4px rgba(255, 255, 255, 0.25),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                0 8px 16px rgba(0, 0, 0, 0.25),
+                0 0 20px rgba(229, 9, 20, 0.4),
+                0 0 40px rgba(229, 9, 20, 0.3),
+                0 0 60px rgba(229, 9, 20, 0.2),
+                0 0 100px rgba(229, 9, 20, 0.1),
+                0 0 0 1px rgba(229, 9, 20, 0.5),
+                0 0 0 2px rgba(255, 255, 255, 0.1),
                 0 20px 60px rgba(0, 0, 0, 0.6);
-            animation: playGlowPulse 2.5s ease-in-out infinite;
+            
+            animation: modernPlayPulse 3s ease-in-out infinite;
+        }
+        
+        .movie-card.active .hover-play-overlay::before {
+            opacity: 1;
+            transform: scale(1.1);
+            animation: ringPulse 3s ease-in-out infinite;
+        }
+        
+        .movie-card.active .hover-play-overlay::after {
+            opacity: 1;
         }
 
-        @keyframes playGlowPulse {
+        /* Modern pulsing animation - subtle and professional */
+        @keyframes modernPlayPulse {
             0%, 100% {
                 box-shadow: 
-                    0 0 0 3px rgba(255, 255, 255, 0.3),
-                    0 0 0 6px rgba(255, 255, 255, 0.2),
-                    0 0 60px 20px rgba(255, 255, 255, 0.4),
-                    0 0 100px 40px rgba(255, 255, 255, 0.2),
+                    inset 0 2px 4px rgba(255, 255, 255, 0.25),
+                    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+                    0 4px 8px rgba(0, 0, 0, 0.3),
+                    0 8px 16px rgba(0, 0, 0, 0.25),
+                    0 0 20px rgba(229, 9, 20, 0.4),
+                    0 0 40px rgba(229, 9, 20, 0.3),
+                    0 0 60px rgba(229, 9, 20, 0.2),
+                    0 0 100px rgba(229, 9, 20, 0.1),
+                    0 0 0 1px rgba(229, 9, 20, 0.5),
+                    0 0 0 2px rgba(255, 255, 255, 0.1),
                     0 20px 60px rgba(0, 0, 0, 0.6);
             }
             50% {
                 box-shadow: 
-                    0 0 0 4px rgba(255, 255, 255, 0.4),
-                    0 0 0 8px rgba(255, 255, 255, 0.25),
-                    0 0 80px 30px rgba(255, 255, 255, 0.5),
-                    0 0 120px 50px rgba(255, 255, 255, 0.3),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.3),
+                    inset 0 -2px 5px rgba(0, 0, 0, 0.35),
+                    0 6px 12px rgba(0, 0, 0, 0.35),
+                    0 12px 24px rgba(0, 0, 0, 0.3),
+                    0 0 30px rgba(229, 9, 20, 0.5),
+                    0 0 60px rgba(229, 9, 20, 0.4),
+                    0 0 90px rgba(229, 9, 20, 0.3),
+                    0 0 130px rgba(229, 9, 20, 0.15),
+                    0 0 0 1px rgba(229, 9, 20, 0.6),
+                    0 0 0 3px rgba(255, 255, 255, 0.15),
                     0 25px 70px rgba(0, 0, 0, 0.7);
             }
         }
 
-        .hover-play-overlay::after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-left: 18px solid var(--bg-primary);
-            border-top: 11px solid transparent;
-            border-bottom: 11px solid transparent;
-            margin-left: 3px;
-        }
-
-        @media (min-width: 480px) {
-            .hover-play-overlay::after {
-                border-left: 20px solid var(--bg-primary);
-                border-top: 13px solid transparent;
-                border-bottom: 13px solid transparent;
-                margin-left: 4px;
+        @keyframes ringPulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.2);
             }
         }
 
-        @media (min-width: 1024px) {
-            .hover-play-overlay::after {
-                border-left: 24px solid var(--bg-primary);
-                border-top: 15px solid transparent;
-                border-bottom: 15px solid transparent;
+        /* Modern Play Icon Triangle */
+        .play-icon-triangle {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 13px 0 13px 22px;
+            border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+            margin-left: 4px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateZ(0);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .movie-card:hover .play-icon-triangle {
+                border-left-color: rgba(255, 255, 255, 1);
+                filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+                transform: scale(1.05) translateX(1px) translateZ(0);
+            }
+        }
+
+        .movie-card.active .play-icon-triangle {
+            border-left-color: rgba(255, 255, 255, 1);
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+            transform: scale(1.05) translateX(1px) translateZ(0);
+        }
+
+        @media (min-width: 480px) {
+            .play-icon-triangle {
+                border-width: 15px 0 15px 25px;
                 margin-left: 5px;
             }
         }
 
-        @media (min-width: 1440px) {
-            .hover-play-overlay::after {
-                border-left: 26px solid var(--bg-primary);
-                border-top: 16px solid transparent;
-                border-bottom: 16px solid transparent;
+        @media (min-width: 768px) {
+            .play-icon-triangle {
+                border-width: 16px 0 16px 27px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .play-icon-triangle {
+                border-width: 18px 0 18px 30px;
                 margin-left: 6px;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            .play-icon-triangle {
+                border-width: 20px 0 20px 33px;
             }
         }
 
@@ -1517,7 +1720,9 @@
 
             <div class="duration-badge">2h 44min</div>
 
-            <div class="hover-play-overlay"></div>
+            <div class="hover-play-overlay">
+                <div class="play-icon-triangle"></div>
+            </div>
 
             <div class="card-content">
                 <div class="content-top">
@@ -1608,7 +1813,9 @@
 
             <div class="duration-badge">2h 49min</div>
 
-            <div class="hover-play-overlay"></div>
+            <div class="hover-play-overlay">
+                <div class="play-icon-triangle"></div>
+            </div>
 
             <div class="card-content">
                 <div class="content-top">
@@ -1699,7 +1906,9 @@
 
             <div class="duration-badge">2h 19min</div>
 
-            <div class="hover-play-overlay"></div>
+            <div class="hover-play-overlay">
+                <div class="play-icon-triangle"></div>
+            </div>
 
             <div class="card-content">
                 <div class="content-top">
