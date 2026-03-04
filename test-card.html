@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Premium Netflix-Style Movie Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+
+    body {
+      background: #0f0f11;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: clamp(40px, 8vw, 100px) clamp(16px, 5vw, 60px);
+    }
+
+    /* CARD */
+    .movie-card {
+      width: min(355px, 90vw);
+      cursor: pointer;
+      border-radius: clamp(16px, 4vw, 28px);
+      overflow: visible;
+    }
+    .movie-card:hover {
+      animation: cardLift 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    @keyframes cardLift {
+      0%   { transform: scale(1) translateY(0); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+      100% { transform: scale(1.06) translateY(-12px); box-shadow: 0 40px 90px rgba(0,0,0,0.85); }
+    }
+
+    /* POSTER */
+    .poster {
+      position: relative;
+      border-radius: clamp(16px, 4vw, 28px);
+      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+      background: #000;
+    }
+    .poster img {
+      width: 100%;
+      height: clamp(300px, 60vw, 510px);
+      object-fit: cover;
+      display: block;
+    }
+    .movie-card:hover .poster img {
+      animation: imgZoom 0.75s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    @keyframes imgZoom {
+      0%   { transform: scale(1); }
+      100% { transform: scale(1.07); }
+    }
+
+    /* OVERLAY */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.95) 8%,
+        rgba(0,0,0,0.72) 42%,
+        rgba(0,0,0,0.18) 78%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    /* ─── RATING BADGES ─────────────────────────────────────────── */
+    .ratings-container {
+      position: absolute;
+      top: clamp(10px, 2.5vw, 18px);
+      right: clamp(10px, 2.5vw, 18px);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    /* Wrapper that holds SVG ring + centre label */
+    .rating-ring {
+      position: relative;
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+      transition: width 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+                  border-radius 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+                  transform 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+                  box-shadow 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .ring-svg {
+      position: absolute;
+      inset: 0;
+      width: 52px;
+      height: 100%;
+      transform: rotate(-90deg);
+      transition: opacity 0.3s ease, width 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* Background track circle */
+    .ring-track {
+      fill: none;
+      stroke-width: 3.2;
+      stroke-linecap: round;
+    }
+
+    /* Foreground progress arc */
+    .ring-fill {
+      fill: none;
+      stroke-width: 3.2;
+      stroke-linecap: round;
+    }
+
+    /* Centre content */
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 0px;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      padding: 0 10px;
+    }
+    .ring-score {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      flex-shrink: 0;
+    }
+    /* The label text that slides in on hover */
+    .ring-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      margin-left: 0;
+      transition: max-width 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+                  opacity 0.35s ease,
+                  margin-left 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ── IMDb ring ── */
+    .imdb-ring {
+      background: rgba(245, 197, 24, 0.95);
+      border-radius: 50%;
+      box-shadow: 0 4px 14px rgba(245, 197, 24, 0.4);
+    }
+    .imdb-ring .ring-track { stroke: rgba(0,0,0,0.15); }
+    .imdb-ring .ring-fill  { stroke: rgba(0,0,0,0.7); }
+    .imdb-ring .ring-score { color: #000; }
+    .imdb-ring .ring-label { color: #000; }
+
+    /* IMDb hover → pill expand */
+    .movie-card:hover .imdb-ring {
+      width: 80px;
+      border-radius: 26px;
+      background: #f5c518;
+      box-shadow: 0 6px 22px rgba(245, 197, 24, 0.6);
+      transform: translateY(-2px);
+    }
+    .movie-card:hover .imdb-ring .ring-label {
+      max-width: 40px;
+      opacity: 1;
+      margin-left: 4px;
+    }
+    .movie-card:hover .imdb-ring .ring-svg {
+      opacity: 0;
+    }
+
+    /* glow pulse */
+    .imdb-ring::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      animation: glowPulseIMDb 2.4s ease-in-out infinite;
+    }
+    @keyframes glowPulseIMDb {
+      0%,100% { box-shadow: 0 0 0px 0 rgba(245,197,24,0); }
+      50%      { box-shadow: 0 0 18px 6px rgba(245,197,24,0.35); }
+    }
+
+    /* ── RT ring ── */
+    .rt-ring {
+      background: rgba(20, 20, 28, 0.92);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 61, 61, 0.5);
+      box-shadow: 0 4px 14px rgba(255, 61, 61, 0.25);
+    }
+    .rt-ring .ring-track { stroke: rgba(255, 61, 61, 0.20); }
+    .rt-ring .ring-fill  { stroke: #ff3d3d; }
+    .rt-ring .ring-score { color: #ff4e4e; }
+    .rt-ring .ring-label { color: #ff4e4e; }
+
+    /* RT hover → pill expand */
+    .movie-card:hover .rt-ring {
+      width: 80px;
+      border-radius: 26px;
+      background: rgba(22, 22, 32, 0.96);
+      box-shadow: 0 6px 22px rgba(255, 61, 61, 0.35);
+      transform: translateY(-2px);
+    }
+    .movie-card:hover .rt-ring .ring-label {
+      max-width: 40px;
+      opacity: 1;
+      margin-left: 4px;
+    }
+    .movie-card:hover .rt-ring .ring-svg {
+      opacity: 0;
+    }
+
+    .rt-ring::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      animation: glowPulseRT 2.4s ease-in-out infinite;
+      animation-delay: 1.2s;
+    }
+    @keyframes glowPulseRT {
+      0%,100% { box-shadow: 0 0 0px 0 rgba(255,61,61,0); }
+      50%      { box-shadow: 0 0 18px 6px rgba(255,61,61,0.3); }
+    }
+
+    /* ── Arc draw-in animation ── */
+    .imdb-ring .ring-fill {
+      stroke-dasharray: 125.66;
+      stroke-dashoffset: 125.66;
+      animation: drawIMDb 1.6s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+    }
+    @keyframes drawIMDb {
+      to { stroke-dashoffset: 15.08; }
+    }
+
+    .rt-ring .ring-fill {
+      stroke-dasharray: 125.66;
+      stroke-dashoffset: 125.66;
+      animation: drawRT 1.6s cubic-bezier(0.23, 1, 0.32, 1) 0.55s forwards;
+    }
+    @keyframes drawRT {
+      to { stroke-dashoffset: 7.54; }
+    }
+
+    .ring-fill {
+      filter: drop-shadow(0 0 3px currentColor);
+    }
+
+    /* ── Ring outer border spin (halo) ── */
+    .ring-halo {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 1.5px solid transparent;
+      pointer-events: none;
+    }
+    .imdb-ring .ring-halo {
+      border-top-color: rgba(245,197,24,0.6);
+      animation: halospinIMDb 3s linear infinite;
+      animation-delay: 2s;
+    }
+    .rt-ring .ring-halo {
+      border-top-color: rgba(255,61,61,0.55);
+      animation: halospinRT 3s linear infinite;
+      animation-delay: 2.25s;
+    }
+    @keyframes halospinIMDb {
+      0%   { transform: rotate(0deg); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: rotate(360deg); opacity: 0; }
+    }
+    @keyframes halospinRT {
+      0%   { transform: rotate(0deg); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: rotate(360deg); opacity: 0; }
+    }
+
+    /* Score count-up handled by JS — fade in */
+    .ring-score { animation: fadeUp 0.5s ease 0.8s both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Touch devices — always expanded */
+    @media (hover: none) {
+      .imdb-ring, .rt-ring {
+        width: 80px !important;
+        border-radius: 26px !important;
+      }
+      .imdb-ring { background: #f5c518 !important; }
+      .rt-ring { background: rgba(22,22,32,0.96) !important; }
+      .rating-ring .ring-label {
+        max-width: 40px !important;
+        opacity: 1 !important;
+        margin-left: 4px !important;
+      }
+      .rating-ring .ring-svg { opacity: 0 !important; }
+    }
+
+    /* ─── BOTTOM CONTENT ────────────────────────────────────────── */
+    .card-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(20px,5vw,30px) clamp(14px,4vw,24px) clamp(16px,4vw,26px);
+      color: white;
+    }
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px,2vw,12px);
+      margin-bottom: clamp(3px,1vw,6px);
+      flex-wrap: nowrap;
+    }
+    .card-content h2 {
+      font-size: clamp(16px,4.5vw,25px);
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .quality-inline {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      padding: clamp(3px,.8vw,5px) clamp(7px,1.8vw,11px);
+      font-size: clamp(8px,1.8vw,10.5px);
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.28);
+      backdrop-filter: blur(10px);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .meta {
+      font-size: clamp(10px,2.5vw,13.5px);
+      color: #c8c8c8;
+      font-weight: 500;
+    }
+
+    /* BUTTONS */
+    .buttons {
+      margin-top: clamp(12px,3vw,22px);
+      display: flex;
+      gap: clamp(8px,2vw,14px);
+      flex-wrap: wrap;
+    }
+    button {
+      display: flex;
+      align-items: center;
+      gap: clamp(5px,1.5vw,9px);
+      border: none;
+      padding: clamp(8px,2vw,11px) clamp(14px,4vw,24px);
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: clamp(11px,2.8vw,14.2px);
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      white-space: nowrap;
+    }
+    button svg {
+      width: clamp(14px,3.5vw,19px);
+      height: clamp(14px,3.5vw,19px);
+      flex-shrink: 0;
+    }
+    .play-btn {
+      background: #ffffff;
+      color: #000;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      animation: btnEntrance 0.5s cubic-bezier(0.23,1,0.32,1) 1.4s both;
+    }
+    .play-btn:hover {
+      animation: btnHover 0.4s cubic-bezier(0.23,1,0.32,1) forwards;
+    }
+    @keyframes btnHover {
+      to { transform: translateY(-4px) scale(1.04); box-shadow: 0 15px 35px rgba(0,0,0,0.55); background: #f8f8f8; }
+    }
+    .info-btn {
+      background: rgba(255,255,255,0.13);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      animation: btnEntrance 0.5s cubic-bezier(0.23,1,0.32,1) 1.55s both;
+    }
+    .info-btn:hover {
+      animation: infoHover 0.4s cubic-bezier(0.23,1,0.32,1) forwards;
+    }
+    @keyframes infoHover {
+      to { transform: translateY(-4px); background: rgba(255,255,255,0.24); border-color: rgba(255,255,255,0.35); }
+    }
+    @keyframes btnEntrance {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* TABLET / DESKTOP */
+    @media (min-width: 768px) {
+      .movie-card { width: 355px; }
+      .poster img { height: 510px; }
+    }
+    @media (min-width: 1400px) {
+      .movie-card { width: 390px; }
+      .poster img { height: 560px; }
+    }
+    @media (max-width: 360px) {
+      .buttons { flex-direction: column; }
+      button { justify-content: center; width: 100%; }
+    }
+
+    /* TOUCH — keep expanded */
+    @media (hover: none) {
+      .imdb-ring::before, .rt-ring::before { animation-play-state: paused; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="movie-card">
+  <div class="poster">
+    <img src="https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="The Dark Knight Poster">
+    <div class="overlay"></div>
+
+    <!-- ── RATING RINGS ── -->
+    <div class="ratings-container">
+
+      <!-- IMDb Ring -->
+      <div class="rating-ring imdb-ring">
+        <div class="ring-halo"></div>
+        <svg class="ring-svg" viewBox="0 0 48 48">
+          <circle class="ring-track" cx="24" cy="24" r="20"/>
+          <circle class="ring-fill"  cx="24" cy="24" r="20"/>
+        </svg>
+        <div class="ring-center">
+          <span class="ring-score" id="imdb-score">8.8</span>
+          <span class="ring-label">IMDb</span>
+        </div>
+      </div>
+
+      <!-- RT Ring -->
+      <div class="rating-ring rt-ring">
+        <div class="ring-halo"></div>
+        <svg class="ring-svg" viewBox="0 0 48 48">
+          <circle class="ring-track" cx="24" cy="24" r="20"/>
+          <circle class="ring-fill"  cx="24" cy="24" r="20"/>
+        </svg>
+        <div class="ring-center">
+          <span class="ring-score" id="rt-score">94%</span>
+          <span class="ring-label">RT</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- ── END RATING RINGS ── -->
+
+    <div class="card-content">
+      <div class="title-row">
+        <h2>The Dark Knight</h2>
+        <span class="quality-inline">UHD 4K</span>
+      </div>
+      <p class="meta">2008 • Action, Crime • 2h 32m</p>
+      <div class="buttons">
+        <button class="play-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Play
+        </button>
+        <button class="info-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          More Info
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Count-up numbers ── */
+  function countUp(el, from, to, suffix, duration, delay) {
+    setTimeout(() => {
+      const start = performance.now();
+      function step(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        const val = from + (to - from) * ease;
+        el.textContent = (suffix === '%')
+          ? Math.round(val) + '%'
+          : val.toFixed(1);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }, delay);
+  }
+
+  countUp(document.getElementById('imdb-score'), 0,  8.8, '',  1400, 300);
+  countUp(document.getElementById('rt-score'),   0,  94,  '%', 1400, 550);
+</script>
+</body>
+</html>
