@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StreamX Pro Player</title>
+<title>MOOVIED Player</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
 
@@ -64,19 +64,28 @@
     text-align: center;
     pointer-events: none;
     z-index: 30;
-    width: 80%;
+    width: 84%;
+    min-height: 2em;
   }
   #sub-display span {
-    display: inline-block;
-    background: rgba(0,0,0,0.82);
+    display: inline;
+    background: transparent;
     color: #fff;
-    font-size: clamp(14px,2.2vw,26px);
-    font-weight: 500;
-    padding: 6px 18px;
-    border-radius: 4px;
-    line-height: 1.5;
+    font-size: clamp(15px, 2.3vw, 28px);
+    font-weight: 700;
+    line-height: 1.6;
     letter-spacing: 0.01em;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    /* Professional cinematic outline — no box */
+    text-shadow:
+      -2px -2px 0 #000,
+       2px -2px 0 #000,
+      -2px  2px 0 #000,
+       2px  2px 0 #000,
+      -2px  0   0 #000,
+       2px  0   0 #000,
+       0   -2px 0 #000,
+       0    2px 0 #000,
+       0    4px 8px rgba(0,0,0,0.6);
   }
 
   /* ── CLICK RIPPLE ── */
@@ -450,7 +459,7 @@
   /* The big S letter — like Netflix N */
   #intro-letter {
     position: relative;
-    width: clamp(60px, 10vw, 110px);
+    width: clamp(70px, 12vw, 130px);
     height: clamp(90px, 15vw, 165px);
     overflow: hidden;
     opacity: 0;
@@ -476,9 +485,19 @@
     animation: stripeWipe 0.55s cubic-bezier(0.16,1,0.3,1) forwards 0.55s;
     transform: scaleY(0);
   }
-  /* Middle diagonal */
+  /* Middle diagonal left */
   #stripe-mid {
     animation: stripeMidAppear 0.35s ease forwards 0.65s;
+    opacity: 0;
+  }
+  /* Middle diagonal right (mirror) */
+  #stripe-mid2 {
+    animation: stripeMidAppear 0.35s ease forwards 0.75s;
+    opacity: 0;
+  }
+  /* Center peak */
+  #stripe-peak {
+    animation: stripeMidAppear 0.25s ease forwards 0.9s;
     opacity: 0;
   }
   @keyframes stripeWipe {
@@ -531,7 +550,7 @@
     box-shadow: 0 0 12px rgba(229,9,20,0.8);
   }
   @keyframes lineSweep {
-    to { width: clamp(80px, 12vw, 160px); }
+    to { width: clamp(100px, 14vw, 190px); }
   }
 
   /* Fade-in overlay that transitions INTO the video */
@@ -553,25 +572,29 @@
 
 <div id="player-wrap" tabindex="0">
 
-  <!-- ══ NETFLIX-STYLE INTRO ══ -->
+  <!-- ══ MOOVIED INTRO ══ -->
   <div id="intro-screen">
     <!-- Glow blob behind logo -->
     <div id="intro-glow"></div>
 
-    <!-- The S logo — mimics Netflix N ribbon style -->
+    <!-- The M logo — Netflix-N ribbon style with M shape -->
     <div id="intro-letter">
-      <svg viewBox="0 0 110 165" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Left red column -->
-        <rect id="stripe-left" x="0" y="0" width="36" height="165" fill="#E50914"/>
-        <!-- Right red column -->
-        <rect id="stripe-right" x="74" y="0" width="36" height="165" fill="#E50914"/>
-        <!-- Diagonal band top-left to bottom-right -->
-        <polygon id="stripe-mid" points="0,0 36,0 110,165 74,165" fill="#B20710"/>
+      <svg viewBox="0 0 130 165" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Left column -->
+        <rect id="stripe-left" x="0" y="0" width="30" height="165" fill="#E50914"/>
+        <!-- Right column -->
+        <rect id="stripe-right" x="100" y="0" width="30" height="165" fill="#E50914"/>
+        <!-- Left diagonal: top-left to center-bottom -->
+        <polygon id="stripe-mid" points="0,0 30,0 75,95 50,95" fill="#B20710"/>
+        <!-- Right diagonal: top-right to center-bottom (mirror) -->
+        <polygon id="stripe-mid2" points="130,0 100,0 55,95 80,95" fill="#B20710"/>
+        <!-- Center peak top -->
+        <polygon id="stripe-peak" points="50,95 80,95 65,60" fill="#8B0000"/>
       </svg>
     </div>
 
     <!-- Wordmark -->
-    <div id="intro-wordmark">STREAMX</div>
+    <div id="intro-wordmark">MOOVIED</div>
     <!-- Red sweep line -->
     <div id="intro-line"></div>
 
@@ -581,7 +604,7 @@
 
   <!-- Empty / Upload state -->
   <div id="empty-state">
-    <div class="logo">STREAMX</div>
+    <div class="logo">MOOVIED</div>
     <p>Drop a video file or click to load</p>
     <button id="upload-video-btn" onclick="document.getElementById('video-file-input').click()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -633,7 +656,7 @@
   <!-- TOP BAR -->
   <div id="top-bar">
     <div id="title-info">
-      <span class="series" id="series-name">STREAMX PLAYER</span>
+      <span class="series" id="series-name">MOOVIED PLAYER</span>
       <span class="episode" id="episode-name">No video loaded</span>
     </div>
     <div id="top-actions">
@@ -852,34 +875,40 @@ let volPct = 100;
 
 // ── PUBLIC TEST SOURCES ──
 const TEST_VIDEO = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-const TEST_VTT   = 'https://raw.githubusercontent.com/brenopolanski/html5-video-webvtt-example/master/MIB2.vtt';
 
-// ── LOAD DEFAULT SUBTITLE VTT FROM URL ──
-async function loadDefaultVTT() {
-  try {
-    const res = await fetch(TEST_VTT);
-    const text = await res.text();
-    defaultSRT = parseVTT(text);
-    document.getElementById('sub-default').style.display = 'flex';
-    document.getElementById('sub-default').textContent = '🌐 English (Built-in)';
-  } catch(e) {
-    // Fallback inline subtitles if fetch fails
-    defaultSRT = [
-      {start:1,   end:5,   text:"🎬 Big Buck Bunny — Blender Foundation"},
-      {start:6,   end:11,  text:"A large and lovable rabbit lives in a forest..."},
-      {start:12,  end:17,  text:"...and deals with three troublesome rodents."},
-      {start:18,  end:23,  text:"Keyboard: Space=Play  ←/→=Seek  M=Mute"},
-      {start:24,  end:29,  text:"F=Fullscreen  C=Toggle Subtitles  ↑/↓=Volume"},
-      {start:30,  end:36,  text:"Upload your own .srt or .vtt subtitle file via CC"},
-      {start:37,  end:42,  text:"Use the clock icon to change playback speed"},
-      {start:43,  end:49,  text:"Scroll the mouse wheel to adjust volume"},
-      {start:50,  end:56,  text:"Double-click anywhere to toggle fullscreen"},
-      {start:57,  end:63,  text:"Drag the progress bar to seek anywhere"},
-      {start:598, end:605, text:"🐰 The forest is peaceful once more..."},
-    ];
-    document.getElementById('sub-default').style.display = 'flex';
-    document.getElementById('sub-default').textContent = '🌐 English (Built-in)';
-  }
+// ── LOAD DEFAULT SUBTITLE — inline, no CORS issues ──
+function loadDefaultVTT() {
+  // Big Buck Bunny scene-accurate inline subtitles
+  defaultSRT = [
+    {start:3,   end:7,   text:"In a land of rolling meadows and towering trees..."},
+    {start:8,   end:13,  text:"...lived a very large, very gentle rabbit."},
+    {start:14,  end:19,  text:"His name was Big Buck Bunny."},
+    {start:20,  end:26,  text:"He spent his days wandering peacefully through the forest."},
+    {start:27,  end:33,  text:"Smelling flowers. Chasing butterflies."},
+    {start:34,  end:40,  text:"But not everyone appreciated his gentle nature."},
+    {start:41,  end:47,  text:"Three mischievous rodents lurked nearby."},
+    {start:48,  end:54,  text:"Frank, Rinky, and Gimera — tiny, but full of mischief."},
+    {start:55,  end:62,  text:"They tormented every creature they could find."},
+    {start:63,  end:70,  text:"Until one day... they went too far."},
+    {start:71,  end:78,  text:"A squirrel fell. A butterfly was snatched."},
+    {start:79,  end:86,  text:"Buck watched. Buck remembered."},
+    {start:87,  end:95,  text:"And Buck... had a plan."},
+    {start:96,  end:105, text:"Sometimes, even the gentlest soul must take a stand."},
+    {start:106, end:115, text:"⚒️ Trap construction begins..."},
+    {start:116, end:126, text:"With precision. With patience. With purpose."},
+    {start:200, end:208, text:"The first trap — a masterpiece of woodland engineering."},
+    {start:209, end:218, text:"Would the rodents take the bait?"},
+    {start:219, end:228, text:"Oh, they would. They always do."},
+    {start:370, end:378, text:"Justice, it turns out, is also quite bouncy."},
+    {start:379, end:388, text:"And very, very loud."},
+    {start:530, end:540, text:"Peace returned to the forest."},
+    {start:541, end:550, text:"The butterflies danced again."},
+    {start:551, end:560, text:"Big Buck Bunny smiled."},
+    {start:561, end:570, text:"All was well. 🐰"},
+    {start:590, end:599, text:"— Big Buck Bunny (2008) · Blender Foundation —"},
+  ];
+  document.getElementById('sub-default').style.display = 'flex';
+  document.getElementById('sub-default').textContent = '🌐 English (Built-in)';
 }
 
 // ── INTRO SEQUENCE ──
@@ -1111,16 +1140,22 @@ function setSubtitle(mode) {
   document.getElementById('sub-off').classList.toggle('active', mode==='off');
   document.getElementById('sub-default').classList.toggle('active', mode==='default');
   document.getElementById('sub-custom-item').classList.toggle('active', mode==='custom');
-  if (mode==='off') subText.textContent = '';
+  if (mode === 'off') { subText.textContent = ''; subText.style.display = 'none'; }
   closeAllPanels();
 }
 
 function updateSubtitle() {
-  if (currentSubMode==='off') { subText.textContent=''; return; }
-  const cues = currentSubMode==='custom' ? customSRT : defaultSRT;
+  if (currentSubMode === 'off') { subText.textContent = ''; subText.style.display = 'none'; return; }
+  const cues = currentSubMode === 'custom' ? customSRT : defaultSRT;
   const t = vid.currentTime;
-  const cue = cues.find(c => t>=c.start && t<=c.end);
-  subText.textContent = cue ? cue.text : '';
+  const cue = cues.find(c => t >= c.start && t <= c.end);
+  if (cue) {
+    subText.textContent = cue.text;
+    subText.style.display = 'inline';
+  } else {
+    subText.textContent = '';
+    subText.style.display = 'none';
+  }
 }
 
 subFileInput.addEventListener('change', e => {
