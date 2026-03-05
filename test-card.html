@@ -84,10 +84,7 @@
     @keyframes dI { to{stroke-dashoffset:15.08} }
     .rt-ring .ring-fill   { stroke-dasharray:125.66; stroke-dashoffset:125.66; animation: dR 1.6s cubic-bezier(0.23,1,0.32,1) .55s forwards; }
     @keyframes dR { to{stroke-dashoffset:7.54} }
-    .ring-fill { filter: drop-shadow(0 0 3px currentColor); }
-    .ring-halo { position:absolute; inset:-3px; border-radius:50%; border:1.5px solid transparent; pointer-events:none; }
-    .imdb-ring .ring-halo { border-top-color:rgba(245,197,24,.6); animation:hI 3s linear infinite; animation-delay:2s; }
-    .rt-ring   .ring-halo { border-top-color:rgba(255,61,61,.55);  animation:hR 3s linear infinite; animation-delay:2.25s; }
+    .ring-fill { filter: drop-shadow(0 0 3px currentColor);
     @keyframes hI { 0%{transform:rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:rotate(360deg);opacity:0} }
     @keyframes hR { 0%{transform:rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:rotate(360deg);opacity:0} }
     .ring-score { animation: fU .5s ease .8s both; }
@@ -238,12 +235,10 @@
       <div class="rating-ring imdb-ring">
         <svg class="ring-svg" viewBox="0 0 48 48"><circle class="ring-track" cx="24" cy="24" r="20"/><circle class="ring-fill" cx="24" cy="24" r="20"/></svg>
         <div class="ring-center"><span class="ring-score" id="imdb-score">8.8</span><span class="ring-label">IMDb</span></div>
-        <div class="ring-halo"></div>
       </div>
       <div class="rating-ring rt-ring">
         <svg class="ring-svg" viewBox="0 0 48 48"><circle class="ring-track" cx="24" cy="24" r="20"/><circle class="ring-fill" cx="24" cy="24" r="20"/></svg>
         <div class="ring-center"><span class="ring-score" id="rt-score">94%</span><span class="ring-label">RT</span></div>
-        <div class="ring-halo"></div>
       </div>
     </div>
     <div class="card-content">
