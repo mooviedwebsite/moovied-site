@@ -53,6 +53,7 @@
     object-fit: contain;
     display: block;
     background: #000;
+    opacity: 0;
   }
 
   /* ── SUBTITLE OVERLAY ── */
@@ -425,11 +426,158 @@
   @media (max-width: 640px) {
     #ctrl-right .ibtn:not(#btn-fs):not(#btn-sub) { display: none; }
   }
+
+  /* ════════════════════════════════════════
+     NETFLIX-STYLE INTRO SCREEN
+  ════════════════════════════════════════ */
+  #intro-screen {
+    position: absolute; inset: 0;
+    background: #000;
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 0;
+    pointer-events: none;
+  }
+  #intro-screen.hidden {
+    animation: introFadeOut 0.9s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+  @keyframes introFadeOut {
+    0%   { opacity: 1; }
+    100% { opacity: 0; pointer-events: none; }
+  }
+
+  /* The big S letter — like Netflix N */
+  #intro-letter {
+    position: relative;
+    width: clamp(60px, 10vw, 110px);
+    height: clamp(90px, 15vw, 165px);
+    overflow: hidden;
+    opacity: 0;
+    animation: letterAppear 0.15s ease forwards 0.3s;
+  }
+  @keyframes letterAppear { to { opacity: 1; } }
+
+  /* SVG ribbon strips like Netflix N */
+  #intro-letter svg {
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 40px rgba(229,9,20,0.6));
+  }
+
+  /* Red stripe wipe — left strip */
+  #stripe-left {
+    transform-origin: bottom center;
+    animation: stripeWipe 0.55s cubic-bezier(0.16,1,0.3,1) forwards 0.3s;
+    transform: scaleY(0);
+  }
+  /* Red stripe wipe — right strip */
+  #stripe-right {
+    transform-origin: top center;
+    animation: stripeWipe 0.55s cubic-bezier(0.16,1,0.3,1) forwards 0.55s;
+    transform: scaleY(0);
+  }
+  /* Middle diagonal */
+  #stripe-mid {
+    animation: stripeMidAppear 0.35s ease forwards 0.65s;
+    opacity: 0;
+  }
+  @keyframes stripeWipe {
+    to { transform: scaleY(1); }
+  }
+  @keyframes stripeMidAppear {
+    to { opacity: 1; }
+  }
+
+  /* Glow pulse after logo appears */
+  #intro-glow {
+    position: absolute;
+    width: clamp(120px, 20vw, 220px);
+    height: clamp(120px, 20vw, 220px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(229,9,20,0.35) 0%, transparent 70%);
+    opacity: 0;
+    animation: glowPulse 1.2s ease forwards 0.7s;
+    pointer-events: none;
+  }
+  @keyframes glowPulse {
+    0%   { opacity: 0; transform: scale(0.5); }
+    50%  { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.4; transform: scale(1); }
+  }
+
+  /* STREAMX wordmark below the S */
+  #intro-wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(18px, 3vw, 36px);
+    letter-spacing: 0.35em;
+    color: #fff;
+    opacity: 0;
+    margin-top: 18px;
+    text-indent: 0.35em; /* optical centering for letter-spacing */
+    animation: wordmarkFade 0.5s ease forwards 0.95s;
+  }
+  @keyframes wordmarkFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Thin red underline sweep */
+  #intro-line {
+    width: 0;
+    height: 2px;
+    background: var(--red);
+    margin-top: 6px;
+    animation: lineSweep 0.5s cubic-bezier(0.4,0,0.2,1) forwards 1.15s;
+    box-shadow: 0 0 12px rgba(229,9,20,0.8);
+  }
+  @keyframes lineSweep {
+    to { width: clamp(80px, 12vw, 160px); }
+  }
+
+  /* Fade-in overlay that transitions INTO the video */
+  #intro-fade {
+    position: absolute; inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    animation: introFadeOverlay 0.7s ease forwards 2.2s;
+  }
+  @keyframes introFadeOverlay {
+    0%  { opacity: 0; }
+    50% { opacity: 1; }
+    100%{ opacity: 0; }
+  }
 </style>
 </head>
 <body>
 
 <div id="player-wrap" tabindex="0">
+
+  <!-- ══ NETFLIX-STYLE INTRO ══ -->
+  <div id="intro-screen">
+    <!-- Glow blob behind logo -->
+    <div id="intro-glow"></div>
+
+    <!-- The S logo — mimics Netflix N ribbon style -->
+    <div id="intro-letter">
+      <svg viewBox="0 0 110 165" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Left red column -->
+        <rect id="stripe-left" x="0" y="0" width="36" height="165" fill="#E50914"/>
+        <!-- Right red column -->
+        <rect id="stripe-right" x="74" y="0" width="36" height="165" fill="#E50914"/>
+        <!-- Diagonal band top-left to bottom-right -->
+        <polygon id="stripe-mid" points="0,0 36,0 110,165 74,165" fill="#B20710"/>
+      </svg>
+    </div>
+
+    <!-- Wordmark -->
+    <div id="intro-wordmark">STREAMX</div>
+    <!-- Red sweep line -->
+    <div id="intro-line"></div>
+
+    <!-- Final fade overlay -->
+    <div id="intro-fade"></div>
+  </div>
 
   <!-- Empty / Upload state -->
   <div id="empty-state">
@@ -734,6 +882,36 @@ async function loadDefaultVTT() {
   }
 }
 
+// ── INTRO SEQUENCE ──
+const introScreen = document.getElementById('intro-screen');
+let introDone = false;
+
+function dismissIntro() {
+  if (introDone) return;
+  introDone = true;
+  // Fade video in from black
+  vid.style.opacity = '0';
+  vid.style.transition = 'opacity 0.9s ease';
+  introScreen.classList.add('hidden');
+  // After intro fades, show video
+  setTimeout(() => {
+    vid.style.opacity = '1';
+    introScreen.style.display = 'none';
+    wrap.classList.add('show-controls', 'cursor-visible');
+    showControls();
+  }, 900);
+}
+
+// Dismiss intro after animation completes (~2.8s)
+setTimeout(dismissIntro, 2800);
+
+// Also allow clicking to skip intro
+introScreen.addEventListener('click', () => {
+  // Speed up animations, dismiss immediately
+  introScreen.style.animation = 'none';
+  dismissIntro();
+}, { once: true });
+
 // ── AUTO-LOAD TEST VIDEO ──
 function loadTestVideo() {
   vid.src = TEST_VIDEO;
@@ -992,9 +1170,12 @@ function parseVTT(text) {
   }).filter(Boolean);
 }
 
-// Auto-play once metadata ready
+// Auto-play once metadata ready — wait for intro to finish
 vid.addEventListener('loadedmetadata', () => {
-  vid.play().catch(()=>{});
+  // Start video preloading but don't show until intro done
+  setTimeout(() => {
+    vid.play().catch(()=>{});
+  }, 2900);
 });
 
 // ── PANELS ──
