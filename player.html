@@ -1,1 +1,1218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plyr — Subtitle Upload + Ad-Free Mode</title>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="prefetch" href="https://www.effectivegatecpm.com/jgikgyvt36?key=0bcec789d41ba1308e075d3014dfd923">
+  <style>
+ 
+    .player-wrap{width:min(980px,96%);position:relative;aspect-ratio:16/9}
+    .plyr{height:-webkit-fill-available;border-radius:10px;opacity:1!important;visibility:visible!important}
+    .plyr__video-embed,video{border-radius:10px;overflow:hidden}
+    video{opacity:0;transition:opacity 0.3s ease}
+    video.plyr-ready{opacity:1}
+    .plyr__captions{background:none!important}
+    .plyr__caption{background:none!important;text-shadow:-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000,2px 2px 0 #000,-2px 0 0 #000,2px 0 0 #000,0 -2px 0 #000,0 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000!important;color:#fff!important;font-weight:700!important;font-size:1.1em!important}
+    .plyr__controls__item[data-plyr="captions"]{display:none!important}
+    .subtitle-upload-card{position:absolute;bottom:60px;right:10px;width:340px;height:80%;max-height:80%;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(10px) scale(.95);transition:all .3s cubic-bezier(.4,0,.2,1);z-index:10;pointer-events:none;overflow:hidden}
+    .subtitle-upload-card.active{opacity:1;visibility:visible;transform:translateY(0) scale(1);pointer-events:all}
+    .plyr--fullscreen .subtitle-upload-card{bottom:100px!important;right:20px!important}
+    .live-views-container{position:absolute;top:15px;right:15px;display:flex;gap:8px;opacity:1;visibility:visible;transform:translateY(0);transition:opacity .3s ease, visibility .3s ease;z-index:5;pointer-events:none}
+    .plyr--hide-controls .live-views-container{opacity:0;visibility:hidden}
+    .plyr--fullscreen .live-views-container{top:25px;right:25px;opacity:1!important;visibility:visible!important}
+    .live-badge,.views-badge{display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(15,23,42,.75);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.15);border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);font-size:11px;font-weight:600;color:#fff}
+    .live-badge{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.4)}
+    .views-badge{background:rgba(59,130,246,.2);border-color:rgba(59,130,246,.4)}
+    .live-dot{width:6px;height:6px;background:#ef4444;border-radius:50%;animation:blink 1.5s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.9)}}
+    .views-icon{width:12px;height:12px;opacity:.9}
+ 
+    /* MODERN AD OVERLAY SYSTEM */
+    #egc-support-overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      animation: overlayFadeIn 0.4s ease-out;
+      border-radius: 10px;
+      padding: 15px;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+ 
+    @keyframes overlayFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+ 
+    /* PROFESSIONAL AD CARD */
+    .ads-modern-card {
+      width: 100%;
+      max-width: 480px;
+      background: #000;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      animation: cardSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+ 
+    @keyframes cardSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+ 
+    /* AD CONTAINER WITH SCROLL */
+    .ads-banner-container {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      background: #0a0a0a;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+ 
+    .ads-banner-container::-webkit-scrollbar {
+      height: 6px;
+    }
+ 
+    .ads-banner-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+ 
+    .ads-banner-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+ 
+    .ads-banner-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+ 
+    #egc-hpf-ad {
+      min-width: 300px;
+      min-height: 250px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: #0a0a0a;
+    }
+ 
+    /* CARD CONTENT */
+    .ads-card-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+ 
+    .ads-header {
+      text-align: center;
+    }
+ 
+    .ads-title {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+ 
+    .ads-subtitle {
+      margin: 0;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.4;
+    }
+ 
+    /* BUTTONS */
+    .ads-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+ 
+    .premium-btn {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+ 
+    .premium-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+ 
+    .premium-btn:hover::before {
+      left: 100%;
+    }
+ 
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+ 
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
+ 
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+ 
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+ 
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+ 
+    .btn-secondary:active {
+      transform: translateY(0);
+    }
+ 
+    .btn-main-text {
+      font-size: 13px;
+      letter-spacing: 0.01em;
+    }
+ 
+    .btn-sub-text {
+      font-size: 9px;
+      font-weight: 400;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+ 
+    .ads-footer {
+      text-align: center;
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.35);
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+    }
+ 
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 768px) {
+      #egc-support-overlay {
+        padding: 10px;
+      }
+   
+      .ads-modern-card {
+        max-width: 100%;
+        border-radius: 12px;
+      }
+   
+      .ads-card-content {
+        padding: 16px;
+        gap: 12px;
+      }
+   
+      .ads-title {
+        font-size: 16px;
+      }
+   
+      .ads-subtitle {
+        font-size: 10px;
+      }
+   
+      .premium-btn {
+        padding: 12px 16px;
+        font-size: 12px;
+      }
+   
+      .btn-main-text {
+        font-size: 12px;
+      }
+   
+      .btn-sub-text {
+        font-size: 8px;
+      }
+   
+      #egc-hpf-ad {
+        min-width: 280px;
+        min-height: 230px;
+        padding: 15px;
+      }
+    }
+ 
+    @media (max-width: 480px) {
+      .ads-modern-card {
+        border-radius: 10px;
+      }
+   
+      .ads-card-content {
+        padding: 14px;
+      }
+   
+      .ads-title {
+        font-size: 15px;
+      }
+   
+      .premium-btn {
+        padding: 11px 14px;
+      }
+   
+      #egc-hpf-ad {
+        min-width: 260px;
+        min-height: 220px;
+      }
+    }
+ 
+    #adWarning { position: absolute; top: 15px; right: 15px; z-index: 2000; display: none; max-width: 320px; }
+    #adWarning.show { display: block; animation: slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(50px) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
+    .warning-toast { background: rgba(220, 38, 38, 0.95); backdrop-filter: blur(12px) saturate(180%); -webkit-backdrop-filter: blur(12px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4), 0 0 0 1px rgba(220, 38, 38, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2); display: flex; align-items: flex-start; gap: 12px; position: relative; overflow: hidden; }
+    .warning-toast::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.6) 100%); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .warning-icon-box { width: 32px; height: 32px; background: rgba(255, 255, 255, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: iconBounce 2s ease-in-out infinite; }
+    @keyframes iconBounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    .warning-icon-box svg { width: 18px; height: 18px; color: #fff; }
+    .warning-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .warning-title { color: #fff; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; margin: 0; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
+    .warning-message { color: rgba(255, 255, 255, 0.95); font-size: 11px; font-weight: 500; line-height: 1.4; margin: 0; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
+    .warning-close { width: 20px; height: 20px; background: rgba(255, 255, 255, 0.15); border: none; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.2s ease; padding: 0; }
+    .warning-close:hover { background: rgba(255, 255, 255, 0.25); transform: rotate(90deg); }
+    .warning-close svg { width: 12px; height: 12px; color: #fff; }
+    .plyr--fullscreen #adWarning { top: 25px; right: 25px; }
+    .plyr--hide-controls #adWarning { opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .plyr:not(.plyr--hide-controls) #adWarning.show { opacity: 1; visibility: visible; }
+    #files-list::-webkit-scrollbar { width: 8px; }
+    #files-list::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.08); }
+    #files-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+    #files-list::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 100%); }
+  
+  
+    .-bottom-10 {
+    bottom: -2.5rem;
+    margin-bottom: 2.5rem !important;
+}
+  
+.plyr button {
+    font: menu !important;
+    }
+        /* Close button style */
+    #closeCardBtn {
+      width: 30px !important;
+    height: 24px !important;
+    margin-top: -53px;
+    margin-right: -13px;
+    border: 1px solid #636363 !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(882px) saturate(1080%) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    padding-bottom: 3px;
+}
+    /* Hover effect */
+    #closeCardBtn:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+    .pb-2 {
+    padding-bottom: 30px;
+    padding-top: 3px;
+    padding-left: 3px;
+}
+    .pt-2 {
+    padding-top: 0px;
+    margin-bottom: -10px;
+    margin-top: -5px;
+}
+  </style>
+</head>
+<body>
+  <div class="player-wrap" id="playerWrap">
+    <div class="live-views-container" id="liveViewsContainer">
+      <div class="live-badge"><span class="live-dot"></span>Live: <span id="liveCount">Loading...</span></div>
+      <div class="views-badge">
+        <svg class="views-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        </svg>
+        Views: <span id="viewsCount">Loading...</span>
+      </div>
+    </div>
+    <video id="player" playsinline controls crossorigin="anonymous" preload="metadata">
+      <source src="https://m-streaming.mooviedsited.workers.dev/https://pixeldrain.com/u/HMNYKCga" type="video/mp4" size="1080">
+      <source src="https://m-streaming.mooviedsited.workers.dev/https://pixeldrain.com/u/HMNYKCga" type="video/mp4" size="720">
+      <source src="https://m-streaming.mooviedsited.workers.dev/https://pixeldrain.com/u/HMNYKCga" type="video/mp4" size="480">
+      <source src="https://m-streaming.mooviedsited.workers.dev/https://pixeldrain.com/u/HMNYKCga" type="video/mp4" size="360">
+    </video>
+    <div class="subtitle-upload-card" id="subtitleCard">
+      <div class="relative h-full rounded-2xl p-4 flex flex-col gap-3 shadow-2xl backdrop-blur-md bg-white/6 border border-white/8 overflow-y-auto">
+        <div class="flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 border border-white/6" style="border-radius: 50px;width:50px;">
+              <svg fill="#ffffff" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21.20905,6.41669H22V4.08331H14.51978l-2.48584,9.16663h-.068L9.50269,4.08331H2V6.41663h.76837A.89578.89578,0,0,1,3.5,7.11139v9.83032a.84093.84093,0,0,1-.73163.6416H2v2.33338H8V17.58331H6.5V7.25h.08752L10.0451,19.91669h2.712L16.25989,7.25h.07355V17.58331H14.83337v2.33338H22V17.58331h-.79095a.83931.83931,0,0,1-.70905-.6416V7.11145A.8976.8976,0,0,1,21.20905,6.41669Z"/>
+              </svg>
+            </div>
+            <div>
+              <h9 class="text-sm font-semibold leading-none text-white">Subtitle Upload</h9>
+              <p9 class="text-xs text-white/60" style="
+    white-space: nowrap;
+">Upload .srt, .vtt, .ass — instant preview</p9>
+            </div>
+          </div>
+ <button id="closeCardBtn">x</button>
+        </div>
+        <div id="drop-zone" class="flex-shrink-0 rounded-xl border-2 border-dashed border-white/20 p-3 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all duration-200 ease-in-out hover:border-white/40 hover:bg-white/5">
+          <input id="file-input" type="file" accept=".srt,.vtt,.ass,.ssa,.txt" multiple class="hidden" />
+          <div class="w-full flex items-center justify-center">
+            <div class="flex flex-col items-center gap-2">
+              <svg fill="#ffffff" width="32px" height="32px" viewBox="-5 -5 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin">
+                <path d="M8 3.414v5.642a1 1 0 1 1-2 0V3.414L4.879 4.536A1 1 0 0 1 3.464 3.12L6.293.293a1 1 0 0 1 1.414 0l2.829 2.828A1 1 0 0 1 9.12 4.536L8 3.414zM1 12h12a1 1 0 0 1 0 2H1a1 1 0 0 1 0-2z"/>
+              </svg>
+              <div class="text-xs text-white/70">Drag & drop subtitles here</div>
+              <div class="text-xs text-indigo-300">or click to browse</div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 overflow-hidden min-h-0">
+          <div class="text-xs font-medium text-white/70 mb-2 flex-shrink-0">Uploaded Files</div>
+          <div id="files-list" class="h-full overflow-y-auto pr-2 pb-2 space-y-2"></div>
+        </div>
+        <div class="flex items-center justify-between pt-2 flex-shrink-0">
+          <div id="file-count" class="text-xs text-white/60">0 files</div>
+          <div class="flex items-center gap-2">
+            <button id="add-button" class="text-xs px-3 py-1 rounded-md bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/20 text-white transition-all">Add</button>
+            <button id="clear-button" class="text-xs px-3 py-1 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all">Clear</button>
+          </div>
+        </div>
+        <div class="pointer-events-none absolute -bottom-10 left-1/2 -translate-x-1/2 w-[220px] h-[220px] rounded-full bg-gradient-to-r from-indigo-400/8 via-cyan-400/6 to-rose-400/6 blur-3xl"></div>
+      </div>
+    </div>
+  </div>
+  <div id="adWarning">
+    <div class="warning-toast">
+      <div class="warning-icon-box">
+      <svg width="800px" height="800px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#000000"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.56 1h.88l6.54 12.26-.44.74H1.44L1 13.26 7.56 1zM8 2.28L2.28 13H13.7L8 2.28zM8.625 12v-1h-1.25v1h1.25zm-1.25-2V6h1.25v4h-1.25z"/></svg>
+      </div>
+      <div class="warning-content">
+        <p9 class="warning-title">DO NOT REMOVE TAB</p9>
+        <p9 class="warning-message">This tab is required for ad-free watching activation</p9>
+      </div>
+      <button class="warning-close" id="closeWarning" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getDatabase, ref, onValue, set, runTransaction, onDisconnect, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyD_t_TMaHO9Ei3oYK8ebzgstiZ_dWLmp9w",
+  authDomain: "video-player-count.firebaseapp.com",
+  databaseURL: "https://video-player-count-default-rtdb.firebaseio.com",
+  projectId: "video-player-count",
+  storageBucket: "video-player-count.firebasestorage.app",
+  messagingSenderId: "668890351373",
+  appId: "1:668890351373:web:48de5a6ccede3f8fe5d244",
+  measurementId: "G-PDP0S0XNYB"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Extract Post ID from video source or URL parameter
+const urlParams = new URLSearchParams(location.search);
+const videoSrc = document.querySelector('video source').getAttribute('src');
+const match = videoSrc.match(/\/u\/([^/?]+)/);
+const postId = match ? match[1] : urlParams.get('postId') || 'demo-post';
+
+// Base counts for display offset
+const BASE_LIVE_COUNT = parseInt(urlParams.get('baseLive')) || 2;
+const BASE_VIEWS_COUNT = parseInt(urlParams.get('baseViews')) || 9996;
+
+// Database references
+const allLiveViewersRef = ref(db, 'allLiveViewers'); // All posts combined live viewers
+const postViewsRef = ref(db, `postViews/${postId}`); // Individual post views
+const sessionId = 'user-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+const presenceRef = ref(db, `allLiveViewers/${sessionId}`);
+
+// Increment view count for this specific post
+async function incrementPostViews() {
+  try {
+    await runTransaction(postViewsRef, (currentViews) => {
+      return (currentViews || 0) + 1;
+    });
+    console.log('View count incremented for post:', postId);
+  } catch (error) {
+    console.error('Error incrementing views:', error);
+  }
+}
+
+// Format numbers (1000 -> 1k, 1000000 -> 1m)
+function formatNumber(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(2) + 'm';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(2) + 'k';
+  } else {
+    return num.toString();
+  }
+}
+
+// ========== PREMIUM AD SYSTEM ==========
+const SMARTLINK = 'https://www.effectivegatecpm.com/jgikgyvt36?key=0bcec789d41ba1308e075d3014dfd923';
+const THRESHOLD = 20 * 60; // 20 minutes
+let wasPlaying = false;
+let totalMade = 0;
+let lastPos = 0;
+let initialShown = false;
+let adsWin = null;
+let adTabActive = false;
+let adTabInterval = null;
+
+function openAdsTab() {
+  if (adsWin && !adsWin.closed) {
+    adsWin.focus();
+    return;
+  }
+  adsWin = window.open('https://m-adsactive.mooviedsited.workers.dev/', 'adsWindow', 'width=400,height=600,menubar=no,toolbar=no,location=no');
+  if (adsWin) {
+    adTabActive = true;
+    startAdTabMonitor();
+  } else {
+    alert('Please allow popups to continue watching without ads!');
+  }
+}
+
+function startAdTabMonitor() {
+  if (adTabInterval) clearInterval(adTabInterval);
+  adTabInterval = setInterval(() => {
+    const wasActive = adTabActive;
+    adTabActive = adsWin && !adsWin.closed;
+    if (wasActive && !adTabActive) {
+      showWarning();
+      if (!document.getElementById('egc-support-overlay')) {
+        setTimeout(createOverlay, 1500);
+      }
+    }
+  }, 100);
+}
+
+function showWarning() {
+  const warning = document.getElementById('adWarning');
+  if (!warning) {
+    console.error('Warning element not found');
+    return;
+  }
+  warning.classList.add('show');
+  console.log('Warning shown');
+  const closeBtn = document.getElementById('closeWarning');
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      warning.classList.remove('show');
+    };
+  }
+  setTimeout(() => {
+    warning.classList.remove('show');
+  }, 8000);
+}
+
+function createOverlay() {
+  if (document.getElementById('egc-support-overlay') || adTabActive) return;
+  if (player && !player.paused) {
+    wasPlaying = true;
+    player.pause();
+  }
+
+  const ov = document.createElement('div');
+  ov.id = 'egc-support-overlay';
+
+  const card = document.createElement('div');
+  card.className = 'ads-modern-card';
+
+  const content = document.createElement('div');
+  content.className = 'ads-card-content';
+  content.innerHTML = `
+    <div class="ads-header">
+      <h2 class="ads-title">Support This Free Content</h2>
+      <p class="ads-subtitle">This site is 100% free. Please support us by viewing ads or watching without interruption.</p>
+    </div>
+    <div class="ads-buttons">
+      <button id="egc-support-btn" class="premium-btn btn-primary">
+        <span class="btn-main-text">Support & Continue</span>
+        <span class="btn-sub-text">Every 20m ads show</span>
+      </button>
+      <button id="watch-without-ads-btn" class="premium-btn btn-secondary">
+        <span class="btn-main-text">Watch Without Ads</span>
+        <span class="btn-sub-text">Opening tab not closed</span>
+      </button>
+    </div>
+    <div class="ads-footer">Ads help keep this service free for everyone</div>
+  `;
+
+  card.appendChild(content);
+  ov.appendChild(card);
+  player.elements.container.appendChild(ov);
+
+  // Protection against DevTools hiding
+  const protectOverlay = () => {
+    const overlay = document.getElementById('egc-support-overlay');
+    if (overlay) {
+      const computedStyle = window.getComputedStyle(overlay);
+      if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || computedStyle.opacity === '0') {
+        overlay.style.setProperty('display', 'flex', 'important');
+        overlay.style.setProperty('visibility', 'visible', 'important');
+        overlay.style.setProperty('opacity', '1', 'important');
+      }
+    }
+  };
+
+  const protectionInterval = setInterval(() => {
+    if (!document.getElementById('egc-support-overlay')) {
+      clearInterval(protectionInterval);
+    } else {
+      protectOverlay();
+    }
+  }, 1000);
+
+  const observer = new MutationObserver(() => {
+    protectOverlay();
+  });
+
+  observer.observe(ov, {
+    attributes: true,
+    attributeFilter: ['style', 'class']
+  });
+
+  document.getElementById('egc-support-btn').onclick = () => {
+    clearInterval(protectionInterval);
+    observer.disconnect();
+    ov.remove();
+    window.open(SMARTLINK, '_blank', 'noopener,noreferrer');
+    if (wasPlaying && player) {
+      player.play();
+      wasPlaying = false;
+    }
+    totalMade = 0;
+    lastPos = player.currentTime;
+  };
+
+  document.getElementById('watch-without-ads-btn').onclick = () => {
+    clearInterval(protectionInterval);
+    observer.disconnect();
+    ov.remove();
+    openAdsTab();
+    if (wasPlaying && player) {
+      player.play();
+      wasPlaying = false;
+    }
+    totalMade = 0;
+    lastPos = player.currentTime;
+  };
+}
+
+// ========== SUBTITLE SYSTEM ==========
+const defaultSubtitles = {
+  en: {
+    url: 'https://res.cloudinary.com/dyqw58yqs/raw/upload/v1755586122/english_kih.vtt',
+    label: 'English'
+  },
+  si: {
+    url: 'https://res.cloudinary.com/dyqw58yqs/raw/upload/v1755586122/sinners.2025.1080p.10bit.webrip.6ch.x265.hevc-psa_txsiyx.vtt',
+    label: 'Sinhala'
+  }
+};
+
+let uploadedSubtitles = [];
+let player;
+let files = [];
+
+// Initialize Plyr
+player = new Plyr('#player', {
+  controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+  settings: ['captions', 'quality', 'speed', 'loop'],
+  captions: {
+    active: true,
+    language: 'auto',
+    update: true
+  },
+  quality: {
+    default: 720,
+    options: [1080, 720, 480, 360]
+  }
+});
+
+function initializeDefaultSubtitles() {
+  const video = player.media;
+  const existingTracks = video.querySelectorAll('track');
+  existingTracks.forEach(t => t.remove());
+
+  Object.keys(defaultSubtitles).forEach((code, index) => {
+    const sub = defaultSubtitles[code];
+    fetch(sub.url)
+      .then(response => response.text())
+      .then(content => {
+        const blob = new Blob([content], {
+          type: 'text/vtt'
+        });
+        const url = URL.createObjectURL(blob);
+        const track = document.createElement('track');
+        track.kind = 'captions';
+        track.label = sub.label;
+        track.srclang = code;
+        track.src = url;
+        if (index === 0) track.default = true;
+        video.appendChild(track);
+        track.addEventListener('load', function() {
+          console.log('Track loaded:', sub.label);
+        });
+      })
+      .catch(error => {
+        console.error('Failed to load subtitle:', sub.label, error);
+        const track = document.createElement('track');
+        track.kind = 'captions';
+        track.label = sub.label;
+        track.srclang = code;
+        track.src = sub.url;
+        track.crossOrigin = 'anonymous';
+        if (index === 0) track.default = true;
+        video.appendChild(track);
+      });
+  });
+
+  setTimeout(() => {
+    if (video.textTracks.length > 0) {
+      video.textTracks[0].mode = 'showing';
+      console.log('First subtitle track activated');
+    }
+  }, 1000);
+
+  setTimeout(renderFiles, 1500);
+}
+
+// Player ready event
+player.on('ready', () => {
+  console.log('Player ready - initializing subtitles...');
+  initializeDefaultSubtitles();
+
+  // Disable right-click on player
+  player.elements.container.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    window.open(SMARTLINK, '_blank', 'noopener,noreferrer');
+    return false;
+  });
+
+  setTimeout(() => {
+    player.toggleCaptions(true);
+    player.captions.active = true;
+    console.log('Captions force-enabled');
+  }, 500);
+
+  // Add subtitle upload button
+  setTimeout(() => {
+    const controls = document.querySelector('.plyr__controls');
+    const captionsBtn = controls.querySelector('[data-plyr="captions"]');
+    const existingBtn = controls.querySelector('[data-plyr="upload-subtitle"]');
+    if (existingBtn) existingBtn.remove();
+
+    const uploadBtn = document.createElement('button');
+    uploadBtn.className = 'plyr__controls__item plyr__control';
+    uploadBtn.setAttribute('data-plyr', 'upload-subtitle');
+    uploadBtn.setAttribute('type', 'button');
+    uploadBtn.innerHTML = `
+      <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM6.5 12.57H9.27C9.68 12.57 10.02 12.91 10.02 13.32C10.02 13.73 9.68 14.07 9.27 14.07H6.5C6.09 14.07 5.75 13.73 5.75 13.32C5.75 12.91 6.09 12.57 6.5 12.57ZM12.97 17.83H6.5C6.09 17.83 5.75 17.49 5.75 17.08C5.75 16.67 6.09 16.33 6.5 16.33H12.97C13.38 16.33 13.72 16.67 13.72 17.08C13.72 17.49 13.39 17.83 12.97 17.83ZM17.5 17.83H15.65C15.24 17.83 14.9 17.49 14.9 17.08C14.9 16.67 15.24 16.33 15.65 16.33H17.5C17.91 16.33 18.25 16.67 18.25 17.08C18.25 17.49 17.91 17.83 17.5 17.83ZM17.5 14.07H11.97C11.56 14.07 11.22 13.73 11.22 13.32C11.22 12.91 11.56 12.57 11.97 12.57H17.5C17.91 12.57 18.25 12.91 18.25 13.32C18.25 13.73 17.91 14.07 17.5 14.07Z" fill="#ffffff"/>
+      </svg>
+      <span class="plyr__tooltip">Upload Subtitle</span>
+    `;
+
+    if (captionsBtn && captionsBtn.parentNode) {
+      captionsBtn.parentNode.insertBefore(uploadBtn, captionsBtn.nextSibling);
+    }
+    uploadBtn.addEventListener('click', toggleUploadCard);
+  }, 100);
+
+  // Move elements to player container
+  const container = player.elements.container;
+  const subtitleCard = document.getElementById('subtitleCard');
+  const liveViewsContainer = document.getElementById('liveViewsContainer');
+  const warningMsg = document.getElementById('adWarning');
+
+  if (container) {
+    if (subtitleCard) container.appendChild(subtitleCard);
+    if (liveViewsContainer) container.appendChild(liveViewsContainer);
+    if (warningMsg) container.appendChild(warningMsg);
+  }
+
+  const videoEl = player.media;
+  if (videoEl) {
+    videoEl.classList.add('plyr-ready');
+  }
+
+  // Increment view count after 500ms
+  setTimeout(incrementPostViews, 500);
+
+  // ========== PRESENCE SYSTEM ==========
+  let hasPresence = false;
+  const presenceData = {
+    userId: sessionId,
+    postId: postId,
+    timestamp: Date.now()
+  };
+  let keepAliveInterval = null;
+
+  function updatePresence() {
+    const active = !document.hidden && player.playing;
+    if (active && !hasPresence) {
+      set(presenceRef, {
+        ...presenceData,
+        timestamp: Date.now()
+      });
+      hasPresence = true;
+      startKeepAlive();
+    } else if (!active && hasPresence) {
+      set(presenceRef, null);
+      hasPresence = false;
+      if (keepAliveInterval) clearInterval(keepAliveInterval);
+    }
+  }
+
+  function startKeepAlive() {
+    if (keepAliveInterval) clearInterval(keepAliveInterval);
+    keepAliveInterval = setInterval(() => {
+      if (hasPresence) {
+        set(presenceRef, {
+          ...presenceData,
+          timestamp: Date.now()
+        });
+      }
+    }, 25000);
+  }
+
+  player.on('playing', updatePresence);
+  player.on('pause', updatePresence);
+  player.on('ended', updatePresence);
+  player.on('seeked', updatePresence);
+  document.addEventListener('visibilitychange', updatePresence);
+
+  window.addEventListener('beforeunload', () => {
+    set(presenceRef, null);
+  });
+
+  onDisconnect(presenceRef).remove();
+  updatePresence();
+
+  // ========== LIVE VIEWERS LISTENER (ALL POSTS) ==========
+  onValue(allLiveViewersRef, snapshot => {
+    let count = 0;
+    const now = Date.now();
+    const val = snapshot.val() || {};
+    
+    Object.keys(val).forEach(key => {
+      if (val[key] && val[key].timestamp > now - 60000) {
+        count++;
+      }
+    });
+    
+    document.getElementById('liveCount').textContent = formatNumber(BASE_LIVE_COUNT + count);
+  });
+
+  // ========== POST VIEWS LISTENER (INDIVIDUAL POST) ==========
+  onValue(postViewsRef, snapshot => {
+    const postViews = snapshot.val() || 0;
+    document.getElementById('viewsCount').textContent = formatNumber(BASE_VIEWS_COUNT + postViews);
+  });
+});
+
+// Fullscreen events
+player.on('enterfullscreen', () => {
+  const liveViewsContainer = document.getElementById('liveViewsContainer');
+  if (liveViewsContainer) {
+    liveViewsContainer.classList.add('show');
+  }
+});
+
+player.on('exitfullscreen', () => {
+  // Keep visible
+});
+
+// Show overlay on first load
+player.on('loadedmetadata', () => {
+  if (!initialShown) {
+    setTimeout(() => {
+      createOverlay();
+      initialShown = true;
+    }, 1000);
+  }
+});
+
+// Ad monitoring
+let monInt;
+
+player.on('playing', () => {
+  if (monInt) clearInterval(monInt);
+  monInt = setInterval(() => {
+    if (adTabActive) return;
+    const delta = player.currentTime - lastPos;
+    if (delta > 0) {
+      totalMade += delta;
+      lastPos = player.currentTime;
+    }
+    if (totalMade >= THRESHOLD && !document.getElementById('egc-support-overlay')) {
+      clearInterval(monInt);
+      createOverlay();
+    }
+  }, 200);
+});
+
+player.on('pause', () => clearInterval(monInt));
+
+player.on('seeked', () => {
+  if (adTabActive) return;
+  const skip = player.currentTime - lastPos;
+  if (skip > 0) totalMade += skip;
+  lastPos = player.currentTime;
+  if (totalMade >= THRESHOLD && !document.getElementById('egc-support-overlay')) createOverlay();
+});
+
+window.addEventListener('beforeunload', () => {
+  if (adsWin && !adsWin.closed) adsWin.close();
+  if (monInt) clearInterval(monInt);
+  if (adTabInterval) clearInterval(adTabInterval);
+});
+
+// ========== SUBTITLE UPLOAD SYSTEM ==========
+const subtitleCard = document.getElementById('subtitleCard');
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const filesList = document.getElementById('files-list');
+const fileCount = document.getElementById('file-count');
+const addButton = document.getElementById('add-button');
+const clearButton = document.getElementById('clear-button');
+const closeCardBtn = document.getElementById('closeCardBtn');
+
+function toggleUploadCard(e) {
+  e.stopPropagation();
+  subtitleCard.classList.toggle('active');
+}
+
+closeCardBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  subtitleCard.classList.remove('active');
+});
+
+const humanFileSize = (size) => {
+  if (!size) return "0 B";
+  const i = Math.floor(Math.log(size) / Math.log(1024));
+  const sizes = ["B", "KB", "MB", "GB"];
+  return (size / Math.pow(1024, i)).toFixed(1) + " " + sizes[i];
+};
+
+function parseTime(str) {
+  const parts = str.split(':');
+  let secs = 0;
+  if (parts.length === 3) {
+    secs = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
+  } else if (parts.length === 2) {
+    secs = parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+  } else {
+    secs = parseFloat(parts[0]);
+  }
+  return secs;
+}
+
+function parseVTT(content) {
+  const cues = [];
+  const blocks = content.split(/\r?\n\r?\n/);
+  for (let block of blocks) {
+    if (!block.trim()) continue;
+    const lines = block.split(/\r?\n/);
+    let timeLineIndex = lines.findIndex(line => line.includes('-->'));
+    if (timeLineIndex === -1) continue;
+    const timeLine = lines[timeLineIndex];
+    const textStart = timeLineIndex + 1;
+    const timeParts = timeLine.split('-->');
+    const startStr = timeParts[0].trim();
+    const endParts = timeParts[1].trim().split(' ');
+    const endStr = endParts[0];
+    const start = parseTime(startStr);
+    const end = parseTime(endStr);
+    const text = lines.slice(textStart).join('\n').trim();
+    if (!isNaN(start) && !isNaN(end) && text) {
+      cues.push(new VTTCue(start, end, text));
+    }
+  }
+  return cues;
+}
+
+function handleFiles(selectedFiles) {
+  Array.from(selectedFiles).forEach((file) => {
+    if (file.name.match(/\.(vtt|srt|ass|ssa|txt)$/i)) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        let content = e.target.result;
+        if (file.name.endsWith('.srt')) {
+          content = convertSRTtoVTT(content);
+        }
+        if (!content.trim().startsWith('WEBVTT')) {
+          content = 'WEBVTT\n\n' + content;
+        }
+        const langCode = 'custom-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        const fileObj = {
+          id: langCode,
+          name: file.name,
+          size: file.size,
+          type: file.type || 'text/subtitle',
+          label: file.name.replace(/\.(vtt|srt|ass|ssa|txt)$/i, ''),
+          srclang: langCode,
+          isCustom: true,
+          uploadedAt: new Date()
+        };
+        files.unshift(fileObj);
+        uploadedSubtitles.push(fileObj);
+        addTrackToVideo(fileObj, content);
+        renderFiles();
+      };
+      reader.readAsText(file, 'UTF-8');
+    }
+  });
+}
+
+function convertSRTtoVTT(srt) {
+  srt = srt.replace(/^\uFEFF/, '');
+  let vtt = 'WEBVTT\n\n';
+  vtt += srt.replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2');
+  vtt = vtt.replace(/\n\d+\n/g, '\n');
+  return vtt;
+}
+
+function addTrackToVideo(subtitle, vttContent) {
+  const video = player.media;
+  if (!video) return;
+  const track = video.addTextTrack('captions', subtitle.label, subtitle.srclang);
+  subtitle.track = track;
+  const cues = parseVTT(vttContent);
+  cues.forEach(cue => track.addCue(cue));
+  Array.from(video.textTracks).forEach(t => t.mode = 'disabled');
+  track.mode = 'showing';
+  setTimeout(() => {
+    if (player && player.captions) {
+      player.captions.active = true;
+      player.toggleCaptions(true);
+      player.language = subtitle.srclang;
+      player.captions.update();
+    }
+  }, 100);
+}
+
+function renderFiles() {
+  filesList.innerHTML = '';
+  if (files.length === 0) {
+    filesList.innerHTML = `<div class="flex items-center justify-center h-full text-center text-white/50 select-none py-4">No uploaded subtitles yet — add files to see them here.</div>`;
+  } else {
+    files.forEach((f) => {
+      const isActive = f.track && f.track.mode === 'showing';
+      const fileItem = document.createElement('div');
+      fileItem.className = 'flex items-center gap-3 p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors ' + (isActive ? 'ring-2 ring-green-500/50' : '');
+      fileItem.innerHTML = `
+        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
+          <svg fill="#ffffff" width="24px" height="24px" viewBox="-4 -2 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin">
+            <path d="M10.298 2H3a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V4.961L10.298 2zM3 0h8l5 4v13a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3z"/>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between">
+            <div class="truncate text-sm font-medium text-white">${f.name}</div>
+            <div class="text-xs text-white/60">${humanFileSize(f.size)}</div>
+          </div>
+          <div class="mt-1 text-[11px] text-white/50 flex items-center justify-between">
+            <div class="truncate">${f.type}</div>
+            <div class="flex items-center gap-2">
+              ${isActive ? '<span class="text-[11px] px-2 py-1 rounded-md bg-green-600/20 text-green-300">Active</span>' : '<button class="activate-btn text-[11px] px-2 py-1 rounded-md bg-blue-600/20 hover:bg-blue-600/30 focus:outline-none text-white transition-all">Activate</button>'}
+              <button class="remove-btn text-[11px] px-2 py-1 rounded-md bg-rose-600/20 hover:bg-rose-600/30 focus:outline-none text-white transition-all">Remove</button>
+            </div>
+          </div>
+        </div>
+      `;
+      const activateBtn = fileItem.querySelector('.activate-btn');
+      const removeBtn = fileItem.querySelector('.remove-btn');
+      if (activateBtn) {
+        activateBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          activateSubtitle(f.id);
+        });
+      }
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeFile(f.id);
+      });
+      filesList.appendChild(fileItem);
+    });
+  }
+  fileCount.textContent = `${files.length} file${files.length !== 1 ? "s" : ""}`;
+}
+
+function activateSubtitle(id) {
+  const file = files.find(f => f.id === id);
+  if (!file || !file.track) return;
+  const video = player.media;
+  Array.from(video.textTracks).forEach(t => t.mode = 'disabled');
+  file.track.mode = 'showing';
+  setTimeout(() => {
+    if (player && player.captions) {
+      player.captions.active = true;
+      player.toggleCaptions(true);
+      player.language = file.srclang;
+      player.captions.update();
+    }
+  }, 50);
+  renderFiles();
+}
+
+function removeFile(id) {
+  const file = files.find(f => f.id === id);
+  if (file && file.track) {
+    file.track.mode = 'disabled';
+    const defaultTracks = Array.from(player.media.textTracks).filter(t => !files.some(f => f.srclang === t.language));
+    if (defaultTracks.length > 0) {
+      defaultTracks[0].mode = 'showing';
+      player.language = defaultTracks[0].language;
+      player.captions.active = true;
+      player.toggleCaptions(true);
+      player.captions.update();
+    }
+  }
+  files = files.filter(f => f.id !== id);
+  uploadedSubtitles = uploadedSubtitles.filter(s => s.id !== id);
+  renderFiles();
+}
+
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files && e.target.files.length) {
+    handleFiles(e.target.files);
+    e.target.value = null;
+  }
+});
+
+dropZone.addEventListener('click', () => fileInput.click());
+
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove("ring-2", "ring-offset-2", "ring-indigo-400");
+  if (e.dataTransfer.files && e.dataTransfer.files.length) {
+    handleFiles(e.dataTransfer.files);
+  }
+});
+
+dropZone.addEventListener('dragover', (e) => e.preventDefault());
+
+dropZone.addEventListener('dragenter', () => {
+  dropZone.classList.add("ring-2", "ring-offset-2", "ring-indigo-400");
+});
+
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove("ring-2", "ring-offset-2", "ring-indigo-400");
+});
+
+addButton.addEventListener('click', () => fileInput.click());
+
+clearButton.addEventListener('click', () => {
+  files.forEach(f => {
+    if (f.track) f.track.mode = 'disabled';
+  });
+  files.length = 0;
+  uploadedSubtitles.length = 0;
+  const video = player.media;
+  if (video.textTracks.length > 0) {
+    video.textTracks[0].mode = 'showing';
+    player.language = video.textTracks[0].language;
+    player.captions.active = true;
+    player.toggleCaptions(true);
+    player.captions.update();
+  }
+  renderFiles();
+});
+
+document.addEventListener('click', (e) => {
+  if (!subtitleCard.contains(e.target) && !e.target.closest('[data-plyr="upload-subtitle"]')) {
+    subtitleCard.classList.remove('active');
+  }
+});
+
+subtitleCard.addEventListener('click', (e) => {
+  e.stopPropagation();
+});
+
+// Keyboard controls
+document.addEventListener('keydown', (event) => {
+  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+  const key = event.key;
+  if (key === 'Enter' || key === ' ') {
+    event.preventDefault();
+    if (player.playing) {
+      player.pause();
+    } else {
+      player.play();
+    }
+  } else if (key === 'ArrowLeft') {
+    player.rewind(10);
+  } else if (key === 'ArrowRight') {
+    player.forward(10);
+  } else if (key === 'ArrowUp') {
+    player.increaseVolume(0.1);
+  } else if (key === 'ArrowDown') {
+    player.decreaseVolume(0.1);
+  }
+});
+  </script>
+</body>
+</html>
