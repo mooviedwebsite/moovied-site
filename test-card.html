@@ -78,7 +78,7 @@
     .movie-card:hover .rt-ring { width: 80px; border-radius: 26px; background: rgba(22,22,32,.96); box-shadow:0 6px 22px rgba(255,61,61,.35); transform:translateY(-2px); height: 35px; }
     .movie-card:hover .rt-ring .ring-label { max-width: 40px; opacity: 1; margin-left: 4px; }
     .movie-card:hover .rt-ring .ring-svg   { opacity: 0; }
-    .rt-ring::before { content:''; position:absolute; inset:4px; border-radius:50%; animation: glowR 2.4s ease-in-out infinite; animation-delay:1.2s; }
+    .rt-ring::before { content:''; position:absolute; inset:4px; border-radius:50%; animation: glowR 2.4s ease-in-out infinite; animation-delay:1.2s; display:none; }
     @keyframes glowR { 0%,100%{box-shadow:0 0 0 0 rgba(255,61,61,0)}50%{box-shadow:0 0 18px 6px rgba(255,61,61,.3)} }
     .imdb-ring .ring-fill { stroke-dasharray:125.66; stroke-dashoffset:125.66; animation: dI 1.6s cubic-bezier(0.23,1,0.32,1) .3s forwards; }
     @keyframes dI { to{stroke-dashoffset:15.08} }
