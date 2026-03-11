@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netflix · Stranger Things</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red:    #E50914;
+  --gold:   #F5C518;
+  --tomato: #FA320A;
+  --green:  #46d369;
+  --bg:     #141414;
+  --card:   #181818;
+  --surf2:  #2f2f2f;
+  --muted:  #bcbcbc;
+  --dim:    #777;
+  --r:      8px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  font-family: 'Barlow', sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(12px,3vw,40px) clamp(10px,2.5vw,20px) clamp(24px,5vw,60px);
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(ellipse at 15% 50%, #200808 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 15%, #08141e 0%, transparent 55%),
+    var(--bg);
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border-radius: var(--r);
+  width: 100%;
+  max-width: 900px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.85);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  height: clamp(190px, 44vw, 460px);
+  overflow: hidden;
+}
+
+.hero-img {
+  width:100%; height:100%;
+  object-fit: cover;
+  display: block;
+  animation: heroZ 8s ease-out forwards;
+}
+@keyframes heroZ { from{transform:scale(1.06)} to{transform:scale(1)} }
+
+.hero::after {
+  content:''; position:absolute; inset:0;
+  background:
+    linear-gradient(to right,  rgba(24,24,24,.95) 0%, rgba(24,24,24,.05) 55%),
+    linear-gradient(to top,    rgba(24,24,24,1)   0%, rgba(24,24,24,0)   45%);
+  pointer-events:none;
+}
+
+.hero-content {
+  position:absolute; bottom:0; left:0; right:0;
+  padding: clamp(14px,3vw,30px) clamp(14px,3.5vw,32px);
+  z-index:2;
+}
+
+.hero-logo {
+  font-family:'Bebas Neue',sans-serif;
+  font-size: clamp(26px, 6.5vw, 68px);
+  letter-spacing:.04em; line-height:1;
+  text-shadow:2px 4px 18px rgba(0,0,0,.85);
+  margin-bottom: clamp(3px,.6vw,8px);
+}
+
+.hero-tagline {
+  font-size: clamp(10px,1.8vw,14px);
+  font-weight:300; font-style:italic;
+  color:var(--muted);
+  text-shadow:0 1px 6px rgba(0,0,0,.7);
+  margin-bottom: clamp(10px,2vw,20px);
+}
+
+/* ── BUTTONS ── */
+.btn-row {
+  display:flex; gap:clamp(5px,1.4vw,10px);
+  flex-wrap:wrap; align-items:center;
+}
+
+.btn {
+  display:inline-flex; align-items:center;
+  gap:clamp(4px,.8vw,8px);
+  padding: clamp(7px,1.3vw,11px) clamp(11px,2.4vw,22px);
+  border-radius:var(--r);
+  font-family:'Barlow',sans-serif;
+  font-size: clamp(11px,1.6vw,15px);
+  font-weight:700; cursor:pointer; border:none;
+  transition:background .2s, transform .15s;
+  white-space:nowrap; line-height:1;
+}
+.btn svg { width:clamp(13px,1.9vw,18px); height:clamp(13px,1.9vw,18px); flex-shrink:0; }
+
+.btn-play { background:#fff; color:#000; }
+.btn-play:hover { background:rgba(255,255,255,.82); transform:scale(1.04); }
+
+.btn-add {
+  background:rgba(109,109,110,.65); color:#fff;
+  border:1.5px solid rgba(255,255,255,.36);
+  backdrop-filter:blur(4px);
+}
+.btn-add:hover { background:rgba(109,109,110,.9); transform:scale(1.04); }
+.btn-add.added { background:rgba(229,9,20,.45); border-color:var(--red); }
+
+.btn-like {
+  background:rgba(109,109,110,.45); color:#fff;
+  border:1.5px solid rgba(255,255,255,.26);
+  padding: clamp(7px,1.3vw,11px) clamp(9px,1.5vw,14px);
+  border-radius:50%; backdrop-filter:blur(4px);
+}
+.btn-like:hover { background:rgba(109,109,110,.85); transform:scale(1.1); }
+.btn-like.liked { background:rgba(70,211,105,.28); border-color:var(--green); }
+
+/* ── BODY GRID ── */
+.body {
+  padding: clamp(14px,3vw,28px);
+  display:grid;
+  grid-template-columns: 1fr clamp(140px,26%,250px);
+  gap: clamp(14px,3vw,28px);
+  align-items:start;
+}
+
+@media(max-width:580px){
+  .body { grid-template-columns:1fr; gap:clamp(10px,2vw,16px); }
+}
+
+/* ── META ── */
+.meta-row {
+  display:flex; align-items:center;
+  gap:clamp(5px,1.4vw,12px); flex-wrap:wrap;
+  margin-bottom:clamp(8px,1.5vw,12px);
+}
+.match-score { color:var(--green); font-weight:700; font-size:clamp(11px,1.6vw,15px); }
+.year,.runtime { color:var(--muted); font-size:clamp(10px,1.5vw,14px); }
+.badge {
+  border:1px solid var(--dim); color:var(--muted);
+  font-size:clamp(8px,1.1vw,11px);
+  padding:2px clamp(4px,.9vw,7px);
+  border-radius:3px; font-weight:600; letter-spacing:.05em;
+}
+.badge-hd { color:#fff; border-color:rgba(255,255,255,.5); }
+
+/* ── RATINGS ── */
+.ratings {
+  display:flex; gap:clamp(5px,1.4vw,12px);
+  align-items:center; flex-wrap:wrap;
+  margin-bottom:clamp(8px,1.8vw,14px);
+}
+.rating-pill {
+  display:flex; align-items:center;
+  gap:clamp(3px,.8vw,6px);
+  padding:clamp(4px,.9vw,6px) clamp(8px,1.8vw,12px);
+  border-radius:20px; font-weight:700;
+  font-size:clamp(10px,1.5vw,13px);
+}
+.rating-imdb { background:var(--gold); color:#000; }
+.rating-rt   { background:var(--tomato); color:#fff; }
+
+/* ── DESCRIPTION ── */
+.description {
+  font-size:clamp(12px,1.65vw,14px);
+  line-height:1.7; color:#d0d0d0;
+  margin-bottom:clamp(5px,1vw,9px);
+}
+.description.truncated {
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.desc-toggle {
+  background:none; border:none; color:var(--muted);
+  font-size:clamp(10px,1.4vw,13px);
+  font-family:'Barlow',sans-serif;
+  cursor:pointer; padding:0; text-decoration:underline;
+  transition:color .2s;
+}
+.desc-toggle:hover { color:#fff; }
+
+/* ── TAGS ── */
+.tags {
+  display:flex; flex-wrap:wrap;
+  gap:clamp(4px,.9vw,7px);
+  margin:clamp(10px,2vw,16px) 0;
+}
+.tag {
+  background:rgba(255,255,255,.07); color:var(--muted);
+  font-size:clamp(9px,1.3vw,12px);
+  padding:clamp(3px,.7vw,5px) clamp(8px,1.6vw,13px);
+  border-radius:20px; border:1px solid rgba(255,255,255,.1);
+  transition:all .2s; cursor:default;
+}
+.tag:hover { background:rgba(255,255,255,.14); color:#fff; }
+
+/* ── INFO GRID ── */
+.info-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(7px,1.4vw,12px) clamp(10px,1.8vw,18px);
+  margin-top:clamp(4px,.8vw,8px);
+}
+@media(max-width:360px){ .info-grid { grid-template-columns:1fr; } }
+
+.info-label {
+  color:var(--dim); font-size:clamp(8px,1.1vw,11px);
+  text-transform:uppercase; letter-spacing:.08em; margin-bottom:3px;
+}
+.info-value { color:var(--muted); font-size:clamp(10px,1.4vw,13px); line-height:1.4; }
+.info-value a { color:#fff; text-decoration:none; }
+.info-value a:hover { text-decoration:underline; }
+
+/* ── SIDEBAR ── */
+.sidebar { font-size:clamp(10px,1.4vw,13px); }
+.sidebar-block { margin-bottom:clamp(9px,1.8vw,18px); }
+.sidebar-label {
+  color:var(--dim); font-size:clamp(8px,1.1vw,11px);
+  text-transform:uppercase; letter-spacing:.08em; margin-bottom:5px;
+}
+.sidebar-value { color:var(--muted); line-height:1.65; }
+.sidebar-value span { color:#fff; font-weight:600; cursor:pointer; }
+.sidebar-value span:hover { text-decoration:underline; }
+
+/* ── DIVIDER ── */
+.divider {
+  height:1px; background:rgba(255,255,255,.07);
+  margin:0 clamp(14px,3vw,28px) clamp(14px,3vw,24px);
+}
+
+/* ── SIMILAR ── */
+.similar-section {
+  padding:0 clamp(14px,3vw,28px) clamp(20px,4vw,36px);
+}
+.section-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(16px,2.8vw,24px);
+  letter-spacing:.05em;
+  margin-bottom:clamp(10px,2vw,16px);
+}
+
+/* auto-fill: 1 col on mobile → 2 tablet → 3 desktop */
+.similar-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(min(100%,195px),1fr));
+  gap:clamp(7px,1.4vw,12px);
+}
+
+.similar-card {
+  background:var(--surf2); border-radius:6px;
+  overflow:hidden; cursor:pointer; position:relative;
+  transition:transform .22s, box-shadow .22s;
+}
+.similar-card:hover { transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.7); }
+.similar-card:hover .card-overlay { opacity:1; }
+
+.similar-thumb {
+  width:100%; aspect-ratio:16/9;
+  object-fit:cover; display:block;
+}
+.card-overlay {
+  position:absolute; inset:0;
+  background:rgba(0,0,0,.48);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity .2s;
+  font-size:clamp(22px,4vw,36px);
+}
+.similar-info {
+  padding:clamp(7px,1.4vw,11px) clamp(9px,1.7vw,14px) clamp(9px,1.7vw,14px);
+}
+.similar-meta {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:4px;
+}
+.similar-match    { color:var(--green); font-size:clamp(9px,1.3vw,12px); font-weight:700; }
+.similar-duration { color:var(--dim);   font-size:clamp(9px,1.3vw,12px); }
+.similar-title {
+  font-size:clamp(11px,1.6vw,14px); font-weight:700;
+  margin-bottom:4px; color:#fff;
+}
+.similar-desc {
+  font-size:clamp(10px,1.4vw,12px); color:var(--dim);
+  line-height:1.55;
+  display:-webkit-box; -webkit-line-clamp:2;
+  -webkit-box-orient:vertical; overflow:hidden;
+}
+
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(255,255,255,.13); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- HERO -->
+  <div class="hero">
+    <img class="hero-img"
+         src="https://images.unsplash.com/photo-1534809027769-b00d750a6bac?w=1400&q=80"
+         alt="Stranger Things" loading="eager"/>
+    <div class="hero-content">
+      <div class="hero-logo">STRANGER THINGS</div>
+      <div class="hero-tagline">"The world is turning upside down."</div>
+      <div class="btn-row">
+        <button class="btn btn-play" id="playBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+          Play
+        </button>
+        <button class="btn btn-add" id="addBtn">
+          <svg id="addIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span id="addLabel">My List</span>
+        </button>
+        <button class="btn btn-like" id="likeBtn" aria-label="Like">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+            <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <div class="left">
+      <div class="meta-row">
+        <span class="match-score">97% Match</span>
+        <span class="year">2016 – 2025</span>
+        <span class="badge badge-hd">4K</span>
+        <span class="badge">HDR</span>
+        <span class="badge">5.1</span>
+        <span class="runtime">4 Seasons · 42 Episodes</span>
+      </div>
+
+      <div class="ratings">
+        <div class="rating-pill rating-imdb"><span>⭐</span><span>IMDb 8.7</span></div>
+        <div class="rating-pill rating-rt"><span>🍅</span><span>RT 93%</span></div>
+      </div>
+
+      <p class="description truncated" id="desc">When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl. Set in the 1980s in the fictional town of Hawkins, Indiana, the series follows a group of friends as they investigate the Upside Down — a shadowy parallel dimension filled with monsters. With each new season the stakes grow higher, the mythology deepens, and the bond between the core characters is tested like never before. A love letter to classic 80s genre films, packed with heart, horror, and humor.</p>
+      <button class="desc-toggle" id="descToggle">Show more ▾</button>
+
+      <div class="tags">
+        <span class="tag">Sci-Fi</span>
+        <span class="tag">Horror</span>
+        <span class="tag">Supernatural</span>
+        <span class="tag">Coming of Age</span>
+        <span class="tag">Mystery</span>
+        <span class="tag">1980s Nostalgia</span>
+        <span class="tag">Dark</span>
+        <span class="tag">Suspenseful</span>
+      </div>
+
+      <div class="info-grid">
+        <div><div class="info-label">Creator</div><div class="info-value"><a href="#">The Duffer Brothers</a></div></div>
+        <div><div class="info-label">Network</div><div class="info-value">Netflix Original</div></div>
+        <div><div class="info-label">Rating</div><div class="info-value">TV-14</div></div>
+        <div><div class="info-label">Language</div><div class="info-value">English</div></div>
+        <div><div class="info-label">Country</div><div class="info-value">United States</div></div>
+        <div><div class="info-label">Avg Runtime</div><div class="info-value">51 min / ep</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-block">
+        <div class="sidebar-label">Cast</div>
+        <div class="sidebar-value"><span>Millie Bobby Brown</span>, <span>Finn Wolfhard</span>, <span>Winona Ryder</span>, <span>David Harbour</span>, <span>Gaten Matarazzo</span>, <span>Sadie Sink</span></div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-label">Genres</div>
+        <div class="sidebar-value"><span>Sci-Fi</span> · <span>Horror</span> · <span>Drama</span> · <span>Thriller</span></div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-label">Awards</div>
+        <div class="sidebar-value" style="color:var(--gold)">🏆 Emmy · SAG Award · Globe Nom.</div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-label">Audio</div>
+        <div class="sidebar-value">EN · ES · FR · PT · DE · JA</div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-label">Subtitles</div>
+        <div class="sidebar-value">English CC + 28 more</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SIMILAR -->
+  <div class="similar-section">
+    <div class="section-title">More Like This</div>
+    <div class="similar-grid">
+
+      <div class="similar-card">
+        <img class="similar-thumb" src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=70" alt="Dark"/>
+        <div class="card-overlay">▶</div>
+        <div class="similar-info">
+          <div class="similar-meta"><span class="similar-match">94% Match</span><span class="similar-duration">3 Seasons</span></div>
+          <div class="similar-title">Dark</div>
+          <div class="similar-desc">A supernatural family saga where the disappearance of two children exposes a time travel conspiracy spanning generations.</div>
+        </div>
+      </div>
+
+      <div class="similar-card">
+        <img class="similar-thumb" src="https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=400&q=70" alt="The OA"/>
+        <div class="card-overlay">▶</div>
+        <div class="similar-info">
+          <div class="similar-meta"><span class="similar-match">91% Match</span><span class="similar-duration">2 Seasons</span></div>
+          <div class="similar-title">The OA</div>
+          <div class="similar-desc">A blind woman returns after seven years missing with her sight restored and a strange ability from another dimension.</div>
+        </div>
+      </div>
+
+      <div class="similar-card">
+        <img class="similar-thumb" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&q=70" alt="Haunting of Hill House"/>
+        <div class="card-overlay">▶</div>
+        <div class="similar-info">
+          <div class="similar-meta"><span class="similar-match">89% Match</span><span class="similar-duration">1 Season</span></div>
+          <div class="similar-title">Haunting of Hill House</div>
+          <div class="similar-desc">A family confronts haunting memories of their old home and the terrifying events that led them to flee years ago.</div>
+        </div>
+      </div>
+
+      <div class="similar-card">
+        <img class="similar-thumb" src="https://images.unsplash.com/photo-1496065187959-7f07b8353c55?w=400&q=70" alt="Black Mirror"/>
+        <div class="card-overlay">▶</div>
+        <div class="similar-info">
+          <div class="similar-meta"><span class="similar-match">88% Match</span><span class="similar-duration">6 Seasons</span></div>
+          <div class="similar-title">Black Mirror</div>
+          <div class="similar-desc">An anthology exploring a twisted multiverse where technology collides with our darkest human instincts.</div>
+        </div>
+      </div>
+
+      <div class="similar-card">
+        <img class="similar-thumb" src="https://images.unsplash.com/photo-1506466010722-395aa2bef877?w=400&q=70" alt="Twin Peaks"/>
+        <div class="card-overlay">▶</div>
+        <div class="similar-info">
+          <div class="similar-meta"><span class="similar-match">85% Match</span><span class="similar-duration">3 Seasons</span></div>
+          <div class="similar-title">Twin Peaks</div>
+          <div class="similar-desc">An FBI agent investigates a murder in a small northwest town, uncovering dark secrets beneath the surface.</div>
+        </div>
+      </div>
+
+      <div class="similar-card">
+        <img class="similar-thumb" src="https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?w=400&q=70" alt="Manifest"/>
+        <div class="card-overlay">▶</div>
+        <div class="similar-info">
+          <div class="similar-meta"><span class="similar-match">83% Match</span><span class="similar-duration">4 Seasons</span></div>
+          <div class="similar-title">Manifest</div>
+          <div class="similar-desc">A flight reappears after five years — its passengers must grapple with an impossible new reality.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /card -->
+
+<script>
+  // My List
+  const addBtn = document.getElementById('addBtn');
+  const addIcon = document.getElementById('addIcon');
+  const addLabel = document.getElementById('addLabel');
+  let isAdded = false;
+  addBtn.addEventListener('click', () => {
+    isAdded = !isAdded;
+    addLabel.textContent = isAdded ? 'Added' : 'My List';
+    addBtn.classList.toggle('added', isAdded);
+    addIcon.innerHTML = isAdded
+      ? `<polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`
+      : `<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>`;
+  });
+
+  // Like
+  document.getElementById('likeBtn').addEventListener('click', function(){ this.classList.toggle('liked'); });
+
+  // Description expand
+  const descEl = document.getElementById('desc');
+  const descToggle = document.getElementById('descToggle');
+  let descOpen = false;
+  descToggle.addEventListener('click', () => {
+    descOpen = !descOpen;
+    descEl.classList.toggle('truncated', !descOpen);
+    descToggle.textContent = descOpen ? 'Show less ▴' : 'Show more ▾';
+  });
+
+  // Play
+  document.getElementById('playBtn').addEventListener('click', () => alert('▶ Playing Stranger Things S1 E1…'));
+
+  // Similar cards
+  document.querySelectorAll('.similar-card').forEach(c =>
+    c.addEventListener('click', () => alert(`Opening: ${c.querySelector('.similar-title').textContent}`))
+  );
+</script>
+</body>
+</html>
