@@ -633,7 +633,9 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   MOOVIED INTRO — Netflix zoom + lumieres + SVG M letter
+   MOOVIED INTRO — Exact Netflix source style
+   helper + effect-brush + effect-lumieres + zoom-in
+   M geometry: peak at x=50%, y=60% ✅
    ═══════════════════════════════════════════════════════════ */
 
 #intro-screen {
@@ -653,7 +655,7 @@ html, body {
 }
 @keyframes introFadeBlack { to { opacity: 0; } }
 
-/* ── The logo element that zooms ── */
+/* ── Logo element — zooms from center outward ── */
 mooviedintro {
   display: block;
   position: relative;
@@ -678,74 +680,153 @@ mooviedintro::before {
   left: -25%;
   bottom: -27%;
   border-radius: 50%;
-  z-index: 10;
+  z-index: 5;
 }
 
-/* ── SVG M letterform — sits behind the brush sweep ── */
-#intro-m-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
+/* ══════════════════════════════════════════════════════════
+   M LETTER — 4 helpers, peak at x=50% y=60%
+   
+   Math (300×300 box, transform-origin: center center):
+   • Left  pillar:  left 5%  → right edge 24.5%
+   • Left  diag:    center x=37.5%, rotate(+19.5deg), strip edges meet at y=182px
+   • Right diag:    center x=62.5%, rotate(-19.5deg), edges meet at x=50%
+   • Right pillar:  left 75.5%
+   ══════════════════════════════════════════════════════════ */
+mooviedintro[letter="M"] {
+  transform-origin: center center;
+}
+
+/* LEFT PILLAR */
+mooviedintro[letter="M"] .helper-1 {
+  width: 19.5%;
   height: 100%;
-  z-index: 0;
+  background-color: rgba(228,9,19,.5);
+  left: 5%;
+  top: 0;
+  animation-name: fading-lumieres-box;
+  animation-duration: 2s;
+  animation-delay: .6s;
+  animation-fill-mode: forwards;
+}
+mooviedintro[letter="M"] .helper-1 .effect-brush {
+  animation-name: brush-moving;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+  animation-delay: 1.2s;
+}
+mooviedintro[letter="M"] .helper-1 .effect-brush [class*="fur-"] {
+  bottom: 0;
+  height: 40%;
 }
 
-/* ── Brush overlay — covers M and sweeps upward revealing it ── */
-/* Each brush strip is a .brush-strip div positioned over one M stroke */
-.brush-strip {
-  position: absolute;
-  top: 0;
+/* LEFT DIAGONAL — rotate +19.5deg, center at 37.5% */
+mooviedintro[letter="M"] .helper-2 {
+  width: 19%;
+  height: 150%;
+  left: 28%;
+  top: -25%;
+  transform: rotate(19.5deg);
   overflow: hidden;
-  z-index: 2;
 }
-/* The red brush head that sweeps UP */
-.brush-strip .brush-head {
+mooviedintro[letter="M"] .helper-2 .effect-brush {
+  animation-name: brush-moving;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-delay: .8s;
+}
+
+/* RIGHT DIAGONAL — rotate -19.5deg, center at 62.5% */
+mooviedintro[letter="M"] .helper-3 {
+  width: 19%;
+  height: 150%;
+  left: 53%;
+  top: -25%;
+  transform: rotate(-19.5deg);
+  overflow: hidden;
+}
+mooviedintro[letter="M"] .helper-3 .effect-brush {
+  animation-name: brush-moving;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-delay: .6s;
+}
+
+/* RIGHT PILLAR */
+mooviedintro[letter="M"] .helper-4 {
+  width: 19.5%;
+  height: 100%;
+  background-color: rgba(228,9,19,.5);
+  left: 75.5%;
+  top: 0;
+  animation-name: fading-lumieres-box;
+  animation-duration: 2s;
+  animation-delay: .6s;
+  animation-fill-mode: forwards;
+}
+mooviedintro[letter="M"] .helper-4 .effect-brush {
+  animation-name: brush-moving;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+  animation-delay: 1.0s;
+}
+mooviedintro[letter="M"] .helper-4 .effect-brush [class*="fur-"] {
+  bottom: 0;
+  height: 40%;
+}
+
+/* ── Generic helper base ── */
+[class*="helper-"] {
+  position: absolute;
+}
+
+/* ── Effect brush — red paint sweeping upward ── */
+.effect-brush {
   position: absolute;
   width: 100%;
   height: 300%;
   top: 0;
-  animation-name: brush-moving;
-  animation-fill-mode: forwards;
+  overflow: hidden;
 }
-.brush-strip .brush-head::before {
+.effect-brush::before {
   display: block;
   content: "";
   position: absolute;
   background-color: #e40913;
   width: 100%;
   height: 70%;
-  box-shadow: 0 0 29px 24px #e40913;
+  box-shadow: 0px 0px 29px 24px #e40913;
 }
-/* Fur drips */
+
+/* ── Fur drips — exact from Netflix source ── */
 [class*="fur-"] {
   display: block;
   position: absolute;
   bottom: 10%;
   height: 30%;
 }
-.fur-1  { left:0%;    width:3.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 15%,rgba(0,0,0,0) 81%); }
-.fur-2  { left:3.8%;  width:2.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 10%,rgba(0,0,0,0) 62%); }
+.fur-1  { left:0%;    width:3.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 15%,rgba(0,0,0,0) 81%,rgba(0,0,0,0) 100%); }
+.fur-2  { left:3.8%;  width:2.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 10%,rgba(0,0,0,0) 62%,rgba(0,0,0,0) 100%); }
 .fur-3  { left:6.6%;  width:4.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
 .fur-4  { left:11.4%; width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 23%,rgba(0,0,0,0) 100%); }
-.fur-5  { left:15.4%; width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 15%,rgba(0,0,0,0) 86%); }
-.fur-6  { left:19.4%; width:2.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 27%,rgba(0,0,0,0) 89%); }
+.fur-5  { left:15.4%; width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 15%,rgba(0,0,0,0) 86%,rgba(0,0,0,0) 100%); }
+.fur-6  { left:19.4%; width:2.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 27%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%); }
 .fur-7  { left:21.9%; width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 20%,rgba(0,0,0,0) 100%); }
 .fur-8  { left:25.9%; width:2%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 30%,rgba(0,0,0,0) 100%); }
-.fur-9  { left:27.9%; width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 35%,rgba(0,0,0,0) 95%); }
-.fur-10 { left:31.9%; width:3.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 39%,rgba(0,0,0,0) 95%); }
-.fur-11 { left:35.4%; width:2%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 34%,rgba(0,0,0,0) 95%); }
-.fur-12 { left:37.4%; width:2.6%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 22%,rgba(0,0,0,0) 95%); }
+.fur-9  { left:27.9%; width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 35%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
+.fur-10 { left:31.9%; width:3.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 39%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
+.fur-11 { left:35.4%; width:2%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 34%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
+.fur-12 { left:37.4%; width:2.6%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 22%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
 .fur-13 { left:40%;   width:6%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 47%,rgba(0,0,0,0) 100%); }
 .fur-14 { left:46%;   width:2%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 36%,rgba(0,0,0,0) 100%); }
 .fur-15 { left:48%;   width:5.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 29%,rgba(0,0,0,0) 100%); }
-.fur-16 { left:53.5%; width:3%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 39%,rgba(0,0,0,0) 95%); }
+.fur-16 { left:53.5%; width:3%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 39%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
 .fur-17 { left:56.5%; width:4.1%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 45%,rgba(0,0,0,0) 100%); }
 .fur-18 { left:60.6%; width:2.4%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 34%,rgba(0,0,0,0) 100%); }
 .fur-19 { left:63%;   width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 47%,rgba(0,0,0,0) 100%); }
-.fur-20 { left:67%;   width:1.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 27%,rgba(0,0,0,0) 95%); }
+.fur-20 { left:67%;   width:1.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 27%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
 .fur-21 { left:68.5%; width:2.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
-.fur-22 { left:71.3%; width:2.3%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 9%, rgba(0,0,0,0) 100%); }
-.fur-23 { left:73.6%; width:2.2%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 28%,rgba(0,0,0,0) 92%); }
+.fur-22 { left:71.3%; width:2.3%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 9%,rgba(0,0,0,0) 100%); }
+.fur-23 { left:73.6%; width:2.2%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 28%,rgba(0,0,0,0) 92%,rgba(0,0,0,0) 100%); }
 .fur-24 { left:75.8%; width:1%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
 .fur-25 { left:76.8%; width:2.1%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 28%,rgba(0,0,0,0) 100%); }
 .fur-26 { left:78.9%; width:4.1%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 34%,rgba(0,0,0,0) 100%); }
@@ -755,28 +836,12 @@ mooviedintro::before {
 .fur-30 { left:92.8%; width:3.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 19%,rgba(0,0,0,0) 100%); }
 .fur-31 { left:96.3%; width:3.7%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
 
-/* ── Per-strip brush timing ── */
-/* Strip 1: left pillar */
-.bs-1 { left:3%;  width:19.5%; height:100%; background:rgba(228,9,19,.45); }
-.bs-1 .brush-head { animation-duration:2.5s; animation-delay:.5s; }
-.bs-1 .brush-head [class*="fur-"] { bottom:0; height:40%; }
-/* Strip 2: left diagonal — CLIPPED to SVG M left-diag bounding box */
-.bs-2 { left:22%; width:19%;   height:100%; }
-.bs-2 .brush-head { animation-duration:2s; animation-delay:.65s; }
-/* Strip 3: right diagonal */
-.bs-3 { left:59%; width:19%;   height:100%; }
-.bs-3 .brush-head { animation-duration:2s; animation-delay:.8s; }
-/* Strip 4: right pillar */
-.bs-4 { left:77.5%; width:19.5%; height:100%; background:rgba(228,9,19,.45); }
-.bs-4 .brush-head { animation-duration:2.5s; animation-delay:.95s; }
-.bs-4 .brush-head [class*="fur-"] { bottom:0; height:40%; }
-
-/* ── Lumieres (colour light streaks) ── */
+/* ── Lumieres — exact from Netflix source ── */
 .effect-lumieres {
   position: absolute;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   opacity: 0;
-  z-index: 3;
   animation-name: showing-lumieres;
   animation-duration: 2s;
   animation-delay: 1.6s;
@@ -786,14 +851,17 @@ mooviedintro::before {
   position: absolute;
   display: block;
   height: 100%;
-  box-shadow: 0 0 10px 0 rgba(228,9,19,0.75);
+  box-shadow: 0px 0px 10px 0px rgba(228,9,19,0.75);
   background: var(--color);
 }
 [class*="lamp-"]::before {
-  position: absolute; content:" ";
-  display: block; width:100%; height:100%;
+  position: absolute;
+  content: " ";
+  display: block;
+  width: 100%;
+  height: 100%;
   background: var(--color);
-  box-shadow: 0 0 10px 0 rgba(228,9,19,0.75);
+  box-shadow: 0px 0px 10px 0px rgba(228,9,19,0.75);
 }
 .lamp-1  { --color:#ff0100; left:0.7%;  width:1%;   }
 .lamp-2  { --color:#ffde01; left:2.2%;  width:1.4%; }
@@ -826,181 +894,6 @@ mooviedintro::before {
 
 .lamp-1,.lamp-3,.lamp-5,.lamp-7,.lamp-9,.lamp-11,.lamp-13,.lamp-15,
 .lamp-17,.lamp-19,.lamp-21,.lamp-23,.lamp-25,.lamp-27 {
-  animation-name:lumieres-moving-left; animation-duration:5s; animation-fill-mode:forwards;
-}
-.lamp-1::before,.lamp-3::before,.lamp-5::before,.lamp-7::before,.lamp-9::before,
-.lamp-11::before,.lamp-13::before,.lamp-15::before,.lamp-17::before,.lamp-19::before,
-.lamp-21::before,.lamp-23::before,.lamp-25::before,.lamp-27::before {
-  animation-name:lumieres-moving-left; animation-duration:5.5s;
-}
-.lamp-2,.lamp-4,.lamp-6,.lamp-8,.lamp-10,.lamp-12,.lamp-14,.lamp-16,
-.lamp-18,.lamp-20,.lamp-22,.lamp-24,.lamp-26,.lamp-28 {
-  animation-name:lumieres-moving-right; animation-duration:5s; animation-fill-mode:forwards;
-}
-.lamp-2::before,.lamp-4::before,.lamp-6::before,.lamp-8::before,.lamp-10::before,
-.lamp-12::before,.lamp-14::before,.lamp-16::before,.lamp-18::before,.lamp-20::before,
-.lamp-22::before,.lamp-24::before,.lamp-26::before,.lamp-28::before {
-  animation-name:lumieres-moving-right; animation-duration:5.5s;
-}
-
-/* ── Keyframes ── */
-@keyframes brush-moving {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-100%); }
-}
-@keyframes lumieres-moving-right {
-  0%   { transform:translate(0); }
-  40%  { transform:translate(-10px) scaleX(1); }
-  50%  { transform:translate(-60px); }
-  100% { transform:translate(-120px) scaleX(3); }
-}
-@keyframes lumieres-moving-left {
-  0%   { transform:translate(0); }
-  40%  { transform:translate(10px) scaleX(1); }
-  50%  { transform:translate(60px); }
-  100% { transform:translate(120px) scaleX(3); }
-}
-@keyframes zoom-in {
-  0%   { transform: scale(1); }
-  100% { transform: scale(15); }
-}
-@keyframes showing-lumieres {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
-}
-@keyframes fading-lumieres-box {
-  0%   { background-color: rgba(228,9,19,.5); }
-  100% { background-color: rgba(228,9,19,0); }
-}
-@keyframes fading-out {
-  0%   { opacity:1; }
-  100% { opacity:0; }
-}
-
-/* ── Generic helper positioning ── */
-[class*="helper-"] {
-  position: absolute;
-}
-
-/* ── Brush effect (the red paint sweep that moves upward) ── */
-.effect-brush {
-  position: absolute;
-  width: 100%;
-  height: 300%;
-  top: 0;
-  overflow: hidden;
-}
-.effect-brush::before {
-  display: block;
-  content: "";
-  position: absolute;
-  background-color: #e40913;
-  width: 100%;
-  height: 70%;
-  box-shadow: 0px 0px 29px 24px #e40913;
-}
-
-/* ── Fur strands — drip/fringe at bottom of each brush stroke ── */
-[class*="fur-"] {
-  display: block;
-  position: absolute;
-  bottom: 10%;
-  height: 30%;
-}
-.fur-1  { left:0%;     width:3.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 15%,rgba(0,0,0,0) 81%,rgba(0,0,0,0) 100%); }
-.fur-2  { left:3.8%;   width:2.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 10%,rgba(0,0,0,0) 62%,rgba(0,0,0,0) 100%); }
-.fur-3  { left:6.6%;   width:4.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
-.fur-4  { left:11.4%;  width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 23%,rgba(0,0,0,0) 100%); }
-.fur-5  { left:15.4%;  width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 15%,rgba(0,0,0,0) 86%,rgba(0,0,0,0) 100%); }
-.fur-6  { left:19.4%;  width:2.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 27%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%); }
-.fur-7  { left:21.9%;  width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 20%,rgba(0,0,0,0) 100%); }
-.fur-8  { left:25.9%;  width:2%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 30%,rgba(0,0,0,0) 100%); }
-.fur-9  { left:27.9%;  width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 35%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
-.fur-10 { left:31.9%;  width:3.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 39%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
-.fur-11 { left:35.4%;  width:2%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 34%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
-.fur-12 { left:37.4%;  width:2.6%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 22%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
-.fur-13 { left:40%;    width:6%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 47%,rgba(0,0,0,0) 100%); }
-.fur-14 { left:46%;    width:2%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 36%,rgba(0,0,0,0) 100%); }
-.fur-15 { left:48%;    width:5.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 29%,rgba(0,0,0,0) 100%); }
-.fur-16 { left:53.5%;  width:3%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 39%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
-.fur-17 { left:56.5%;  width:4.1%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 45%,rgba(0,0,0,0) 100%); }
-.fur-18 { left:60.6%;  width:2.4%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 34%,rgba(0,0,0,0) 100%); }
-.fur-19 { left:63%;    width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 47%,rgba(0,0,0,0) 100%); }
-.fur-20 { left:67%;    width:1.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 27%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
-.fur-21 { left:68.5%;  width:2.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
-.fur-22 { left:71.3%;  width:2.3%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 9%,rgba(0,0,0,0) 100%); }
-.fur-23 { left:73.6%;  width:2.2%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 28%,rgba(0,0,0,0) 92%,rgba(0,0,0,0) 100%); }
-.fur-24 { left:75.8%;  width:1%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
-.fur-25 { left:76.8%;  width:2.1%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 28%,rgba(0,0,0,0) 100%); }
-.fur-26 { left:78.9%;  width:4.1%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 34%,rgba(0,0,0,0) 100%); }
-.fur-27 { left:83%;    width:2.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 21%,rgba(0,0,0,0) 100%); }
-.fur-28 { left:85.5%;  width:4.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 39%,rgba(0,0,0,0) 100%); }
-.fur-29 { left:90%;    width:2.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 30%,rgba(0,0,0,0) 100%); }
-.fur-30 { left:92.8%;  width:3.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 19%,rgba(0,0,0,0) 100%); }
-.fur-31 { left:96.3%;  width:3.7%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
-
-/* ── Lumieres (coloured light streaks that shoot outward) ── */
-.effect-lumieres {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  animation-name: showing-lumieres;
-  animation-duration: 2s;
-  animation-delay: 1.6s;
-  animation-fill-mode: forwards;
-}
-[class*="lamp-"] {
-  position: absolute;
-  display: block;
-  height: 100%;
-  box-shadow: 0px 0px 10px 0px rgba(228,9,19,0.75);
-  background: var(--color);
-}
-[class*="lamp-"]::before {
-  position: absolute;
-  content: " ";
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--color);
-  box-shadow: 0px 0px 10px 0px rgba(228,9,19,0.75);
-}
-
-/* Lamp positions & colours — exact from source */
-.lamp-1  { --color:#ff0100; left:0.7%;  width:1%;   }
-.lamp-2  { --color:#ffde01; left:2.2%;  width:1.4%; }
-.lamp-3  { --color:#ff00cc; left:5.8%;  width:2.1%; }
-.lamp-4  { --color:#04fd8f; left:10.1%; width:2%;   }
-.lamp-5  { --color:#ff0100; left:12.9%; width:1.4%; }
-.lamp-6  { --color:#ff9600; left:15.3%; width:2.8%; }
-.lamp-7  { --color:#0084ff; left:21.2%; width:2.5%; }
-.lamp-8  { --color:#f84006; left:25%;   width:2.5%; }
-.lamp-9  { --color:#ffc601; left:30.5%; width:3%;   }
-.lamp-10 { --color:#ff4800; left:36.3%; width:3%;   }
-.lamp-11 { --color:#fd0100; left:41%;   width:2.2%; }
-.lamp-12 { --color:#01ffff; left:44.2%; width:2.6%; }
-.lamp-13 { --color:#ffc601; left:51.7%; width:0.5%; }
-.lamp-14 { --color:#ffc601; left:52.1%; width:1.8%; }
-.lamp-15 { --color:#0078fe; left:53.8%; width:2.3%; }
-.lamp-16 { --color:#0080ff; left:57.2%; width:2%;   }
-.lamp-17 { --color:#ffae01; left:62.3%; width:2.9%; }
-.lamp-18 { --color:#ff00bf; left:65.8%; width:1.7%; }
-.lamp-19 { --color:#a601f4; left:72.8%; width:0.8%; }
-.lamp-20 { --color:#f30b34; left:74.3%; width:2%;   }
-.lamp-21 { --color:#ff00bf; left:79.8%; width:2%;   }
-.lamp-22 { --color:#04fd8f; left:78.2%; width:2%;   }
-.lamp-23 { --color:#01ffff; left:78.5%; width:2%;   }
-.lamp-24 { --color:#a201ff; left:85.3%; width:1.1%; }
-.lamp-25 { --color:#ec0014; left:86.9%; width:1.1%; }
-.lamp-26 { --color:#0078fe; left:88.8%; width:2%;   }
-.lamp-27 { --color:#ff0036; left:92.4%; width:2.4%; }
-.lamp-28 { --color:#06f98c; left:96.2%; width:2.1%; }
-
-/* Odd lamps shoot LEFT, even lamps shoot RIGHT */
-.lamp-1, .lamp-3, .lamp-5, .lamp-7, .lamp-9, .lamp-11,
-.lamp-13,.lamp-15,.lamp-17,.lamp-19,.lamp-21,.lamp-23,
-.lamp-25,.lamp-27 {
   animation-name: lumieres-moving-left;
   animation-duration: 5s;
   animation-fill-mode: forwards;
@@ -1012,10 +905,8 @@ mooviedintro::before {
   animation-name: lumieres-moving-left;
   animation-duration: 5.5s;
 }
-
-.lamp-2, .lamp-4, .lamp-6, .lamp-8, .lamp-10,.lamp-12,
-.lamp-14,.lamp-16,.lamp-18,.lamp-20,.lamp-22,.lamp-24,
-.lamp-26,.lamp-28 {
+.lamp-2,.lamp-4,.lamp-6,.lamp-8,.lamp-10,.lamp-12,.lamp-14,.lamp-16,
+.lamp-18,.lamp-20,.lamp-22,.lamp-24,.lamp-26,.lamp-28 {
   animation-name: lumieres-moving-right;
   animation-duration: 5s;
   animation-fill-mode: forwards;
@@ -1028,7 +919,7 @@ mooviedintro::before {
   animation-duration: 5.5s;
 }
 
-/* ── Keyframes — exact from source ── */
+/* ── Keyframes — exact from Netflix source ── */
 @keyframes brush-moving {
   0%   { transform: translateY(0); }
   100% { transform: translateY(-100%); }
@@ -1059,238 +950,7 @@ mooviedintro::before {
 }
 @keyframes fading-lumieres-box {
   0%   { background-color: rgba(228,9,19,.5); }
-  100% { background-color: rgba(228,9,19,.0); }
-}
-
-
-/* ══════════════════════════════════════════════════════════
-   AD GATE — full-screen lock inside the player
-   ══════════════════════════════════════════════════════════ */
-#ad-gate {
-  position: absolute; inset: 0;
-  z-index: 150;
-  display: flex; align-items: center; justify-content: center;
-  /* layered background: dark vignette + subtle red atmosphere */
-  background:
-    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(229,9,20,0.08) 0%, transparent 70%),
-    rgba(0,0,0,0.92);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  padding: clamp(16px, 4vw, 40px);
-  pointer-events: all;
-  transition: opacity 0.35s cubic-bezier(0.4,0,0.2,1);
-}
-#ad-gate.ag-hidden  { opacity: 0; pointer-events: none; }
-#ad-gate.ag-visible { opacity: 1; pointer-events: all; animation: agSlideUp 0.42s cubic-bezier(0.22,1,0.36,1); }
-@keyframes agSlideUp {
-  from { opacity: 0; transform: translateY(28px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* Background decoration */
-.ag-bg-glow {
-  position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(ellipse 55% 40% at 50% 55%, rgba(229,9,20,0.12) 0%, transparent 65%);
-  animation: agGlowPulse 3.5s ease-in-out infinite;
-}
-@keyframes agGlowPulse {
-  0%,100% { opacity: 0.6; }
-  50%      { opacity: 1; }
-}
-.ag-bg-noise {
-  position: absolute; inset: 0; pointer-events: none; opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-}
-
-/* ─── Card ─── */
-.ag-card {
-  position: relative;
-  width: 100%; max-width: clamp(300px, 80vw, 460px);
-  background: rgba(12,12,14,0.96);
-  border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 20px;
-  padding: clamp(24px, 5vw, 40px) clamp(20px, 4vw, 36px);
-  display: flex; flex-direction: column; align-items: center;
-  gap: clamp(14px, 2.5vw, 20px);
-  box-shadow:
-    0 0 0 1px rgba(229,9,20,0.12),
-    0 40px 80px rgba(0,0,0,0.85),
-    0 0 60px rgba(229,9,20,0.07);
-  text-align: center;
-  overflow: hidden;
-}
-/* Top accent line */
-.ag-card::before {
-  content: '';
-  position: absolute; top: 0; left: 10%; right: 10%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--red), transparent);
-  border-radius: 0 0 2px 2px;
-}
-
-/* ─── Logo mark ─── */
-.ag-logo-mark {
-  width: clamp(28px, 5vw, 38px);
-  height: clamp(35px, 6vw, 48px);
-  filter: drop-shadow(0 0 14px rgba(229,9,20,0.5));
-}
-
-/* ─── Text ─── */
-.ag-headline {
-  font-family: 'DM Sans', sans-serif;
-  font-size: clamp(17px, 3.2vw, 24px);
-  font-weight: 800; letter-spacing: -0.02em; color: #fff;
-  margin: 0;
-}
-.ag-sub {
-  font-size: clamp(12px, 1.8vw, 14px);
-  font-weight: 400; color: rgba(255,255,255,0.52);
-  line-height: 1.6; margin: 0;
-  max-width: 340px;
-}
-
-/* ─── Info pills row ─── */
-.ag-info-row {
-  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-}
-.ag-info-pill {
-  display: flex; align-items: center; gap: 5px;
-  padding: 5px 11px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 20px;
-  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
-  letter-spacing: 0.02em;
-}
-.ag-info-pill svg { width: 13px; height: 13px; color: rgba(255,255,255,0.4); flex-shrink: 0; }
-
-/* ─── CTA Button ─── */
-.ag-btn {
-  position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  padding: clamp(13px, 2.5vw, 16px) clamp(28px, 5vw, 44px);
-  background: var(--red);
-  color: #fff;
-  font-family: 'DM Sans', sans-serif;
-  font-size: clamp(14px, 2.2vw, 16px);
-  font-weight: 800; letter-spacing: 0.04em;
-  border: none; border-radius: 10px; cursor: pointer;
-  width: 100%; max-width: 320px;
-  transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
-  box-shadow: 0 8px 28px rgba(229,9,20,0.4), 0 2px 6px rgba(0,0,0,0.4);
-}
-.ag-btn:hover:not(:disabled) {
-  background: var(--red-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(229,9,20,0.55), 0 2px 8px rgba(0,0,0,0.5);
-}
-.ag-btn:active:not(:disabled) { transform: translateY(0) scale(0.98); }
-.ag-btn:disabled { cursor: default; }
-.ag-btn-icon { display: flex; align-items: center; }
-.ag-btn-icon svg { width: 18px; height: 18px; }
-
-/* Shine sweep animation on the button */
-.ag-btn-shine {
-  position: absolute; top: 0; left: -100%;
-  width: 60%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-  transform: skewX(-20deg);
-  animation: agShine 2.8s ease-in-out infinite;
-}
-@keyframes agShine {
-  0%   { left: -100%; }
-  40%  { left: 140%; }
-  100% { left: 140%; }
-}
-
-/* ─── Status row ─── */
-.ag-status {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.42);
-  letter-spacing: 0.03em;
-}
-.ag-dot {
-  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-  transition: background 0.3s;
-}
-.ag-dot-idle    { background: rgba(255,255,255,0.2); }
-.ag-dot-waiting {
-  background: #f59e0b;
-  box-shadow: 0 0 0 0 rgba(245,158,11,0.5);
-  animation: agDotPulse 1.2s ease-in-out infinite;
-}
-.ag-dot-open    { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.7); }
-@keyframes agDotPulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.5); }
-  50%      { box-shadow: 0 0 0 6px rgba(245,158,11,0); }
-}
-
-/* ─── Fine print ─── */
-.ag-fine {
-  font-size: 10px; color: rgba(255,255,255,0.22);
-  letter-spacing: 0.02em; line-height: 1.5;
-  max-width: 300px;
-}
-
-/* gate button spinner reuses global @keyframes spin from #spinner */
-/* ── State: closed variant colours the card border red-ish ── */
-.ag-state-closed .ag-card { border-color: rgba(229,9,20,0.22); }
-
-/* ══════════════════════════════════════════════════════════
-   FLOATING RE-OPEN PILL
-   ══════════════════════════════════════════════════════════ */
-#ad-pill {
-  position: absolute;
-  bottom: clamp(90px, 14vh, 115px);
-  left: 50%; transform: translateX(-50%) translateY(20px);
-  z-index: 140;
-  display: flex; align-items: center; gap: 9px;
-  padding: 10px 18px 10px 14px;
-  background: rgba(10,10,12,0.92);
-  border: 1px solid rgba(229,9,20,0.45);
-  border-radius: 40px;
-  cursor: pointer;
-  font-size: 13px; font-weight: 700; color: #fff;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 0 1px rgba(229,9,20,0.1);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-#ad-pill.ap-show {
-  opacity: 1; pointer-events: all;
-  transform: translateX(-50%) translateY(0);
-}
-#ad-pill:hover {
-  background: rgba(229,9,20,0.18);
-  border-color: rgba(229,9,20,0.7);
-  transform: translateX(-50%) translateY(-2px);
-}
-#ad-pill:active { transform: translateX(-50%) scale(0.97); }
-.ap-pulse {
-  position: absolute; inset: -1px; border-radius: 40px;
-  border: 2px solid rgba(229,9,20,0.35);
-  animation: apPulse 2s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes apPulse {
-  0%,100% { opacity: 0.5; transform: scale(1); }
-  50%      { opacity: 0; transform: scale(1.07); }
-}
-.ap-arrow { display: flex; align-items: center; opacity: 0.6; }
-
-@media (max-width: 480px) {
-  #ad-pill { font-size: 12px; padding: 9px 14px 9px 12px; gap: 7px; }
-  .ag-info-row { gap: 6px; }
-  .ag-info-pill { font-size: 10px; padding: 4px 9px; }
-}
-
-
-@supports (padding: env(safe-area-inset-bottom)) {
-  #controls { padding-bottom: max(clamp(12px, 2.5vw, 22px), calc(env(safe-area-inset-bottom) + 8px)); }
+  100% { background-color: rgba(228,9,19,0); }
 }
 </style>
 </head>
@@ -1298,77 +958,42 @@ mooviedintro::before {
 
 <div id="player-wrap" tabindex="0">
 
-  <!-- MOOVIED INTRO — SVG M + Netflix brush/lamp/zoom -->
+  <!-- MOOVIED INTRO — Exact Netflix helper/brush/lumieres structure -->
   <div id="intro-screen">
     <mooviedintro letter="M">
 
-      <!-- ① The real M letterform as SVG — always correct shape -->
-      <svg id="intro-m-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <!-- Left pillar gradient: bright top → dark bottom -->
-          <linearGradient id="gL" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stop-color="#FF1C2E"/>
-            <stop offset="100%" stop-color="#8B0000"/>
-          </linearGradient>
-          <!-- Right pillar gradient: dark top → bright bottom -->
-          <linearGradient id="gR" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stop-color="#8B0000"/>
-            <stop offset="100%" stop-color="#FF1C2E"/>
-          </linearGradient>
-          <!-- Diagonal gradient -->
-          <linearGradient id="gD" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stop-color="#CC000E"/>
-            <stop offset="100%" stop-color="#6B0007"/>
-          </linearGradient>
-          <!-- 3D shadow edge on each stroke -->
-          <linearGradient id="gS" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stop-color="rgba(0,0,0,0.5)"/>
-            <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-          </linearGradient>
-        </defs>
+      <!-- helper-1: LEFT PILLAR (with lumieres) -->
+      <div class="helper-1">
+        <div class="effect-brush">
+          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
+          <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
+          <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
+          <span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span>
+          <span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span>
+          <span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span>
+          <span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span>
+          <span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span>
+          <span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span>
+          <span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span>
+          <span class="fur-1"></span>
+        </div>
+        <div class="effect-lumieres">
+          <span class="lamp-1"></span><span class="lamp-2"></span><span class="lamp-3"></span>
+          <span class="lamp-4"></span><span class="lamp-5"></span><span class="lamp-6"></span>
+          <span class="lamp-7"></span><span class="lamp-8"></span><span class="lamp-9"></span>
+          <span class="lamp-10"></span><span class="lamp-11"></span><span class="lamp-12"></span>
+          <span class="lamp-13"></span><span class="lamp-14"></span><span class="lamp-15"></span>
+          <span class="lamp-16"></span><span class="lamp-17"></span><span class="lamp-18"></span>
+          <span class="lamp-19"></span><span class="lamp-20"></span><span class="lamp-21"></span>
+          <span class="lamp-22"></span><span class="lamp-23"></span><span class="lamp-24"></span>
+          <span class="lamp-25"></span><span class="lamp-26"></span><span class="lamp-27"></span>
+          <span class="lamp-28"></span>
+        </div>
+      </div>
 
-        <!--
-          M shape defined as a single polygon:
-          Left pillar top-left  → Left pillar top-right
-          → Left diagonal down to valley centre
-          → Right diagonal back up to Right pillar top-left
-          → Right pillar top-right → Right pillar bottom-right
-          → Right diagonal inner back to valley
-          → Left diagonal inner back up
-          → Left pillar bottom-left
-
-          Coordinates (300×300 box):
-            Left pillar:  x  0 →  57  (19% width)
-            Right pillar: x 243 → 300 (19% width)
-            Valley:       x 150, y 180 (60% down — classic M proportions)
-        -->
-
-        <!-- LEFT PILLAR -->
-        <rect x="0" y="0" width="57" height="300" fill="url(#gL)"/>
-        <!-- Left pillar 3D shadow edge (right side) -->
-        <rect x="42" y="0" width="15" height="300" fill="url(#gS)"/>
-
-        <!-- RIGHT PILLAR -->
-        <rect x="243" y="0" width="57" height="300" fill="url(#gR)"/>
-        <!-- Right pillar 3D shadow edge (left side) -->
-        <linearGradient id="gSR" x1="1" y1="0" x2="0" y2="0">
-          <stop offset="0%"   stop-color="rgba(0,0,0,0.5)"/>
-          <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-        </linearGradient>
-        <rect x="243" y="0" width="15" height="300" fill="url(#gSR)"/>
-
-        <!-- LEFT DIAGONAL: top-right of left-pillar (57,0) → valley (150,180) → (93,180) → (0,0) inner -->
-        <polygon points="0,0 57,0 150,180 93,180" fill="url(#gD)"/>
-
-        <!-- RIGHT DIAGONAL: top-left of right-pillar (243,0) → valley (150,180) → (207,180) → (300,0) inner -->
-        <polygon points="300,0 243,0 150,180 207,180" fill="url(#gD)"/>
-
-      </svg>
-
-      <!-- ② Brush strips sweep upward over the M, then disappear revealing it -->
-      <!-- Strip A: left pillar -->
-      <div class="brush-strip bs-1">
-        <div class="brush-head">
+      <!-- helper-2: LEFT DIAGONAL rotate(+19.5deg) -->
+      <div class="helper-2">
+        <div class="effect-brush">
           <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
           <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
           <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
@@ -1383,9 +1008,9 @@ mooviedintro::before {
         </div>
       </div>
 
-      <!-- Strip B: left diagonal area -->
-      <div class="brush-strip bs-2">
-        <div class="brush-head">
+      <!-- helper-3: RIGHT DIAGONAL rotate(-19.5deg) -->
+      <div class="helper-3">
+        <div class="effect-brush">
           <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
           <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
           <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
@@ -1400,9 +1025,9 @@ mooviedintro::before {
         </div>
       </div>
 
-      <!-- Strip C: right diagonal area -->
-      <div class="brush-strip bs-3">
-        <div class="brush-head">
+      <!-- helper-4: RIGHT PILLAR (with lumieres) -->
+      <div class="helper-4">
+        <div class="effect-brush">
           <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
           <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
           <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
@@ -1415,37 +1040,18 @@ mooviedintro::before {
           <span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span>
           <span class="fur-1"></span>
         </div>
-      </div>
-
-      <!-- Strip D: right pillar -->
-      <div class="brush-strip bs-4">
-        <div class="brush-head">
-          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
-          <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
-          <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
-          <span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span>
-          <span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span>
-          <span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span>
-          <span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span>
-          <span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span>
-          <span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span>
-          <span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span>
-          <span class="fur-1"></span>
+        <div class="effect-lumieres">
+          <span class="lamp-1"></span><span class="lamp-2"></span><span class="lamp-3"></span>
+          <span class="lamp-4"></span><span class="lamp-5"></span><span class="lamp-6"></span>
+          <span class="lamp-7"></span><span class="lamp-8"></span><span class="lamp-9"></span>
+          <span class="lamp-10"></span><span class="lamp-11"></span><span class="lamp-12"></span>
+          <span class="lamp-13"></span><span class="lamp-14"></span><span class="lamp-15"></span>
+          <span class="lamp-16"></span><span class="lamp-17"></span><span class="lamp-18"></span>
+          <span class="lamp-19"></span><span class="lamp-20"></span><span class="lamp-21"></span>
+          <span class="lamp-22"></span><span class="lamp-23"></span><span class="lamp-24"></span>
+          <span class="lamp-25"></span><span class="lamp-26"></span><span class="lamp-27"></span>
+          <span class="lamp-28"></span>
         </div>
-      </div>
-
-      <!-- ③ Lumieres — coloured light streaks shoot from left pillar -->
-      <div class="effect-lumieres">
-        <span class="lamp-1"></span><span class="lamp-2"></span><span class="lamp-3"></span>
-        <span class="lamp-4"></span><span class="lamp-5"></span><span class="lamp-6"></span>
-        <span class="lamp-7"></span><span class="lamp-8"></span><span class="lamp-9"></span>
-        <span class="lamp-10"></span><span class="lamp-11"></span><span class="lamp-12"></span>
-        <span class="lamp-13"></span><span class="lamp-14"></span><span class="lamp-15"></span>
-        <span class="lamp-16"></span><span class="lamp-17"></span><span class="lamp-18"></span>
-        <span class="lamp-19"></span><span class="lamp-20"></span><span class="lamp-21"></span>
-        <span class="lamp-22"></span><span class="lamp-23"></span><span class="lamp-24"></span>
-        <span class="lamp-25"></span><span class="lamp-26"></span><span class="lamp-27"></span>
-        <span class="lamp-28"></span>
       </div>
 
     </mooviedintro>
