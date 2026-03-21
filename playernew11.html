@@ -633,9 +633,7 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   MOOVIED INTRO — Exact Netflix source style
-   helper + effect-brush + effect-lumieres + zoom-in
-   M geometry: peak at x=50%, y=60% ✅
+   MOOVIED INTRO — Netflix style, SVG clipPath M letter
    ═══════════════════════════════════════════════════════════ */
 
 #intro-screen {
@@ -655,13 +653,12 @@ html, body {
 }
 @keyframes introFadeBlack { to { opacity: 0; } }
 
-/* ── Logo element — zooms from center outward ── */
 mooviedintro {
   display: block;
   position: relative;
   width: 300px;
   height: 300px;
-  overflow: hidden;
+  overflow: visible;
   animation-name: zoom-in;
   animation-delay: .5s;
   animation-duration: 3.5s;
@@ -669,7 +666,6 @@ mooviedintro {
   animation-fill-mode: forwards;
 }
 
-/* Elliptical bottom mask — exact from Netflix source */
 mooviedintro::before {
   content: "";
   position: absolute;
@@ -680,106 +676,39 @@ mooviedintro::before {
   left: -25%;
   bottom: -27%;
   border-radius: 50%;
-  z-index: 5;
+  z-index: 10;
 }
 
-/* ══════════════════════════════════════════════════════════
-   M LETTER — 4 helpers, peak at x=50% y=60%
-   
-   Math (300×300 box, transform-origin: center center):
-   • Left  pillar:  left 5%  → right edge 24.5%
-   • Left  diag:    center x=37.5%, rotate(+19.5deg), strip edges meet at y=182px
-   • Right diag:    center x=62.5%, rotate(-19.5deg), edges meet at x=50%
-   • Right pillar:  left 75.5%
-   ══════════════════════════════════════════════════════════ */
-mooviedintro[letter="M"] {
-  transform-origin: center center;
-}
+/* ── M letter: 4 helpers, each full-size, clipped to their M stroke ── */
+mooviedintro[letter="M"] { transform-origin: center center; }
 
-/* LEFT PILLAR */
-mooviedintro[letter="M"] .helper-1 {
-  width: 19.5%;
-  height: 100%;
-  background-color: rgba(228,9,19,.5);
-  left: 5%;
-  top: 0;
-  animation-name: fading-lumieres-box;
-  animation-duration: 2s;
-  animation-delay: .6s;
-  animation-fill-mode: forwards;
-}
-mooviedintro[letter="M"] .helper-1 .effect-brush {
-  animation-name: brush-moving;
-  animation-duration: 2.5s;
-  animation-fill-mode: forwards;
-  animation-delay: 1.2s;
-}
-mooviedintro[letter="M"] .helper-1 .effect-brush [class*="fur-"] {
-  bottom: 0;
-  height: 40%;
-}
-
-/* LEFT DIAGONAL — rotate +19.5deg, center at 37.5% */
-mooviedintro[letter="M"] .helper-2 {
-  width: 19%;
-  height: 150%;
-  left: 28%;
-  top: -25%;
-  transform: rotate(19.5deg);
-  overflow: hidden;
-}
-mooviedintro[letter="M"] .helper-2 .effect-brush {
-  animation-name: brush-moving;
-  animation-duration: 2s;
-  animation-fill-mode: forwards;
-  animation-delay: .8s;
-}
-
-/* RIGHT DIAGONAL — rotate -19.5deg, center at 62.5% */
-mooviedintro[letter="M"] .helper-3 {
-  width: 19%;
-  height: 150%;
-  left: 53%;
-  top: -25%;
-  transform: rotate(-19.5deg);
-  overflow: hidden;
-}
-mooviedintro[letter="M"] .helper-3 .effect-brush {
-  animation-name: brush-moving;
-  animation-duration: 2s;
-  animation-fill-mode: forwards;
-  animation-delay: .6s;
-}
-
-/* RIGHT PILLAR */
+/* Each helper covers the FULL 300x300 box — clip does the shaping */
+mooviedintro[letter="M"] .helper-1,
+mooviedintro[letter="M"] .helper-2,
+mooviedintro[letter="M"] .helper-3,
 mooviedintro[letter="M"] .helper-4 {
-  width: 19.5%;
+  width: 100%;
   height: 100%;
-  background-color: rgba(228,9,19,.5);
-  left: 75.5%;
+  left: 0;
   top: 0;
-  animation-name: fading-lumieres-box;
-  animation-duration: 2s;
-  animation-delay: .6s;
-  animation-fill-mode: forwards;
-}
-mooviedintro[letter="M"] .helper-4 .effect-brush {
-  animation-name: brush-moving;
-  animation-duration: 2.5s;
-  animation-fill-mode: forwards;
-  animation-delay: 1.0s;
-}
-mooviedintro[letter="M"] .helper-4 .effect-brush [class*="fur-"] {
-  bottom: 0;
-  height: 40%;
 }
 
-/* ── Generic helper base ── */
-[class*="helper-"] {
-  position: absolute;
-}
+/* Clip each helper to its M stroke shape */
+mooviedintro[letter="M"] .helper-1 { clip-path: polygon(0% 0%, 19% 0%, 19% 100%, 0% 100%); background-color: rgba(228,9,19,.5); animation-name: fading-lumieres-box; animation-duration: 2s; animation-delay: .6s; animation-fill-mode: forwards; }
+mooviedintro[letter="M"] .helper-2 { clip-path: polygon(0% 0%, 57% 60%, 38% 60%, 19% 0%); }
+mooviedintro[letter="M"] .helper-3 { clip-path: polygon(81% 0%, 100% 0%, 62% 60%, 43% 60%); }
+mooviedintro[letter="M"] .helper-4 { clip-path: polygon(81% 0%, 100% 0%, 100% 100%, 81% 100%); background-color: rgba(228,9,19,.5); animation-name: fading-lumieres-box; animation-duration: 2s; animation-delay: .6s; animation-fill-mode: forwards; }
 
-/* ── Effect brush — red paint sweeping upward ── */
+/* Brush timings */
+mooviedintro[letter="M"] .helper-1 .effect-brush { animation-name: brush-moving; animation-duration: 2.5s; animation-fill-mode: forwards; animation-delay: .5s; }
+mooviedintro[letter="M"] .helper-1 .effect-brush [class*="fur-"] { bottom: 0; height: 40%; }
+mooviedintro[letter="M"] .helper-2 .effect-brush { animation-name: brush-moving; animation-duration: 2s;   animation-fill-mode: forwards; animation-delay: .7s; }
+mooviedintro[letter="M"] .helper-3 .effect-brush { animation-name: brush-moving; animation-duration: 2s;   animation-fill-mode: forwards; animation-delay: .65s; }
+mooviedintro[letter="M"] .helper-4 .effect-brush { animation-name: brush-moving; animation-duration: 2.5s; animation-fill-mode: forwards; animation-delay: .9s; }
+mooviedintro[letter="M"] .helper-4 .effect-brush [class*="fur-"] { bottom: 0; height: 40%; }
+
+[class*="helper-"] { position: absolute; }
+
 .effect-brush {
   position: absolute;
   width: 100%;
@@ -788,22 +717,14 @@ mooviedintro[letter="M"] .helper-4 .effect-brush [class*="fur-"] {
   overflow: hidden;
 }
 .effect-brush::before {
-  display: block;
-  content: "";
+  display: block; content: "";
   position: absolute;
   background-color: #e40913;
-  width: 100%;
-  height: 70%;
+  width: 100%; height: 70%;
   box-shadow: 0px 0px 29px 24px #e40913;
 }
 
-/* ── Fur drips — exact from Netflix source ── */
-[class*="fur-"] {
-  display: block;
-  position: absolute;
-  bottom: 10%;
-  height: 30%;
-}
+[class*="fur-"] { display: block; position: absolute; bottom: 10%; height: 30%; }
 .fur-1  { left:0%;    width:3.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 15%,rgba(0,0,0,0) 81%,rgba(0,0,0,0) 100%); }
 .fur-2  { left:3.8%;  width:2.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 10%,rgba(0,0,0,0) 62%,rgba(0,0,0,0) 100%); }
 .fur-3  { left:6.6%;  width:4.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
@@ -825,7 +746,7 @@ mooviedintro[letter="M"] .helper-4 .effect-brush [class*="fur-"] {
 .fur-19 { left:63%;   width:4%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 47%,rgba(0,0,0,0) 100%); }
 .fur-20 { left:67%;   width:1.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 27%,rgba(0,0,0,0) 95%,rgba(0,0,0,0) 100%); }
 .fur-21 { left:68.5%; width:2.8%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
-.fur-22 { left:71.3%; width:2.3%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 9%,rgba(0,0,0,0) 100%); }
+.fur-22 { left:71.3%; width:2.3%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 9%, rgba(0,0,0,0) 100%); }
 .fur-23 { left:73.6%; width:2.2%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 28%,rgba(0,0,0,0) 92%,rgba(0,0,0,0) 100%); }
 .fur-24 { left:75.8%; width:1%;    background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
 .fur-25 { left:76.8%; width:2.1%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 28%,rgba(0,0,0,0) 100%); }
@@ -836,33 +757,13 @@ mooviedintro[letter="M"] .helper-4 .effect-brush [class*="fur-"] {
 .fur-30 { left:92.8%; width:3.5%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 19%,rgba(0,0,0,0) 100%); }
 .fur-31 { left:96.3%; width:3.7%;  background:linear-gradient(to bottom,#e40913 0%,#e40913 37%,rgba(0,0,0,0) 100%); }
 
-/* ── Lumieres — exact from Netflix source ── */
 .effect-lumieres {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  position: absolute; width: 100%; height: 100%;
   opacity: 0;
-  animation-name: showing-lumieres;
-  animation-duration: 2s;
-  animation-delay: 1.6s;
-  animation-fill-mode: forwards;
+  animation-name: showing-lumieres; animation-duration: 2s; animation-delay: 1.6s; animation-fill-mode: forwards;
 }
-[class*="lamp-"] {
-  position: absolute;
-  display: block;
-  height: 100%;
-  box-shadow: 0px 0px 10px 0px rgba(228,9,19,0.75);
-  background: var(--color);
-}
-[class*="lamp-"]::before {
-  position: absolute;
-  content: " ";
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--color);
-  box-shadow: 0px 0px 10px 0px rgba(228,9,19,0.75);
-}
+[class*="lamp-"] { position: absolute; display: block; height: 100%; box-shadow: 0px 0px 10px 0px rgba(228,9,19,0.75); background: var(--color); }
+[class*="lamp-"]::before { position: absolute; content: " "; display: block; width: 100%; height: 100%; background: var(--color); box-shadow: 0px 0px 10px 0px rgba(228,9,19,0.75); }
 .lamp-1  { --color:#ff0100; left:0.7%;  width:1%;   }
 .lamp-2  { --color:#ffde01; left:2.2%;  width:1.4%; }
 .lamp-3  { --color:#ff00cc; left:5.8%;  width:2.1%; }
@@ -892,165 +793,59 @@ mooviedintro[letter="M"] .helper-4 .effect-brush [class*="fur-"] {
 .lamp-27 { --color:#ff0036; left:92.4%; width:2.4%; }
 .lamp-28 { --color:#06f98c; left:96.2%; width:2.1%; }
 
-.lamp-1,.lamp-3,.lamp-5,.lamp-7,.lamp-9,.lamp-11,.lamp-13,.lamp-15,
-.lamp-17,.lamp-19,.lamp-21,.lamp-23,.lamp-25,.lamp-27 {
-  animation-name: lumieres-moving-left;
-  animation-duration: 5s;
-  animation-fill-mode: forwards;
-}
-.lamp-1::before,.lamp-3::before,.lamp-5::before,.lamp-7::before,
-.lamp-9::before,.lamp-11::before,.lamp-13::before,.lamp-15::before,
-.lamp-17::before,.lamp-19::before,.lamp-21::before,.lamp-23::before,
-.lamp-25::before,.lamp-27::before {
-  animation-name: lumieres-moving-left;
-  animation-duration: 5.5s;
-}
-.lamp-2,.lamp-4,.lamp-6,.lamp-8,.lamp-10,.lamp-12,.lamp-14,.lamp-16,
-.lamp-18,.lamp-20,.lamp-22,.lamp-24,.lamp-26,.lamp-28 {
-  animation-name: lumieres-moving-right;
-  animation-duration: 5s;
-  animation-fill-mode: forwards;
-}
-.lamp-2::before,.lamp-4::before,.lamp-6::before,.lamp-8::before,
-.lamp-10::before,.lamp-12::before,.lamp-14::before,.lamp-16::before,
-.lamp-18::before,.lamp-20::before,.lamp-22::before,.lamp-24::before,
-.lamp-26::before,.lamp-28::before {
-  animation-name: lumieres-moving-right;
-  animation-duration: 5.5s;
-}
+.lamp-1,.lamp-3,.lamp-5,.lamp-7,.lamp-9,.lamp-11,.lamp-13,.lamp-15,.lamp-17,.lamp-19,.lamp-21,.lamp-23,.lamp-25,.lamp-27 { animation-name:lumieres-moving-left; animation-duration:5s; animation-fill-mode:forwards; }
+.lamp-1::before,.lamp-3::before,.lamp-5::before,.lamp-7::before,.lamp-9::before,.lamp-11::before,.lamp-13::before,.lamp-15::before,.lamp-17::before,.lamp-19::before,.lamp-21::before,.lamp-23::before,.lamp-25::before,.lamp-27::before { animation-name:lumieres-moving-left; animation-duration:5.5s; }
+.lamp-2,.lamp-4,.lamp-6,.lamp-8,.lamp-10,.lamp-12,.lamp-14,.lamp-16,.lamp-18,.lamp-20,.lamp-22,.lamp-24,.lamp-26,.lamp-28 { animation-name:lumieres-moving-right; animation-duration:5s; animation-fill-mode:forwards; }
+.lamp-2::before,.lamp-4::before,.lamp-6::before,.lamp-8::before,.lamp-10::before,.lamp-12::before,.lamp-14::before,.lamp-16::before,.lamp-18::before,.lamp-20::before,.lamp-22::before,.lamp-24::before,.lamp-26::before,.lamp-28::before { animation-name:lumieres-moving-right; animation-duration:5.5s; }
 
-/* ── Keyframes — exact from Netflix source ── */
-@keyframes brush-moving {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-100%); }
-}
-@keyframes fading-out {
-  0%   { opacity: 1; }
-  100% { opacity: 0; }
-}
-@keyframes lumieres-moving-right {
-  0%   { transform: translate(0); }
-  40%  { transform: translate(-10px) scaleX(1); }
-  50%  { transform: translate(-60px); }
-  100% { transform: translate(-120px) scaleX(3); }
-}
-@keyframes lumieres-moving-left {
-  0%   { transform: translate(0); }
-  40%  { transform: translate(10px) scaleX(1); }
-  50%  { transform: translate(60px); }
-  100% { transform: translate(120px) scaleX(3); }
-}
-@keyframes zoom-in {
-  0%   { transform: scale(1); }
-  100% { transform: scale(15); }
-}
-@keyframes showing-lumieres {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
-}
-@keyframes fading-lumieres-box {
-  0%   { background-color: rgba(228,9,19,.5); }
-  100% { background-color: rgba(228,9,19,0); }
-}
+@keyframes brush-moving { 0% { transform:translateY(0); } 100% { transform:translateY(-100%); } }
+@keyframes fading-out { 0% { opacity:1; } 100% { opacity:0; } }
+@keyframes lumieres-moving-right { 0%{transform:translate(0);} 40%{transform:translate(-10px) scaleX(1);} 50%{transform:translate(-60px);} 100%{transform:translate(-120px) scaleX(3);} }
+@keyframes lumieres-moving-left  { 0%{transform:translate(0);} 40%{transform:translate(10px) scaleX(1);}  50%{transform:translate(60px);}  100%{transform:translate(120px) scaleX(3);}  }
+@keyframes zoom-in { 0%{transform:scale(1);} 100%{transform:scale(15);} }
+@keyframes showing-lumieres { 0%{opacity:0;} 100%{opacity:1;} }
+@keyframes fading-lumieres-box { 0%{background-color:rgba(228,9,19,.5);} 100%{background-color:rgba(228,9,19,0);} }
 </style>
 </head>
 <body>
 
 <div id="player-wrap" tabindex="0">
 
-  <!-- MOOVIED INTRO — Exact Netflix helper/brush/lumieres structure -->
+  <!-- MOOVIED INTRO — Netflix style with clip-path M -->
   <div id="intro-screen">
     <mooviedintro letter="M">
 
-      <!-- helper-1: LEFT PILLAR (with lumieres) -->
+      <!-- helper-1: LEFT PILLAR — clipped to left 19% -->
       <div class="helper-1">
         <div class="effect-brush">
-          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
-          <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
-          <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
-          <span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span>
-          <span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span>
-          <span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span>
-          <span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span>
-          <span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span>
-          <span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span>
-          <span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span>
-          <span class="fur-1"></span>
+          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span><span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span><span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span><span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span><span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span><span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span><span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span><span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span><span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span><span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span><span class="fur-1"></span>
         </div>
         <div class="effect-lumieres">
-          <span class="lamp-1"></span><span class="lamp-2"></span><span class="lamp-3"></span>
-          <span class="lamp-4"></span><span class="lamp-5"></span><span class="lamp-6"></span>
-          <span class="lamp-7"></span><span class="lamp-8"></span><span class="lamp-9"></span>
-          <span class="lamp-10"></span><span class="lamp-11"></span><span class="lamp-12"></span>
-          <span class="lamp-13"></span><span class="lamp-14"></span><span class="lamp-15"></span>
-          <span class="lamp-16"></span><span class="lamp-17"></span><span class="lamp-18"></span>
-          <span class="lamp-19"></span><span class="lamp-20"></span><span class="lamp-21"></span>
-          <span class="lamp-22"></span><span class="lamp-23"></span><span class="lamp-24"></span>
-          <span class="lamp-25"></span><span class="lamp-26"></span><span class="lamp-27"></span>
-          <span class="lamp-28"></span>
+          <span class="lamp-1"></span><span class="lamp-2"></span><span class="lamp-3"></span><span class="lamp-4"></span><span class="lamp-5"></span><span class="lamp-6"></span><span class="lamp-7"></span><span class="lamp-8"></span><span class="lamp-9"></span><span class="lamp-10"></span><span class="lamp-11"></span><span class="lamp-12"></span><span class="lamp-13"></span><span class="lamp-14"></span><span class="lamp-15"></span><span class="lamp-16"></span><span class="lamp-17"></span><span class="lamp-18"></span><span class="lamp-19"></span><span class="lamp-20"></span><span class="lamp-21"></span><span class="lamp-22"></span><span class="lamp-23"></span><span class="lamp-24"></span><span class="lamp-25"></span><span class="lamp-26"></span><span class="lamp-27"></span><span class="lamp-28"></span>
         </div>
       </div>
 
-      <!-- helper-2: LEFT DIAGONAL rotate(+19.5deg) -->
+      <!-- helper-2: LEFT DIAGONAL — clipped to left-diag polygon -->
       <div class="helper-2">
         <div class="effect-brush">
-          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
-          <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
-          <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
-          <span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span>
-          <span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span>
-          <span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span>
-          <span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span>
-          <span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span>
-          <span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span>
-          <span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span>
-          <span class="fur-1"></span>
+          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span><span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span><span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span><span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span><span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span><span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span><span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span><span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span><span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span><span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span><span class="fur-1"></span>
         </div>
       </div>
 
-      <!-- helper-3: RIGHT DIAGONAL rotate(-19.5deg) -->
+      <!-- helper-3: RIGHT DIAGONAL — clipped to right-diag polygon -->
       <div class="helper-3">
         <div class="effect-brush">
-          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
-          <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
-          <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
-          <span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span>
-          <span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span>
-          <span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span>
-          <span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span>
-          <span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span>
-          <span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span>
-          <span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span>
-          <span class="fur-1"></span>
+          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span><span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span><span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span><span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span><span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span><span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span><span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span><span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span><span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span><span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span><span class="fur-1"></span>
         </div>
       </div>
 
-      <!-- helper-4: RIGHT PILLAR (with lumieres) -->
+      <!-- helper-4: RIGHT PILLAR — clipped to right 19% -->
       <div class="helper-4">
         <div class="effect-brush">
-          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span>
-          <span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span>
-          <span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span>
-          <span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span>
-          <span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span>
-          <span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span>
-          <span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span>
-          <span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span>
-          <span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span>
-          <span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span>
-          <span class="fur-1"></span>
+          <span class="fur-31"></span><span class="fur-30"></span><span class="fur-29"></span><span class="fur-28"></span><span class="fur-27"></span><span class="fur-26"></span><span class="fur-25"></span><span class="fur-24"></span><span class="fur-23"></span><span class="fur-22"></span><span class="fur-21"></span><span class="fur-20"></span><span class="fur-19"></span><span class="fur-18"></span><span class="fur-17"></span><span class="fur-16"></span><span class="fur-15"></span><span class="fur-14"></span><span class="fur-13"></span><span class="fur-12"></span><span class="fur-11"></span><span class="fur-10"></span><span class="fur-9"></span><span class="fur-8"></span><span class="fur-7"></span><span class="fur-6"></span><span class="fur-5"></span><span class="fur-4"></span><span class="fur-3"></span><span class="fur-2"></span><span class="fur-1"></span>
         </div>
         <div class="effect-lumieres">
-          <span class="lamp-1"></span><span class="lamp-2"></span><span class="lamp-3"></span>
-          <span class="lamp-4"></span><span class="lamp-5"></span><span class="lamp-6"></span>
-          <span class="lamp-7"></span><span class="lamp-8"></span><span class="lamp-9"></span>
-          <span class="lamp-10"></span><span class="lamp-11"></span><span class="lamp-12"></span>
-          <span class="lamp-13"></span><span class="lamp-14"></span><span class="lamp-15"></span>
-          <span class="lamp-16"></span><span class="lamp-17"></span><span class="lamp-18"></span>
-          <span class="lamp-19"></span><span class="lamp-20"></span><span class="lamp-21"></span>
-          <span class="lamp-22"></span><span class="lamp-23"></span><span class="lamp-24"></span>
-          <span class="lamp-25"></span><span class="lamp-26"></span><span class="lamp-27"></span>
-          <span class="lamp-28"></span>
+          <span class="lamp-1"></span><span class="lamp-2"></span><span class="lamp-3"></span><span class="lamp-4"></span><span class="lamp-5"></span><span class="lamp-6"></span><span class="lamp-7"></span><span class="lamp-8"></span><span class="lamp-9"></span><span class="lamp-10"></span><span class="lamp-11"></span><span class="lamp-12"></span><span class="lamp-13"></span><span class="lamp-14"></span><span class="lamp-15"></span><span class="lamp-16"></span><span class="lamp-17"></span><span class="lamp-18"></span><span class="lamp-19"></span><span class="lamp-20"></span><span class="lamp-21"></span><span class="lamp-22"></span><span class="lamp-23"></span><span class="lamp-24"></span><span class="lamp-25"></span><span class="lamp-26"></span><span class="lamp-27"></span><span class="lamp-28"></span>
         </div>
       </div>
 
