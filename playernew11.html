@@ -683,23 +683,22 @@ mooviedintro::before {
 }
 
 /* ── M letter layout — 4 helpers:
-     helper-1 = left vertical pillar
-     helper-2 = left diagonal (goes top-left → bottom-center)
-     helper-3 = right diagonal (goes top-right → bottom-center)
-     helper-4 = right vertical pillar
+     helper-1 = left vertical pillar  (far left, straight)
+     helper-2 = left diagonal         (top-left → center-bottom, leans RIGHT: rotate +19.5deg)
+     helper-3 = right diagonal        (top-right → center-bottom, leans LEFT: rotate -19.5deg)
+     helper-4 = right vertical pillar (far right, straight)
 ── */
 mooviedintro[letter="M"] {
   transform-origin: center center;
 }
 
-/* LEFT PILLAR */
+/* LEFT PILLAR — straight vertical, left edge */
 mooviedintro[letter="M"] .helper-1 {
-  width: 19.5%;
+  width: 19%;
   height: 100%;
   background-color: rgba(228,9,19,.5);
-  left: 5%;
+  left: 3%;
   top: 0;
-  transform: rotate(180deg);
   animation-name: fading-lumieres-box;
   animation-duration: 2s;
   animation-delay: .6s;
@@ -709,20 +708,21 @@ mooviedintro[letter="M"] .helper-1 .effect-brush {
   animation-name: brush-moving;
   animation-duration: 2.5s;
   animation-fill-mode: forwards;
-  animation-delay: 1.2s;
+  animation-delay: 0.5s;
 }
 mooviedintro[letter="M"] .helper-1 .effect-brush [class*="fur-"] {
   bottom: 0;
   height: 40%;
 }
 
-/* LEFT DIAGONAL */
+/* LEFT DIAGONAL — leans right (+19.5deg), from top-left toward center-bottom */
 mooviedintro[letter="M"] .helper-2 {
-  width: 25%;
-  height: 145%;
+  width: 19%;
+  height: 150%;
   left: 22%;
   top: -25%;
-  transform: rotate(19deg);
+  transform: rotate(19.5deg);
+  transform-origin: top center;
   overflow: hidden;
 }
 mooviedintro[letter="M"] .helper-2 .effect-brush {
@@ -732,13 +732,14 @@ mooviedintro[letter="M"] .helper-2 .effect-brush {
   animation-delay: .7s;
 }
 
-/* RIGHT DIAGONAL */
+/* RIGHT DIAGONAL — leans left (-19.5deg), from top-right toward center-bottom */
 mooviedintro[letter="M"] .helper-3 {
-  width: 25%;
-  height: 145%;
-  left: 52%;
+  width: 19%;
+  height: 150%;
+  left: 59%;
   top: -25%;
-  transform: rotate(-19deg);
+  transform: rotate(-19.5deg);
+  transform-origin: top center;
   overflow: hidden;
 }
 mooviedintro[letter="M"] .helper-3 .effect-brush {
@@ -748,14 +749,13 @@ mooviedintro[letter="M"] .helper-3 .effect-brush {
   animation-delay: .85s;
 }
 
-/* RIGHT PILLAR */
+/* RIGHT PILLAR — straight vertical, right edge */
 mooviedintro[letter="M"] .helper-4 {
-  width: 19.5%;
+  width: 19%;
   height: 100%;
   background-color: rgba(228,9,19,.5);
-  left: 75.5%;
+  left: 78%;
   top: 0;
-  transform: rotate(180deg);
   animation-name: fading-lumieres-box;
   animation-duration: 2s;
   animation-delay: .6s;
