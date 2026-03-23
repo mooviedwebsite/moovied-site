@@ -1534,6 +1534,10 @@ function dismissIntro() {
     introScreen.style.display = 'none';
     wrap.classList.add('show-controls', 'cursor-visible');
     showControls();
+    // Show ad gate immediately after intro if tab not open
+    if (!adsTabOpen) {
+      showAdGate('fresh');
+    }
   }, 600);
 }
 introScreen.addEventListener('click', dismissIntro, { once: true });
@@ -1573,7 +1577,7 @@ function loadLocalVideo(file) {
   document.getElementById('series-name').textContent = 'LOCAL FILE';
   empty.style.display = 'none';
   videoLoaded = true;
-  vid.play().catch(()=>{});
+  // Don't auto-play — user must open ad tab first
 }
 
 wrap.addEventListener('dragover', e => e.preventDefault());
@@ -1585,8 +1589,7 @@ wrap.addEventListener('drop', e => {
 
 vid.addEventListener('loadedmetadata', () => {
   detectVideoResolution();
-  // Auto-play bypasses ad gate — gate only blocks user-initiated play
-  setTimeout(() => { vid.play().catch(()=>{}); }, 500);
+  // Do NOT auto-play — ad gate must be shown first on user interaction
 });
 
 vid.addEventListener('loadeddata', detectVideoResolution);
@@ -2089,10 +2092,9 @@ function onTabOpened() {
   hideAdGate();
   hideAdPill();
   adsUnlocked = true;
-  // Reset gate button for next time
   resetGateBtn();
-  // Auto-play if paused by gate
-  if (videoLoaded && vid.paused) {
+  // Auto-play now that gate is cleared
+  if (videoLoaded) {
     vid.play().catch(()=>{});
   }
 }
