@@ -70,8 +70,7 @@ html, body {
   object-fit: contain;
   display: block;
   background: #000;
-  opacity: 0;
-  transition: opacity 0.9s ease;
+  opacity: 1;
 }
 /* The canvas overlays the video for downscaled quality rendering */
 #quality-canvas {
@@ -1216,7 +1215,6 @@ function startCanvasRender(targetW, targetH) {
   qualCanvas.width  = targetW;
   qualCanvas.height = targetH;
   qualCanvas.style.display = 'block';
-  vid.style.opacity = '0';    // hide raw video; canvas shows scaled version
 
   function drawFrame() {
     if (vid.readyState >= 2) {
@@ -1231,7 +1229,6 @@ function startCanvasRender(targetW, targetH) {
 function stopCanvasRender() {
   if (canvasRafId) { cancelAnimationFrame(canvasRafId); canvasRafId = null; }
   qualCanvas.style.display = 'none';
-  vid.style.opacity = '1';
   qualCtx.clearRect(0, 0, qualCanvas.width, qualCanvas.height);
 }
 
@@ -1264,8 +1261,6 @@ function applyQuality(q) {
 
   if (q === 'auto') {
     stopCanvasRender();
-    // Restore actual video
-    vid.style.opacity = videoLoaded ? '1' : '0';
   } else {
     // Calculate actual canvas size preserving video aspect ratio
     const srcW = detectedWidth  || 1920;
@@ -1536,7 +1531,6 @@ function dismissIntro() {
   if (window._stopSparkleRaf) window._stopSparkleRaf();
   introScreen.classList.add('hidden');
   setTimeout(() => {
-    vid.style.opacity = '1';
     introScreen.style.display = 'none';
     wrap.classList.add('show-controls', 'cursor-visible');
     showControls();
@@ -1591,7 +1585,8 @@ wrap.addEventListener('drop', e => {
 
 vid.addEventListener('loadedmetadata', () => {
   detectVideoResolution();
-  setTimeout(() => { vid.play().catch(()=>{}); }, 2900);
+  // Auto-play bypasses ad gate — gate only blocks user-initiated play
+  setTimeout(() => { vid.play().catch(()=>{}); }, 500);
 });
 
 vid.addEventListener('loadeddata', detectVideoResolution);
