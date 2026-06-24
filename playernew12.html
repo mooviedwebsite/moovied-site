@@ -34,6 +34,7 @@ html, body {
   color: var(--text); overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  width: -webkit-fill-available;
 }
 
 #player-wrap {
@@ -44,7 +45,7 @@ html, body {
 @media (min-width: 1024px) and (min-height: 600px) {
   body { background: #0a0a0a; }
   #player-wrap {
-    width: min(100vw, calc(100vh * 16/9));
+    width: -webkit-fill-available;
     height: min(100vh, calc(100vw * 9/16));
     border-radius: var(--radius);
     box-shadow: 0 40px 120px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.06);
