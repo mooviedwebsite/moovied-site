@@ -60,9 +60,6 @@ html, body {
 #empty-state { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(12px, 2.5vw, 24px); z-index: 10; background: radial-gradient(ellipse 80% 60% at 50% 50%, #1a0404 0%, #000 70%); }
 #empty-state .logo { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 7vw, 80px); color: var(--red); letter-spacing: 0.06em; text-shadow: 0 0 60px rgba(229,9,20,0.4), 0 0 120px rgba(229,9,20,0.2); }
 #empty-state p { color: var(--muted); font-size: clamp(12px, 2vw, 16px); font-weight: 400; }
-#upload-video-btn { padding: clamp(10px, 2vw, 14px) clamp(20px, 4vw, 36px); background: var(--red); color: #fff; font-size: clamp(13px, 2vw, 16px); font-weight: 700; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.15s, transform 0.15s; letter-spacing: 0.03em; font-family: 'DM Sans', sans-serif; }
-#upload-video-btn:hover { background: var(--red-hover); transform: scale(1.04); }
-#upload-video-btn:active { transform: scale(0.97); }
 #video-file-input, #sub-file-input, #sub-file-input-mobile { display: none; }
 
 /* ═══ QUALITY SWITCH OVERLAY ═══ */
@@ -255,7 +252,7 @@ html, body {
 .ag-dot-open { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.7); }
 @keyframes agDotPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.5); } 50% { box-shadow: 0 0 0 6px rgba(245,158,11,0); } }
 .ag-fine { font-size: 10px; color: rgba(255,255,255,0.22); letter-spacing: 0.02em; line-height: 1.5; max-width: 300px; }
-.ag-state-closed .ag-card, .ag-card.ag-state-closed { border-color: rgba(229,9,20,0.22); }
+.ag-state-closed .ag-card { border-color: rgba(229,9,20,0.22); }
 
 #ad-pill { position: absolute; bottom: clamp(90px, 14vh, 115px); left: 50%; transform: translateX(-50%) translateY(20px); z-index: 140; display: flex; align-items: center; gap: 9px; padding: 10px 18px 10px 14px; background: rgba(10,10,12,0.92); border: 1px solid rgba(229,9,20,0.45); border-radius: 40px; cursor: pointer; font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0.03em; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 0 1px rgba(229,9,20,0.1); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22,1,0.36,1); }
 #ad-pill.ap-show { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
@@ -292,12 +289,6 @@ html, body {
   <!-- EMPTY STATE (shown only when no video link is given) -->
   <div id="empty-state">
     <div class="logo">MOOVIED</div>
-    <p>Drop a video file or click to load</p>
-    <button id="upload-video-btn" onclick="document.getElementById('video-file-input').click()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Upload Video
-    </button>
-    <input type="file" id="video-file-input" accept="video/*">
   </div>
 
   <div id="gradient-top"></div>
@@ -627,16 +618,13 @@ html, body {
 //   &q144=..&q240=..&q360=..&q480=..&q720=..&q1080=..&q2160=..
 // ════════════════════════════════════════════════
 const CORS_PROXY = 'https://corsproxy.io/?';
-const P = new URLSearchParams(location.search);
-const CFG = {
-  video:  P.get('video')  || '',
-  title:  P.get('title')  || '',
-  series: P.get('series') || '',
-  subSi:  P.get('sub_si') || '',
-  subEn:  P.get('sub_en') || '',
-  q: {}
-};
-['144','240','360','480','720','1080','2160'].forEach(h => { const u = P.get('q'+h); if (u) CFG.q[h] = u; });
+const CFG = { video:'', title:'', series:'', subSi:'', subEn:'', q:{} };
+// The player only works inside these pages (your Blogger blog, origin only).
+// Blogger may use a country domain too (e.g. https://yourblog.blogspot.lk) - add it here.
+const ALLOWED_PARENTS = ['https://YOURBLOG.blogspot.com'];
+let configApplied = false;
+function safeUrl(u){ try{ const x=new URL(u); return (x.protocol==='https:'||x.protocol==='http:') ? x.href : ''; }catch(e){ return ''; } }
+function shareUrl(){ return document.referrer || location.href; }
 
 const QUALITY_DEFS = {
   'auto': { label:'Auto',  badge:'Adaptive',   barPct:100 },
@@ -672,7 +660,6 @@ const subText        = document.getElementById('sub-text');
 const spinner        = document.getElementById('spinner');
 const keyHint        = document.getElementById('key-hint');
 const episodeName    = document.getElementById('episode-name');
-const videoFileInput = document.getElementById('video-file-input');
 const subFileInput   = document.getElementById('sub-file-input');
 const skipBack       = document.getElementById('skip-back');
 const skipFwd        = document.getElementById('skip-fwd');
@@ -917,7 +904,7 @@ function showCastToast(msg){
 }
 function castShare(method){
   closeAllPanels();
-  const url=window.location.href;
+  const url=shareUrl();
   if(method==='native'){
     if(navigator.share){ navigator.share({title:episodeName.textContent||'MOOVIED Player',url}).catch(()=>{}); }
     else navigator.clipboard?.writeText(url).then(()=>showCastToast('Link copied to clipboard!'));
@@ -1005,11 +992,14 @@ introScreen.addEventListener('click',dismissIntro,{once:true});
 // ════════════════════════════════════════════════
 // VIDEO LOAD (from URL parameters)
 // ════════════════════════════════════════════════
-function initFromParams(){
+function applyConfig(d){
+  CFG.video=safeUrl(d.video); CFG.title=String(d.title||''); CFG.series=String(d.series||'');
+  CFG.subSi=safeUrl(d.sub_si); CFG.subEn=safeUrl(d.sub_en); CFG.q={};
+  ['144','240','360','480','720','1080','2160'].forEach(h=>{ const u=safeUrl((d.q||{})[h]); if(u) CFG.q[h]=u; });
   buildQualityMenu();
   let src=CFG.video;
   if(qualList.length){ activeSrcQ=pickAutoQuality(); src=CFG.q[activeSrcQ]; }
-  if(!src) return;                                   // no link -> upload screen stays
+  if(!src) return;
   vid.src=src; vid.load();
   episodeName.textContent=CFG.title||'Untitled';
   document.getElementById('series-name').textContent=CFG.series||'MOOVIED PLAYER';
@@ -1017,18 +1007,21 @@ function initFromParams(){
   empty.style.display='none'; videoLoaded=true;
   loadRemoteSubtitles();
 }
-initFromParams();
-
-videoFileInput.addEventListener('change',e=>{const f=e.target.files[0];if(f)loadLocalVideo(f);});
-function loadLocalVideo(file){
-  currentQuality='auto'; detectedWidth=0; detectedHeight=0; qualList=[]; activeSrcQ=null; updateQualityUI('auto');
-  vid.src=URL.createObjectURL(file); vid.load();
-  episodeName.textContent=file.name.replace(/\.[^.]+$/,'');
-  document.getElementById('series-name').textContent='LOCAL FILE';
-  empty.style.display='none'; videoLoaded=true;
+window.addEventListener('message',e=>{
+  if(configApplied||e.source!==window.parent) return;
+  if(!e.data||e.data.type!=='moovied-config') return;
+  let ref=''; try{ ref=new URL(document.referrer).origin; }catch(_){}
+  if(ALLOWED_PARENTS.length ? !ALLOWED_PARENTS.includes(e.origin) : (ref && e.origin!==ref)) return;
+  configApplied=true; applyConfig(e.data.data||{});
+});
+if(window.parent!==window){                      // ask the Blogger page for the movie data
+  let tries=0;
+  const t=setInterval(()=>{
+    if(configApplied||++tries>60){ clearInterval(t); return; }
+    try{ window.parent.postMessage({type:'moovied-ready'},'*'); }catch(_){}
+  },500);
 }
-wrap.addEventListener('dragover',e=>e.preventDefault());
-wrap.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('video/'))loadLocalVideo(f);});
+
 vid.addEventListener('loadedmetadata',detectVideoResolution);
 vid.addEventListener('loadeddata',detectVideoResolution);
 
@@ -1212,8 +1205,8 @@ function resetGateBtn(){
 }
 function showAdGate(reason){
   adsGateShowing=true;const gate=document.getElementById('ad-gate');resetGateBtn();
-  if(reason==='closed'){document.getElementById('ag-headline').textContent='Support Tab Closed';document.getElementById('ag-sub').textContent='Please keep the support tab open to continue watching.';const btn=document.getElementById('ag-btn');btn.innerHTML='<span class="ag-btn-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M3 10h11M10 4l7 6-7 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Re-open Support Tab<span class="ag-btn-shine"></span>';document.getElementById('ad-gate-state').className='ag-card ag-state-closed';}
-  else{document.getElementById('ag-headline').textContent='One Quick Step';document.getElementById('ag-sub').textContent='Open the support tab to unlock your video. It stays small in the background.';document.getElementById('ad-gate-state').className='ag-card ag-state-fresh';}
+  if(reason==='closed'){document.getElementById('ag-headline').textContent='Support Tab Closed';document.getElementById('ag-sub').textContent='Please keep the support tab open to continue watching.';const btn=document.getElementById('ag-btn');btn.innerHTML='<span class="ag-btn-icon"><svg viewBox="0 0 20 20" fill="none"><path d="M3 10h11M10 4l7 6-7 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Re-open Support Tab<span class="ag-btn-shine"></span>';document.getElementById('ad-gate-state').className='ag-state-closed';}
+  else{document.getElementById('ag-headline').textContent='One Quick Step';document.getElementById('ag-sub').textContent='Open the support tab to unlock your video. It stays small in the background.';document.getElementById('ad-gate-state').className='ag-state-fresh';}
   gate.classList.remove('ag-hidden');gate.classList.add('ag-visible');hideAdPill();
 }
 function hideAdGate(){adsGateShowing=false;const gate=document.getElementById('ad-gate');gate.classList.remove('ag-visible');gate.classList.add('ag-hidden');}
