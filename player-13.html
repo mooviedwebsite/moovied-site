@@ -801,7 +801,7 @@ const CORS_PROXY = 'https://corsproxy.io/?';
 const CFG = { video:'', title:'', series:'', subSi:'', subEn:'', q:{} };
 // The player only works inside these pages (your Blogger blog, origin only).
 // Blogger may use a country domain too (e.g. https://yourblog.blogspot.lk) - add it here.
-const ALLOWED_PARENTS = ['https://YOURBLOG.blogspot.com'];
+const ALLOWED_PARENTS = ['https://mooviedweb.blogspot.com'];
 let configApplied = false;
 function safeUrl(u){ try{ const x=new URL(u); return (x.protocol==='https:'||x.protocol==='http:') ? x.href : ''; }catch(e){ return ''; } }
 function shareUrl(){ return CFG.page || document.referrer || location.href; }
